@@ -39,8 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+<<<<<<< HEAD
     'dashboard',
     'fontawesome-free',
+=======
+    'dashboard'
+>>>>>>> ca6c7d02c69c74d488662d635e6b82c1a8c4b145
 ]
 
 MIDDLEWARE = [
