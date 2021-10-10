@@ -66,11 +66,6 @@ def login_page(request):
             print("No such user")
             return redirect('signup')
 
-        cur_user=cur_user[0]
-        if cur_user.password!=password:
-            print("Passwords didn't matched")
-            return redirect('login_page')
-
         user = authenticate(username=email,password=password)
         if user:
             login(request,user)
