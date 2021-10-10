@@ -21,10 +21,10 @@
         </button>
         <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
         <div class="navbar-nav">
-          <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="#">Search</a>
+            <div class="nav-item text-nowrap">
+              <a class="nav-link px-3" href="#">Search</a>
+            </div>
           </div>
-        </div>
         <div class="navbar-nav">
           <div class="nav-item text-nowrap">
             <a class="nav-link px-3" href="/logout/">Log out</a>
@@ -56,13 +56,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a style="text-decoration: none; color: black;" class="nav-link" href="profile/">
+            <a style="text-decoration: none; color: black;" class="nav-link" href="#">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               Profile
             </a>
           </li>
           <li class="nav-item">
-            <a style="text-decoration: none; color: black;" class="nav-link" href="/profile/">
+            <a style="text-decoration: none; color: black;" class="nav-link" href="#">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bar-chart-2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
               Reports
             </a>
@@ -115,46 +115,29 @@
           <div class="btn-toolbar mb-2 mb-md-0">
           </div>
         </div>
-        <div class="container">
-            <div class="row align-items-start">
-              <div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
-                <p class="fs-3">Crypto</p>
-                <div>
-                    <p class="fs-1">0</p>
-                    Margin available
+        <div style="text-align: center;" class="container">
+            <div  class="row align-items-start">
+                <div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
+                    <p class="fs-4">First Name : {{name}}</p>
+                    <p class="fs-4">Last Name : {{lname}}</p>
+                    <p class="fs-4">Registered Email : {{email}}</p>
+                    <br><br><br><br>
                 </div>
-              </div>
-              <div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
-                <br><br><br>
-                <div>
-                    Margin Used 0
-                    <br>
-                    Opening balance 0
-                    <br>
-                    <a href="#">View Statement</a>
+                <div style="text-align: left;" class="col">
+                    <form action="/dashboard/resetpassword/" method="POST">{% csrf_token %}
+                        <p style="margin-left: 7rem;" class="fs-1">Change Password</p>
+                        <label for="inputPassword5" class="form-label">New Password</label>
+                        <input name="password" style="width: 15rem;" type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
+                        <br>
+                        <label for="inputPassword5" class="form-label">Confirm New Password</label>
+                        <input name="confirmpassword" style="width: 15rem;" type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
+                        <br>    
+                        <button type="submit" class="btn btn-danger">Change Password</button>
+                    </form>
                 </div>
-              </div>
-              <!-- <div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
-                <p class="fs-3">Comodity</p>
-                <div>
-                    <p class="fs-1">0</p>
-                    Margin available
-                </div>
-              </div>
-              <div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
-                <br><br><br>
-                <div>
-                    Margin Used 0
-                    <br>
-                    Opening balance 0
-                    <br>
-                    <a href="#">View Statement</a>
-                </div>
-              </div> -->
+            </div>
         </div>
-        <div style="position: absolute;top:60%;left:15%;height: 15rem; text-align: center;" class="container">
-            <button type="button" class="btn btn-primary">Start Investing</button>
-        </div>
+            
       </main>
   </div>
 </div>
