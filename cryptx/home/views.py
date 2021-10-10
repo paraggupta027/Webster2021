@@ -9,17 +9,24 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from uuid import uuid4
 
+
 def home(request):
     return render(request,'home/index.html')
 
+
 def signup(request):
+    user = request.user
+    if user.is_authenticated:
+        return redirect('dashboard')
     return render(request,'home/signup.html')
+
+
 
 def signuphandle(request):
 
     user = request.user
     if user.is_authenticated:
-        return redirect('home')
+        return redirect('dashboard')
 
     if request.method == 'POST':
         fname = request.POST.get('fname',"")
@@ -39,18 +46,20 @@ def signuphandle(request):
                 print("Email already taken")
                 return redirect('home')
 
-        if password==cpassword:
-            user = User.objects.create_user(username=email,password = password)
-            user.first_name = fname
-            user.last_name = lname
-            user.save()
-            print("saved")
-    
-        return render(request,'home/index.html')
+        new_user = User.objects.create_user(username=email,password=password)
+        new_user.email=email
+        new_user.first_name = fname
+        new_user.last_name = lname
+        new_user.save()
 
-def logout_user(request):
-    logout(request)
+        user = authenticate(username=email,password=password)
+        if user:
+            login(request,user)
+            return redirect('dashboard')
+    
     return redirect('home')
+
+
 
 def login_page(request):
     user=request.user
@@ -72,3 +81,8 @@ def login_page(request):
             return redirect('dashboard')
 
     return render(request,'home/login.html')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')
