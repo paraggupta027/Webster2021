@@ -13,10 +13,16 @@ import json
 
 from coins.models import Coin
 
+
 def dashboard(request):
-    user=request.user
+    user = request.user
     if user.is_authenticated:
-        return render(request, 'dashboard/dash.html')
+        name = user.first_name
+        params = {
+            'name' : name,
+        }
+        return render(request, 'dashboard/dash.html', params)
+
     return redirect('home')
 
 
@@ -51,19 +57,11 @@ def live_search(request,*args):
         resp={
             'coins':search_qs,
         }
-    response=json.dumps(resp)
-    return HttpResponse(response,content_type='application/json')
+        response=json.dumps(resp)
+        return HttpResponse(response,content_type='application/json')
 
     return redirect('home')
-    user = request.user
-    if user.is_authenticated:
-        name = user.first_name
-        params = {
-            'name' : name,
-        }
-        return render(request, 'dashboard/dash.html', params)
-
-    return redirect('home')
+    
 
 def profile(request):
     user = request.user
@@ -78,6 +76,7 @@ def profile(request):
         }
         return render(request , 'dashboard/profile.html',params)
     return redirect('home')
+
 
 def resetpassword(request):
     user = request.user
@@ -95,6 +94,24 @@ def resetpassword(request):
             user=authenticate(username=user.email,password=password)
             login(request,user)
             return redirect('dashboard')
+
+    return redirect('home')
+
+
+def search_query(request,*args):
+    user=request.user
+    if user.is_authenticated and request.is_ajax():
+        query=request.GET.get('query')
+        is_coin = Coin.objects.filter(name=query)
+
+        if is_coin:
+            return HttpResponseRedirect(reverse('coin_chart_page',kwargs={'coin_name':query}))
+
+        resp={
+            'success':success,
+        }
+        response=json.dumps(resp)
+        return HttpResponse(response,content_type='application/json')
 
     return redirect('home')
 
