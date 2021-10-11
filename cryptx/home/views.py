@@ -8,6 +8,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from uuid import uuid4
+from .models import forgotpassword
 
 
 def home(request):
@@ -90,3 +91,30 @@ def login_page(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+def forgotpassword(request):
+    return render(request , 'home/forgot.html')
+
+def handle_forgotpassword(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+
+        user = User.object.filter(username = email)
+
+        if len(user) == 0:
+            return redirect('home')
+
+        token = uuid4()
+
+        content = f"http://127.0.0.1:8000/auth_forgot/{token}"
+        print(content)
+
+        send_mail('Forgot_password',content,'techstartechtechstar@gmail.com',[email_user],fail_silently=False)
+        new_forgot = forgotPassword(email=email_user,token=token)
+        new_forgot.save()
+        return redirect('login')
+
+    return redirect('home')
+
+
+
