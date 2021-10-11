@@ -8,7 +8,13 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from uuid import uuid4
-from .models import forgotpassword
+from .models import Forgotpassword
+
+from django.conf import settings 
+from django.core.mail import send_mail
+import os
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 
 def home(request):
@@ -100,24 +106,52 @@ def forgotpassword(request):
 
 def handle_forgotpassword(request):
     if request.method == 'POST':
+        print("Working")
         email = request.POST.get('email')
 
-        user = User.object.filter(username = email)
+        user = User.objects.filter(username = email)
 
         if len(user) == 0:
+            print("No such user")
             return redirect('home')
 
         token = uuid4()
 
         content = f"http://127.0.0.1:8000/auth_forgot/{token}"
-        print(content)
+        print("this is my " + content)
 
-        send_mail('Forgot_password',content,'techstartechtechstar@gmail.com',[email_user],fail_silently=False)
-        new_forgot = forgotPassword(email=email_user,token=token)
+        send_mail('Forgot_password',content,'techstartechtechstar@gmail.com',[email],fail_silently=False)
+        print("Mail sent")
+        new_forgot = Forgotpassword(email=email ,token=token)
         new_forgot.save()
-        return redirect('login')
+        print("Token saved")
+        return redirect('login_page')
 
     return redirect('home')
+
+def auth_forgot_password(request,token):
+    forgotPassword = Forgotpassword.objects.filter(token = token)
+
+    if len(forgotPassword != 0):
+        response = {
+            'token' : token
+        }
+
+        return render(request , 'home/resetpassword.html' , response)
+    return redirect('home')
+
+def reset_password(request,token):
+    if request.method == 'POST':
+        new_password = request.POST.get('password')
+        confirm_password = request>POST.get('confirmpassword')
+
+        if(new_password == confirm_password):
+            user = Forgotpassword.objects.filter(token=token)
+            user.set_password(new_password)
+            print("Password successfully changed")
+            return redirect('home')
+
+    return redirect('forgotpassword')        
 
 
 

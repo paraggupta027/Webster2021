@@ -14,9 +14,13 @@ import json
 from coins.models import Coin
 
 def dashboard(request):
-    user=request.user
+    user = request.user
     if user.is_authenticated:
-        return render(request, 'dashboard/dash.html')
+        name = user.first_name
+        params = {
+            'name' : name
+        }
+        return render(request, 'dashboard/dash.html',params)
     return redirect('home')
 
 
