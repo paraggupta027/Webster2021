@@ -1,12 +1,12 @@
 
-let search_url = "/dashboard/live_search/";
+let live_search_url = "/dashboard/live_search/";
 
 $('#search').on('input',function(e){
     let val = $("#search").val();
 
     if(val.length>0){
         $.ajax({
-            url : search_url,
+            url : live_search_url,
             data : {'query':val},
             success:function(response)
             {
@@ -25,6 +25,28 @@ $('#search').on('input',function(e){
             }
         })
     }
+});
 
 
+let redirect_url="www.google.com"
+$("#search_btn").on('click',function(e){
+    var query = $("#search").val();
+    var url="/dashboard/search/";
+    if(query.length>0){
+        $.ajax({
+            url:url,
+            data:{'query':query},
+            success:function(response)
+            {
+                if(response.success==1)
+                {
+                    window.location=redirect_url;
+                }
+                else
+                {
+                    alert("no such coin");
+                }
+            }
+        })
+    }
 });
