@@ -49,8 +49,7 @@ def signuphandle(request):
                 print("Email already taken")
                 return redirect('home')
 
-        new_user = User.objects.create_user(username=email,password=password)
-        new_user.email=email
+        new_user = User.objects.create_user(username=email,email = email,password=password)
         new_user.first_name = fname
         new_user.last_name = lname
         new_user.save()
@@ -68,8 +67,11 @@ def login_page(request):
     user=request.user
     if user.is_authenticated:
         return redirect('dashboard')
+
+    print("login")
     
     if request.method=='POST':
+        print("Post request")
         email = request.POST.get('email',"")
         password = request.POST.get('password',"")
 
@@ -80,8 +82,10 @@ def login_page(request):
 
         user = authenticate(username=email,password=password)
         if user:
+            print("User exists")
             login(request,user)
             return redirect('dashboard')
+        print("Post request completed")
 
     return render(request,'home/login.html')
 
