@@ -6,6 +6,5 @@ from . import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('',views.dashboard,name='dashboard'),
-    path('live_search/',views.live_search,name='live_search'),
+    
 ]
