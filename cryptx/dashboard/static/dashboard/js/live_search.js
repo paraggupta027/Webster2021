@@ -38,14 +38,9 @@ $("#search_btn").on('click',function(e){
             data:{'query':query},
             success:function(response)
             {
-                if(response.success==1)
-                {
-                    window.location=redirect_url;
-                }
-                else
-                {
+
                     alert("no such coin");
-                }
+                
             }
         })
     }
