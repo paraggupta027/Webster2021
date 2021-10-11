@@ -12,6 +12,9 @@ from .models import forgotpassword
 
 
 def home(request):
+    user = request.user
+    if user.is_authenticated:
+        return redirect('dashboard')
     return render(request,'home/index.html')
 
 
