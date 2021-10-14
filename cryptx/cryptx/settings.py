@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'home',
     'dashboard',
     'coins',
-    'charts'
+    'charts',
+    'paytm'
 ]
 
 MIDDLEWARE = [
