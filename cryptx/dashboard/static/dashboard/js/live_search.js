@@ -28,7 +28,6 @@ $('#search').on('input',function(e){
 });
 
 
-let redirect_url="www.google.com"
 $("#search_btn").on('click',function(e){
     var query = $("#search").val();
     var url="/dashboard/search/";
@@ -38,8 +37,13 @@ $("#search_btn").on('click',function(e){
             data:{'query':query},
             success:function(response)
             {
-
-                    alert("no such coin");
+                if(response.success==1)
+                {
+                    let redirect_url = "/charts/"+query;
+                    window.location=redirect_url;
+                }
+                else
+                alert("No such coin");
                 
             }
         })

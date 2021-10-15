@@ -1,9 +1,17 @@
-const crypto = ["BTC", "LTC", "ETH", "NEO", "BNB", "QTUM", "EOS", "SNT"];
-// let url="wss://stream.binance.com:9443/ws/ethusdt@trade";
-let url = "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD";
-let coin_name = "BTC"
+<script>
+   
+   
+let coin = "{{coin}}";
+console.log(coin);
+let coin_symbol = coin.symbol;
+let coin_name = coin.name;
+
+// console.log(coin_name);
+
+let url = "https://min-api.cryptocompare.com/data/price?fsym=" +    "&tsyms=USD";
 let currency_name = "USD"
 let time_stamp = Math.round(new Date().getTime() / 1000);
+
 
 let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
     coin_name + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
@@ -170,3 +178,9 @@ async function addPoint() {
 
 
 }
+<<<<<<< HEAD:cryptx/dashboard/templates/dashboard/crypto_api_calls.js
+=======
+
+
+</script>
+>>>>>>> 0785142485bd183732f6de52aa96175008039314:cryptx/charts/templates/charts/crypto_api_calls.html
