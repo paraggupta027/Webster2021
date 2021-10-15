@@ -177,7 +177,9 @@
         var data = await response.json();
     
         console.log(data.USD,all_candles.length);
-    
+        let last_price = (all_candles.length)?all_candles[all_candles.length-1].value:0;
+        let current_price = data.USD;
+        changePrice(last_price,current_price);
         var newDate = new Date();
         var curtime = newDate.getTime() / 1000;
         curtime = Math.round(curtime) 
@@ -189,5 +191,24 @@
     
     }
     
-    
-    </script>
+
+function changePrice(last_price,cur_price)
+{   if(last_price==cur_price)return;
+    let price=document.getElementById("id_real_time_price");
+    let diff = cur_price-last_price;
+    diff=diff.toFixed(3);
+
+    if(last_price<=cur_price)
+    {
+        price.innerHTML="$ "+cur_price+" " +"(+"+ diff+ ")";
+        price.style.color="green";
+    }
+    else
+    {
+        price.innerHTML="$ "+cur_price+" " +"(" +diff+ ")";
+        price.style.color="red";
+    }
+}
+
+
+</script>
