@@ -40,7 +40,7 @@ $(document).ready(
                 // invertScale: true,
                 // alignLabels: true,
                 borderVisible: true,
-                borderColor: 'black',
+                borderColor: 'blackb',
                 scaleMargins: {
                     top: 0.30,
                     bottom: 0.25,
