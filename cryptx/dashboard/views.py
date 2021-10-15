@@ -111,7 +111,7 @@ def search_query(request,*args):
         success=0
         if is_coin:
              success=1
-
+        print("succusses : ",success)
         resp={
             'success':success,
         }
@@ -119,5 +119,3 @@ def search_query(request,*args):
         return HttpResponse(response,content_type='application/json')
 
     return redirect('home')
-
-

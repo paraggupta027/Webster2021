@@ -118,16 +118,16 @@
                             <button type="button" class="btn btn-danger" style="background-color: orangered; padding-left: 1rem;">Sell</button>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button type="button" id="interval" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               1 min
             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">1 min</a>
-                                <a class="dropdown-item" href="#">5 min</a>
-                                <a class="dropdown-item" href="#">15 min</a>
-                                <a class="dropdown-item" href="#">30 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60)">1 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*5)">5 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*15)">15 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*30)">30 min</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">1 hour</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*60*1)">1 hour</a>
                                 <div class="dropdown-divider"></div>
                             </div>
                         </div>
