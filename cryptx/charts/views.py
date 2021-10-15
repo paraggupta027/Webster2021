@@ -14,10 +14,16 @@ import json
 
 from coins.models import Coin
 
-
-def coin_chart_page(request,*args):
+def coin_chart_page(request,coin_name):
     user=request.user
     if user.is_authenticated:
-        coin = request
 
+        coin=Coin.objects.get(name=coin_name)
+
+        context = {
+            'coin':coin
+
+        }
+
+        return render(request,'charts/coin_chart.html',context)
     return redirect('home')

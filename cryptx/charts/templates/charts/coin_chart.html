@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-    <title>Doge 0.25</title>
+    <title>{{coin.name}}  ({{coin.symbol}})</title>
 </head>
 
 <body>
@@ -110,24 +110,25 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 
                     <h1 class="h2">
-                        <img src="{% static 'dashboard/img/SVG/DOGE.svg' %}" style="height: 2.1rem ; width:2.1rem;" alt="DOGE"></i>DogeCoin
-                    </h1>
+                        <img src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" style="height: 2.1rem ; width:2.1rem;"></i>{{coin.name}} ({{coin.symbol}})
+                        <p id="id_real_time_price"></p>
+                    </h1> 
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <button type="button" class="btn btn-primary ">Buy</button>
                             <button type="button" class="btn btn-danger" style="background-color: orangered; padding-left: 1rem;">Sell</button>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button type="button" id="interval" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               1 min
             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">1 min</a>
-                                <a class="dropdown-item" href="#">5 min</a>
-                                <a class="dropdown-item" href="#">15 min</a>
-                                <a class="dropdown-item" href="#">30 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60)">1 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*5)">5 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*15)">15 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*30)">30 min</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">1 hour</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*60*1)">1 hour</a>
                                 <div class="dropdown-divider"></div>
                             </div>
                         </div>
@@ -138,13 +139,13 @@
 
                 <!-- Add Scrollable Watchlist -->
 
-
         </div>
         </main>
     </div>
     </div>
 
 </body>
-<script src="crypto_api_calls.js"></script>r
+
+{% include 'charts/crypto_api_calls.html' %}
 
 </html>

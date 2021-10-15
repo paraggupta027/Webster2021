@@ -46,6 +46,7 @@ def live_search(request,*args):
     user=request.user
     if user.is_authenticated:
         query = request.GET.get('query')
+        query=query.upper()
         all_coins = Coin.objects.all()
 
         search_qs = []
@@ -101,11 +102,16 @@ def search_query(request,*args):
     user=request.user
     if user.is_authenticated and request.is_ajax():
         query=request.GET.get('query')
+        query.upper()
+
         is_coin = Coin.objects.filter(name=query)
 
-        if is_coin:
-            return HttpResponseRedirect(reverse('coin_chart_page',kwargs={'coin_name':query}))
+        print(is_coin,query)
 
+        success=0
+        if is_coin:
+             success=1
+        print("succusses : ",success)
         resp={
             'success':success,
         }
@@ -113,5 +119,3 @@ def search_query(request,*args):
         return HttpResponse(response,content_type='application/json')
 
     return redirect('home')
-
-

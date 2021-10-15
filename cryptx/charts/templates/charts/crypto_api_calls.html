@@ -1,0 +1,214 @@
+<script>
+   
+
+    let coin_symbol = "{{coin.symbol}}";
+    let coin_name = "{{coin.name}}";
+    
+    
+    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms=USD";
+    let currency_name = "USD"; 
+    let time_stamp = Math.round(new Date().getTime() / 1000);
+    let time_interval  = 60 ;
+    let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
+        coin_name + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
+    // console.log(time_stamp)
+    
+    let all_candles = [];
+    let base_candles = [];
+    let reset = 0;
+    let chart;
+    let lineSeries;
+    function changeInterval(interval){
+        if(interval==time_interval)return;
+        else{
+            all_candles.length = 0;
+            for(let i=0;i<base_candles.length;i++){
+                let val= base_candles[i];
+                if(all_candles.length){
+                   let curr_time= Math.floor(all_candles[all_candles.length-1].time/interval);
+                    let last_time = Math.floor(val.time/interval);
+                    if(curr_time!=last_time){
+                        all_candles.push(val);
+                    }else{
+                        all_candles[all_candles.length-1] =val;
+                    }
+                }else{
+                    all_candles.push(val);
+                }
+            }
+            time_interval = interval;
+            let interval_button = document.getElementById('interval')
+            interval_button.innerHTML = time_interval/60+" min"
+            
+        }
+    }
+    // 1.1 new  1 (1-60)
+    $(document).ready(
+        function() {
+    
+            var rateP = document.getElementById('rate');
+    
+            chart = LightweightCharts.createChart(document.getElementById('mychart'), {
+    
+            });
+            lineSeries = chart.addLineSeries({
+                drawCrosshairMarker: true,
+                lineWidth: 2,
+                color: 'black',
+            });
+    
+    
+            chart.applyOptions({
+                title: 'DOGE',
+                priceScale: {
+                    position: 'right',
+                    mode: 0,
+                    // autoScale: false,
+                    // invertScale: true,
+                    // alignLabels: true,
+                    borderVisible: true,
+                    borderColor: 'black',
+                    scaleMargins: {
+                        top: 0.30,
+                        bottom: 0.25,
+                    },
+                },
+                timeScale: {
+                    rightOffset: 12,
+                    barSpacing: 3,
+                    // fixLeftEdge: true,
+                    lockVisibleTimeRangeOnResize: true,
+                    rightBarStaysOnScroll: true,
+                    borderVisible: true,
+                    borderColor: 'black',
+                    visible: true,
+                    timeVisible: true,
+                    secondsVisible: false,
+                    tickMarkFormatter: (time, tickMarkType, locale) => {
+                        console.log(time, tickMarkType, locale);
+                        let date = new Date(time * 1000);
+                        const year = date.getHours() + ":" + date.getMinutes();
+                        return String(year);
+                    },
+                },
+    
+                // timeScale: {
+                //     rightOffset: 50,
+                //     tickMarkFormatter: (time, tickMarkType, locale) => {
+                // let date = new Date(time * 1000);
+                // const year = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                //         // console.log(year);
+    
+                //         return String(year);
+                //     },
+                // },
+                crosshair: {
+                    vertLine: {
+                        color: 'Black',
+                        width: 1.7,
+                        style: 1,
+                        visible: true,
+                        labelVisible: true,
+                    },
+                    horzLine: {
+                        color: 'Black',
+                        width: 1.7,
+                        style: 1,
+                        visible: true,
+                        labelVisible: true,
+                    },
+                    mode: 0,
+                },
+            });
+            var k = 2;
+            async function add_history() {
+                const response = await fetch(history_url);
+                var dataRes = await response.json();
+                var data = dataRes.Data.Data;
+                if (data)
+                    for (let i = 0; i < data.length; i++) {
+                        let candle = data[i];
+                        var newDate = new Date();
+                        var curtime = candle.time;
+                        let newCandle = { time: curtime, value: candle.close };
+                       
+                        all_candles.push(newCandle);
+                    }
+                console.log(all_candles.length)
+                console.log(time_stamp);
+                time_stamp -= 2000 * 60;
+                history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
+                    coin_name + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
+                console.log(all_candles);
+    
+    
+            }
+            let set_interval = setInterval(() => {
+                addPoint();
+            }, 200);
+
+    
+        });
+    
+    
+    
+    
+    
+    
+    async function setCandles(base_candles,curtime,interval,newCandle){
+        if(base_candles.length){
+            const last_candle = base_candles[base_candles.length-1];
+            const last_time  = Math.floor(last_candle.time)
+
+            if(Math.floor(last_time/interval)!=Math.floor(curtime/interval)){
+                base_candles.push(newCandle);
+            }else{
+                base_candles[base_candles.length-1] = newCandle;
+            }
+            }else{
+                base_candles.push(newCandle);
+            }
+        
+    }
+    
+    async function addPoint() {
+    
+        const response = await fetch(real_time_url);
+        var data = await response.json();
+    
+        console.log(data.USD,all_candles.length);
+        let last_price = (all_candles.length)?all_candles[all_candles.length-1].value:0;
+        let current_price = data.USD;
+        changePrice(last_price,current_price);
+        var newDate = new Date();
+        var curtime = newDate.getTime() / 1000;
+        curtime = Math.round(curtime) 
+        let newCandle = { time: curtime, value: data.USD };
+        await setCandles(base_candles,curtime,60,newCandle);
+       await setCandles(all_candles,curtime,time_interval,newCandle);
+        lineSeries.setData(all_candles);
+    
+    
+    }
+    
+
+function changePrice(last_price,cur_price)
+{   if(last_price==cur_price)return;
+    let price=document.getElementById("id_real_time_price");
+    let diff = cur_price-last_price;
+    diff=diff.toFixed(3);
+
+    if(last_price<=cur_price)
+    {
+        price.innerHTML="$ "+cur_price+" " +"(+"+ diff+ ")";
+        price.style.color="green";
+    }
+    else
+    {
+        price.innerHTML="$ "+cur_price+" " +"(" +diff+ ")";
+        price.style.color="red";
+    }
+}
+
+
+</script>
