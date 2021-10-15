@@ -21,7 +21,8 @@ def coin_chart_page(request,coin_name):
         coin=Coin.objects.get(name=coin_name)
 
         context = {
-            'coin':coin,
+            'coin':coin
+
         }
 
         return render(request,'charts/coin_chart.html',context)

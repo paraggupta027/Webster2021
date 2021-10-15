@@ -1,15 +1,12 @@
 <script>
    
-   
-let coin = "{{coin}}";
-console.log(coin);
-let coin_symbol = coin.symbol;
-let coin_name = coin.name;
 
-// console.log(coin_name);
+let coin_symbol = "{{coin.symbol}}";
+let coin_name = "{{coin.name}}";
 
-let url = "https://min-api.cryptocompare.com/data/price?fsym=" +    "&tsyms=USD";
-let currency_name = "USD"
+
+let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms=USD";
+let currency_name = "USD";
 let time_stamp = Math.round(new Date().getTime() / 1000);
 
 
@@ -134,20 +131,10 @@ $(document).ready(
 
 
         }
-        // chart.timeScale().setVisibleRange({
-        //     from: (new Date(Date.UTC(2021, 0, 1, 0, 0, 0, 0))).getTime() / 1000,
-        //     to: (new Date(Date.UTC(2023, 1, 1, 0, 0, 0, 0))).getTime() / 1000,
-        // });
-        // var interval = setInterval(() => {
-        //     add_history()
-
-        // }, 100);
+        
         setInterval(() => {
             addPoint();
-        }, 1000);
-        // setTimeout(()=>{
-        //     lineSeries.setData(all_candles);
-        // },1000)
+        }, 3000);
 
     });
 
@@ -155,28 +142,58 @@ $(document).ready(
 
 
 
-
-
-
 async function addPoint() {
 
-    console.log(all_candles.length);
+    const response = await fetch(real_time_url);
+    let data = await response.json();
 
-    const response = await fetch(url);
-    var data = await response.json();
+    // console.log(data.USD,all_candles.length);
 
-    console.log(data.USD);
-
-    var newDate = new Date();
-    var curtime = newDate.getTime() / 1000;
+    let newDate = new Date();
+    let curtime = newDate.getTime() / 1000;
     let newCandle = { time: curtime, value: data.USD };
 
-    // console.log(curtime);
-    all_candles.push(newCandle);
+    let new_price = data.USD;
+
+    if(all_candles.length){
+        const last_candle = all_candles[all_candles.length-1];
+        const last_time  = new Date(last_candle.time*1000)
+
+        let last_price = last_candle.value;
+        let cur_price = newCandle.value;
+
+        changePrice(last_price,cur_price);
+
+        if(last_time.getMinutes()!=newDate.getMinutes()){
+            all_candles.push(newCandle);
+        }
+        else{
+            all_candles[all_candles.length-1] = newCandle;
+        }
+    }
+    else{
+        all_candles.push(newCandle);
+    }
 
     lineSeries.setData(all_candles);
+}
 
+function changePrice(last_price,cur_price)
+{
+    let price=document.getElementById("id_real_time_price");
+    let diff = cur_price-last_price;
+    diff=diff.toFixed(3);
 
+    if(last_price<=cur_price)
+    {
+        price.innerHTML=cur_price+"$ " +"(+"+ diff+ ")";
+        price.style.color="green";
+    }
+    else
+    {
+        price.innerHTML=cur_price+"$ " +"("+diff+")";
+        price.style.color="red";
+    }
 }
 
 
