@@ -3,16 +3,15 @@
 
     let coin_symbol = "{{coin.symbol}}";
     let coin_name = "{{coin.name}}";
-    
-    
-    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms=USD";
+    let hist_min = 10000;
     let currency_name = "USD"; 
-    let time_stamp = Math.round(new Date().getTime() / 1000);
-    let time_interval  = 60 ;
-    let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
-        coin_name + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
-    // console.log(time_stamp)
+    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
     
+    
+    let time_interval  = 60 ;
+    let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
+    // console.log(time_stamp)
+    console.log(history_url)
     let all_candles = [];
     let base_candles = [];
     let reset = 0;
@@ -44,8 +43,8 @@
     }
     // 1.1 new  1 (1-60)
     $(document).ready(
-        function() {
-    
+          function() {
+            
             var rateP = document.getElementById('rate');
     
             chart = LightweightCharts.createChart(document.getElementById('mychart'), {
@@ -120,43 +119,21 @@
                     mode: 0,
                 },
             });
-            var k = 2;
-            async function add_history() {
-                const response = await fetch(history_url);
-                var dataRes = await response.json();
-                var data = dataRes.Data.Data;
-                if (data)
-                    for (let i = 0; i < data.length; i++) {
-                        let candle = data[i];
-                        var newDate = new Date();
-                        var curtime = candle.time;
-                        let newCandle = { time: curtime, value: candle.close };
-                       
-                        all_candles.push(newCandle);
-                    }
-                console.log(all_candles.length)
-                console.log(time_stamp);
-                time_stamp -= 2000 * 60;
-                history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
-                    coin_name + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
-                console.log(all_candles);
-    
-    
-            }
+            let time_stamp = 0;
+            addMultipleHistory(hist_min);
+            
             let set_interval = setInterval(() => {
+                if(base_candles.length > hist_min){
+                    
                 addPoint();
+            }
             }, 200);
 
     
         });
-    
-    
-    
-    
-    
-    
     async function setCandles(base_candles,curtime,interval,newCandle){
         if(base_candles.length){
+            
             const last_candle = base_candles[base_candles.length-1];
             const last_time  = Math.floor(last_candle.time)
 
@@ -170,7 +147,31 @@
             }
         
     }
+    async function add_history(i) {
+                // console.log(all_candles.length)
+                const response = await fetch(history_url);
+                var dataRes = await response.json();
+                var data = dataRes.Data.Data;
+                if (data)
+                    for (let i = data.length-1; i >=0 ; i--) {
+                        let candle = data[i];
+                        var newDate = new Date();
+                        var curtime = candle.time;
+                        let newCandle = { time: curtime, value: candle.close };
+                       
+                        base_candles.unshift(newCandle);
+                        all_candles.unshift(newCandle);
+                    }
+                // console.log(all_candles.length)
+                // console.log(time_stamp);
+                time_stamp  = data[0].time;
+                history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
+                    coin_symbol + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
+                console.log(i)
+                console.log(all_candles);
     
+    
+            }
     async function addPoint() {
     
         const response = await fetch(real_time_url);
@@ -191,7 +192,13 @@
     
     }
     
+async function addMultipleHistory(hist_min){
+    for(let i=0;all_candles.length<=hist_min;i++){
+        await add_history(i);
+    }
+    lineSeries.setData(base_candles)
 
+}
 function changePrice(last_price,cur_price)
 {   if(last_price==cur_price)return;
     let price=document.getElementById("id_real_time_price");
