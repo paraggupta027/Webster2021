@@ -3,9 +3,9 @@
 }
 
 .bg-image {
-  background-image: url('https://source.unsplash.com/WEQbe2jBg40/600x1200');
+  background-image: url('https://images.financialexpress.com/2021/04/STOCK_MARKET-11a.jpg');
   background-size: cover;
-  background-position: center;
+  /* background-position: center; */
 }
 
 .login-heading {
