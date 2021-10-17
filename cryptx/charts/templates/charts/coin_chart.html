@@ -35,10 +35,10 @@
                             <button type="button" class="btn btn-danger" style="background-color: orangered; padding-left: 1rem;">Sell</button>
                         </div>
                         <div class="btn-group">
-                            <button type="button" id="interval" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              1 min
-            </button>
-                            <div class="dropdown-menu">
+                            <button type="button" id="interval" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            1 min
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <a class="dropdown-item" onclick="changeInterval(60)">1 min</a>
                                 <a class="dropdown-item" onclick="changeInterval(60*5)">5 min</a>
                                 <a class="dropdown-item" onclick="changeInterval(60*15)">15 min</a>
@@ -51,11 +51,6 @@
                     </div>
                 </div>
                 <div id="mychart" style="height: 450px;width: 100%;"></div>
-                <!-- <canvas class="my-4 w-100 chartjs-render-monitor" id="myChart" width="843" height="356" style="display: block; height: 285px; width: 675px;"></canvas> -->
-
-                <!-- Add Scrollable Watchlist -->
-
-        </div>
         </main>
     </div>
     </div>
