@@ -10,13 +10,15 @@
     
     let time_interval  = 60 ;
     let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
-    // console.log(time_stamp)
+
     console.log(history_url)
+    
     let all_candles = [];
     let base_candles = [];
     let reset = 0;
     let chart;
     let lineSeries;
+
     function changeInterval(interval){
         if(interval==time_interval)return;
         else{
@@ -41,7 +43,8 @@
             
         }
     }
-    // 1.1 new  1 (1-60)
+    
+    
     $(document).ready(
           function() {
             
@@ -178,15 +181,17 @@
         var data = await response.json();
     
         console.log(data.USD,all_candles.length);
+
         let last_price = (all_candles.length)?all_candles[all_candles.length-1].value:0;
         let current_price = data.USD;
         changePrice(last_price,current_price);
+
         var newDate = new Date();
         var curtime = newDate.getTime() / 1000;
         curtime = Math.round(curtime) 
         let newCandle = { time: curtime, value: data.USD };
         await setCandles(base_candles,curtime,60,newCandle);
-       await setCandles(all_candles,curtime,time_interval,newCandle);
+        await setCandles(all_candles,curtime,time_interval,newCandle);
         lineSeries.setData(all_candles);
     
     
@@ -200,7 +205,8 @@ async function addMultipleHistory(hist_min){
 
 }
 function changePrice(last_price,cur_price)
-{   if(last_price==cur_price)return;
+{   if(last_price==cur_price)
+    return;
     let price=document.getElementById("id_real_time_price");
     let diff = cur_price-last_price;
     diff=diff.toFixed(3);
