@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% include 'home/script.html' %}
+    
+
+    <title>Watchlist</title>
+</head>
+<body>
+
+    {% include 'dashboard/navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'dashboard/sidenav.html' %}
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="position-relative my-lg-5">
+                    <div class="position-absolute top-50 end-0 translate-middle">
+                        <button type="button" class="btn btn-primary">Create Watchlist</button>
+                    </div>
+                </div>
+                
+               <!-- Example single danger button -->
+               <div class="row row-cols-1 row-cols-md-3 g-4 my-lg-5">
+
+                {% for i in array %}
+                <div class="col">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {% endfor %}
+
+              </div>
+
+            </main>
+        </div>
+    </div>
+
+    
+</body>
+</html>

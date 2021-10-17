@@ -13,5 +13,12 @@ import json
 
 from coins.models import Coin
 
+def watchlist(request):
+    a = [1,1,1,1,1]
+    params = {
+        'array' : a
+    }
+    return render(request , 'watchlist/watchlist.html', params)
+
 
 
