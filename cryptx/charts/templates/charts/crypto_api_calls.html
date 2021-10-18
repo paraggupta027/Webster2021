@@ -22,6 +22,16 @@
     let reset = 0;
     let chart;
     let lineSeries;
+
+    function customInterval()
+    {
+        let customInterval = document.getElementById('custom_interval').value;
+        console.log(customInterval);
+        changeInterval(60*customInterval);
+
+
+    }
+
     async function changePattern(chartpattern){
           chart_pattern =  chartpattern
         document.getElementById('chart_pattern').innerHTML =  document.getElementById('chart_'+chart_pattern).innerHTML
@@ -84,7 +94,14 @@
             }
             time_interval = interval;
             let interval_button = document.getElementById('interval')
-            interval_button.innerHTML = time_interval/60+" min"
+
+            if(time_interval/3600 < 1)
+            interval_button.innerHTML = Math.floor(time_interval/60)+" min"
+
+            else
+                interval_button.innerHTML = Math.floor(time_interval/3600)+" hrs"
+
+            
             
         }
     }
@@ -255,8 +272,10 @@
         if(chart_pattern==default_pattern.candles){
         last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
           console.log("Candle Stick last-price",last_price)
+        
+        }
            
-    }   console.log("heheheh")
+    //   console.log("heheheh")
         let current_price = data.USD;
         changePrice(last_price,current_price);
         var newDate = new Date();
@@ -266,7 +285,7 @@
         await setCandles(base_candles,curtime,60,newCandle,true);
         await setCandles(all_candles,curtime,time_interval,newCandle,false);
         // await setCandles(candlestick_candles,curtime,time_interval,newCandle,true);
-        console.log(all_candles,chart_pattern)
+        // console.log(all_candles,chart_pattern)
         // if(chart_pattern==default_pattern.lineSeries)
         lineSeries.setData(all_candles);
         // if(chart_pattern==default_pattern.candles)
