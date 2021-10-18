@@ -13,7 +13,7 @@ class WatchList(models.Model):
     coins = models.ManyToManyField(Coin,related_name='coins',blank=True)
 
     def __str__(self):
-       return self.user.first_name + " " + self.name
+       return self.user.first_name + " : " + self.name
 
 
 # watchlist boht sari-----har wl k boht sare coins

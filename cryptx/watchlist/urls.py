@@ -6,5 +6,6 @@ from . import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    # path('',views.dashboard,name='dashboard'),
+    path('',views.watchlist,name='watchlist'),
+    path('create_watchlist/',views.create_watchlist,name='create_watchlist'),
 ]
