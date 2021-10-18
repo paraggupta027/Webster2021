@@ -23,19 +23,17 @@
 					{% include 'watchlist/create_watchlist_modal.html' %}
 				</div>
 
-               <div class="row row-cols-1 row-cols-md-3 g-4 my-5">
-
-                {% for watchlist in watchlists %}
-                <div class="col">
-                	<div class="card">
-                    	<div class="card-body">
-							<h3 class="card-title">{{watchlist.name}}</h3>
-                    	</div>
-                  	</div>
+                <div class="row row-cols-1 row-cols-md-3 g-4 my-5">
+                        {% for watchlist in watchlists %}
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <a href="{% url 'see_watchlist' watchlist.name %}"><h3 class="card-title">{{watchlist.name}}</h3></a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-
-              </div>
 
             </main>
         </div>
