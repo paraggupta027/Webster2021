@@ -49,7 +49,11 @@ def see_watchlist(request,watchlist):
             return HttpResponse("No such watchlist")
 
         watchlist_qs=watchlist_qs[0]
-        coins_qs = watchlist_qs.coins.all()
+        coins = watchlist_qs.coins.all()
+
+        coins_qs = []
+        for coin in coins:
+            coins_qs.append({'name':coin.name,'symbol':coin.symbol})
 
         context = {
             'coins_qs':coins_qs,

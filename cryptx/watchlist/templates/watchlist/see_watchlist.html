@@ -1,25 +1,53 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    {% include 'home/script.html' %}
+    <title>{{name}}</title>
 </head>
 
 <body>
-    {% for i in coins %}
-    {{i.name}}
-{% endfor %}
+    {% include 'dashboard/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'dashboard/sidenav.html' %}
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <table class="table my-5">
+                    <thead>
+                        <tr>
+                            <th scope="col">Coin Name</th>
+                            <th scope="col">Coin Symbol</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       {% for coin in coins_qs %}
+                            <tr class="table-primary">
+                                <th scope="row">
+                                    <img style="height: 30px; width: 30px;" src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" alt="">
+                                    <a style="text-decoration: none;color: black;" href="{% url 'coin_chart_page' coin.name %}">
+                                        {{coin.name}}
+                                    </a>
+                                </th>
+                                <td>{{coin.symbol}}</td>
+                                <td id="id_price_{{coin.symbol}}"></td>
+                                <td id="id_change_{{coin.symbol}}">0.00</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </main>
+        </div>
+    </div>
 </body>
 
 
-<script>
-    let x="{{coins_qs|safe}}";
-    for(let i=0;i<x.length;i++)
-    {
-        console.log(x[i]);
-    }
-</script>
+<script src="{% static 'dashboard/js/live_search.js' %}"></script>
+
+{% include 'watchlist/watchlist_prices_js.html' %}
 
 </html>
