@@ -31,6 +31,9 @@
             all_candles=[]
             lineSeries.setData([])
             lineSeries = chart.addCandlestickSeries();
+            lineSeries.applyOptions({
+                lastPriceAnimation: LightweightCharts.LastPriceAnimationMode.Disabled,
+            })
             changeInterval(time_interval+0.1)
         }
         if(!default_pattern.lines.localeCompare(chart_pattern )){
@@ -91,7 +94,7 @@
     function configChart(){
          lineSeries = chart.addLineSeries({
     color: 'black',
-    
+    lastPriceAnimation: LightweightCharts.LastPriceAnimationMode.Disabled,
  
 });
         chart.applyOptions({
@@ -254,9 +257,7 @@
          last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
         if(chart_pattern==default_pattern.candles){
         last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
-          console.log("Candle Stick last-price",last_price)
-           
-    }   console.log("heheheh")
+    }   
         let current_price = data.USD;
         changePrice(last_price,current_price);
         var newDate = new Date();
@@ -265,12 +266,7 @@
         let newCandle = { time: curtime, value: data.USD };
         await setCandles(base_candles,curtime,60,newCandle,true);
         await setCandles(all_candles,curtime,time_interval,newCandle,false);
-        // await setCandles(candlestick_candles,curtime,time_interval,newCandle,true);
-        console.log(all_candles,chart_pattern)
-        // if(chart_pattern==default_pattern.lineSeries)
         lineSeries.setData(all_candles);
-        // if(chart_pattern==default_pattern.candles)
-        // lineSeries.setData(candlestick_candles)
     }
     
 async function addMultipleHistory(hist_min){
