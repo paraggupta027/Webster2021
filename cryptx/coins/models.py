@@ -10,4 +10,6 @@ class Coin(models.Model):
     symbol = models.CharField(max_length=30,default="")
 
     def __str__(self):
-       return self.name + " " + self.symbol
+       return f"{self.name}({self.symbol})"
+    class Meta:
+        verbose_name_plural = "Coin"
