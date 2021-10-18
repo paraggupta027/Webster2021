@@ -16,35 +16,66 @@
         lines : 'lines',
         candles : 'candles',
     }
+    let fetch_interval;
     let all_candles = [];
     let base_candles = [];
     let reset = 0;
     let chart;
     let lineSeries;
-    function changePattern(chart_pattern){
-        this.chart_pattern = chart_pattern
+    async function changePattern(chartpattern){
+          chart_pattern =  chartpattern
         document.getElementById('chart_pattern').innerHTML =  document.getElementById('chart_'+chart_pattern).innerHTML
         
-        if(!default_pattern.candles.localeCompare(chart_pattern)){
+        if(!default_pattern.candles.localeCompare(chart_pattern )){
             console.log('changed to Candles')
+            all_candles=[]
+            lineSeries.setData([])
+            lineSeries = chart.addCandlestickSeries();
+            changeInterval(time_interval+0.1)
         }
-        if(!default_pattern.lines.localeCompare(chart_pattern)){
-            console.log('changed to Lines')
+        if(!default_pattern.lines.localeCompare(chart_pattern )){
+            lineSeries.setData([])
+            lineSeries = chart.addLineSeries()
+            configChart()
+            changeInterval(time_interval+0.1)
+            
         }
         console.log(chart_pattern)
     }
+    // call to get a candle according to chart pattern
+    function getCandle(base_candle){ 
+        if(chart_pattern==default_pattern.lines)return {time:base_candle.time, value:base_candle.close};
+        if(chart_pattern==default_pattern.candles)return {time:base_candle.time,
+            close:base_candle.close,
+            open:base_candle.open,
+            high:base_candle.high,
+            low:base_candle.low
+        }
+    }
     function changeInterval(interval){
+         //--call if chartinterval is changed or chart pattern is changed
         if(interval==time_interval)return;
         else{
-            all_candles.length = 0;
+            interval = Math.floor(interval);
+            all_candles = [];
             for(let i=0;i<base_candles.length;i++){
-                let val= base_candles[i];
-                if(all_candles.length){
-                   let curr_time= Math.floor(all_candles[all_candles.length-1].time/interval);
+                let val= getCandle(base_candles[i]);
+                if(i<1)
+                console.log(val,chart_pattern)
+                if(all_candles.length){ 
+                    let last_candle = all_candles[all_candles.length-1];
+                    let curr_time = Math.floor(last_candle.time/interval);
                     let last_time = Math.floor(val.time/interval);
+                    
                     if(curr_time!=last_time){
                         all_candles.push(val);
                     }else{
+                        if(chart_pattern==default_pattern.candles){
+                        last_candle.high = Math.max(last_candle.high,val.high);
+                        last_candle.low = Math.min(last_candle.low,val.low);
+                        last_candle.close = val.close;   
+                        }
+                        if(chart_pattern==default_pattern.lines)
                         all_candles[all_candles.length-1] =val;
                     }
                 }else{
@@ -57,31 +88,17 @@
             
         }
     }
+    function configChart(){
+         lineSeries = chart.addLineSeries({
+    color: 'black',
     
-    
-    $(document).ready(
-          function() {
+ 
+});
+        chart.applyOptions({
             
-            var rateP = document.getElementById('rate');
-    
-            chart = LightweightCharts.createChart(document.getElementById('mychart'), {
-    
-            });
-            lineSeries = chart.addLineSeries({
-                drawCrosshairMarker: true,
-                lineWidth: 2,
-                color: 'black',
-            });
-    
-    
-            chart.applyOptions({
-                title: 'DOGE',
                 priceScale: {
                     position: 'right',
                     mode: 0,
-                    // autoScale: false,
-                    // invertScale: true,
-                    // alignLabels: true,
                     borderVisible: true,
                     borderColor: 'black',
                     scaleMargins: {
@@ -103,21 +120,10 @@
                     tickMarkFormatter: (time, tickMarkType, locale) => {
                         console.log(time, tickMarkType, locale);
                         let date = new Date(time * 1000);
-                        const year = date.getHours() + ":" + date.getMinutes();
+                        const year = date.getFullYear()+":"+date.getHours() + ":" + date.getMinutes();
                         return String(year);
                     },
                 },
-    
-                // timeScale: {
-                //     rightOffset: 50,
-                //     tickMarkFormatter: (time, tickMarkType, locale) => {
-                // let date = new Date(time * 1000);
-                // const year = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-                //         // console.log(year);
-    
-                //         return String(year);
-                //     },
-                // },
                 crosshair: {
                     vertLine: {
                         color: 'Black',
@@ -125,6 +131,12 @@
                         style: 1,
                         visible: true,
                         labelVisible: true,
+                        tickMarkFormatter: (time, tickMarkType, locale) => {
+                        console.log(time, tickMarkType, locale);
+                        let date = new Date(time * 1000);
+                        const year = date.getFullYear()+":"+date.getHours() + ":" + date.getMinutes();
+                        return String(year);
+                    },
                     },
                     horzLine: {
                         color: 'Black',
@@ -136,31 +148,73 @@
                     mode: 0,
                 },
             });
-            let time_stamp = 0;
-            addMultipleHistory(hist_min);
+           
+    }
+    
+    $(document).ready(
+          function() {
             
-            let set_interval = setInterval(() => {
+            var rateP = document.getElementById('rate');
+    
+            chart = LightweightCharts.createChart(document.getElementById('mychart'), {
+    
+            });
+            lineSeries = chart.addLineSeries({
+   
+            });
+            configChart();
+            addMultipleHistory(hist_min)
+             fetch_interval = setInterval(() => {
                 if(base_candles.length > hist_min){
-                    
                 addPoint();
             }
             }, 200);
 
     
         });
-    async function setCandles(base_candles,curtime,interval,newCandle){
+    async function setCandles(base_candles,curtime,interval,newCandle,isbase){
         if(base_candles.length){
             
             const last_candle = base_candles[base_candles.length-1];
             const last_time  = Math.floor(last_candle.time)
-
+            
             if(Math.floor(last_time/interval)!=Math.floor(curtime/interval)){
-                base_candles.push(newCandle);
+                if((!isbase)&&chart_pattern==default_pattern.lines){
+                    base_candles.push(newCandle);
+                }
+                if(isbase||chart_pattern==default_pattern.candles){
+                    base_candles.push({
+                        time:curtime,
+                         high:newCandle.value,
+                         low:newCandle.value,
+                         open:newCandle.value,
+                         close:newCandle.value})
+                }   
+                
             }else{
-                base_candles[base_candles.length-1] = newCandle;
+                if((!isbase)&&chart_pattern==default_pattern.lines){
+                    base_candles[base_candles.length-1] = newCandle;
+                }
+                if(isbase||chart_pattern==default_pattern.candles){
+                    let last_candle = base_candles[base_candles.length-1]
+                    last_candle.high = Math.max(newCandle.value,last_candle.high);
+                    last_candle.low = Math.min(newCandle.value,last_candle.low);
+                    last_candle.close = newCandle.value;
+                }
+                
             }
             }else{
-                base_candles.push(newCandle);
+                if((!isbase)&&chart_pattern==default_pattern.lines){
+                    base_candles.push(newCandle);
+                }
+                if(isbase || chart_pattern==default_pattern.candles){
+                    base_candles.push({
+                        time:curtime,
+                         high:newCandle.value,
+                         low:newCandle.value,
+                         open:newCandle.value,
+                         close:newCandle.value})
+                }   
             }
         
     }
@@ -173,35 +227,50 @@
                         let candle = data[i];
                         var newDate = new Date();
                         var curtime = candle.time;
-                        let newCandle = { time: curtime, value: candle.close };
+                        let newCandle = { 
+                            time: curtime,
+                            open:candle.open,
+                            high : candle.high,
+                            low : candle.low,
+                            close:candle.close
+                        };
                        
                         base_candles.unshift(newCandle);
+                        if(chart_pattern==default_pattern.candles)
                         all_candles.unshift(newCandle);
+                        if(chart_pattern==default_pattern.lines)
+                        all_candles.unshift({time:curtime,value:candle.close});
                     }
                 time_stamp  = data[0].time;
                 history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
                     coin_symbol + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
             }
     async function addPoint() {
-    
+        
         const response = await fetch(real_time_url);
         var data = await response.json();
-    
-        console.log(data.USD,all_candles.length);
-
-        let last_price = (all_candles.length)?all_candles[all_candles.length-1].value:0;
+        let last_price =0;
+        if(chart_pattern==default_pattern.lines)
+         last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
+        if(chart_pattern==default_pattern.candles){
+        last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
+          console.log("Candle Stick last-price",last_price)
+           
+    }   console.log("heheheh")
         let current_price = data.USD;
         changePrice(last_price,current_price);
-
         var newDate = new Date();
         var curtime = newDate.getTime() / 1000;
-        curtime = Math.round(curtime) 
+        curtime = Math.floor(curtime)
         let newCandle = { time: curtime, value: data.USD };
-        await setCandles(base_candles,curtime,60,newCandle);
-        await setCandles(all_candles,curtime,time_interval,newCandle);
+        await setCandles(base_candles,curtime,60,newCandle,true);
+        await setCandles(all_candles,curtime,time_interval,newCandle,false);
+        // await setCandles(candlestick_candles,curtime,time_interval,newCandle,true);
+        console.log(all_candles,chart_pattern)
+        // if(chart_pattern==default_pattern.lineSeries)
         lineSeries.setData(all_candles);
-    
-    
+        // if(chart_pattern==default_pattern.candles)
+        // lineSeries.setData(candlestick_candles)
     }
     
 async function addMultipleHistory(hist_min){
@@ -222,11 +291,17 @@ function changePrice(last_price,cur_price)
     {
         price.innerHTML="$ "+cur_price+" " +"(+"+ diff+ ")";
         price.style.color="green";
+        lineSeries.applyOptions({
+           
+        })
     }
     else
     {
         price.innerHTML="$ "+cur_price+" " +"(" +diff+ ")";
         price.style.color="red";
+        lineSeries.applyOptions({
+            
+        })
     }
 }
 
