@@ -38,12 +38,28 @@ def create_watchlist(request):
         return redirect('watchlist') 
     return redirect('home')
 
-def watchlist(request):
-    a = [1,1,1,1,1]
-    params = {
-        'array' : a
-    }
-    return render(request , 'watchlist/watchlist.html', params)
 
+def see_watchlist(request,watchlist):
+    user=request.user
+    if user.is_authenticated:
+        watchlist_qs = WatchList.objects.all()
+
+        for i in watchlist_qs:
+            print(i.coins)
+
+        if not watchlist_qs:
+            return HttpResponse("No such watchlist")
+
+
+        watchlist_qs=watchlist_qs[0]
+        coins = watchlist_qs.coins
+
+        context = {
+            'coins':coins,
+            'name':watchlist
+        }
+        return render(request,'watchlist/see_watchlist.html',context)
+
+    return redirect('home')
 
 
