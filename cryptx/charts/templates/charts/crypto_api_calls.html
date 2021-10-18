@@ -12,7 +12,10 @@
     let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
 
     console.log(history_url)
-    
+    let default_pattern = {
+        lines : 'lines',
+        candles : 'candles',
+    }
     let all_candles = [];
     let base_candles = [];
     let reset = 0;
@@ -21,7 +24,13 @@
     function changePattern(chart_pattern){
         this.chart_pattern = chart_pattern
         document.getElementById('chart_pattern').innerHTML =  document.getElementById('chart_'+chart_pattern).innerHTML
-       chart.addCandleSeries();
+        
+        if(!default_pattern.candles.localeCompare(chart_pattern)){
+            console.log('changed to Candles')
+        }
+        if(!default_pattern.lines.localeCompare(chart_pattern)){
+            console.log('changed to Lines')
+        }
         console.log(chart_pattern)
     }
     function changeInterval(interval){

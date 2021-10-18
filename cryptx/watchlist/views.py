@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from django.shortcuts import render, redirect, HttpResponseRedirect, reverse
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -8,7 +9,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from uuid import uuid4
-
+from django.core import serializers
 import json
 
 from coins.models import Coin
@@ -42,18 +43,12 @@ def create_watchlist(request):
 def see_watchlist(request,watchlist):
     user=request.user
     if user.is_authenticated:
-        watchlist_qs = WatchList.objects.all()
-
-        for i in watchlist_qs:
-            print(i.coins)
-
+        watchlist_qs = WatchList.objects.get(user=user,name=watchlist)
+        coins = watchlist_qs.coins.all()
+        coins = coins.order_by('name')
+        print(coins)
         if not watchlist_qs:
             return HttpResponse("No such watchlist")
-
-
-        watchlist_qs=watchlist_qs[0]
-        coins = watchlist_qs.coins
-
         context = {
             'coins':coins,
             'name':watchlist
