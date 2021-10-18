@@ -7,7 +7,7 @@
     let currency_name = "USD"; 
     let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
     
-    
+    let chart_pattern = 'lines'
     let time_interval  = 60 ;
     let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
     // console.log(time_stamp)
@@ -17,6 +17,12 @@
     let reset = 0;
     let chart;
     let lineSeries;
+    function changePattern(chart_pattern){
+        this.chart_pattern = chart_pattern
+        document.getElementById('chart_pattern').innerHTML =  document.getElementById('chart_'+chart_pattern).innerHTML
+       chart.addCandleSeries();
+        console.log(chart_pattern)
+    }
     function changeInterval(interval){
         if(interval==time_interval)return;
         else{
@@ -148,7 +154,6 @@
         
     }
     async function add_history(i) {
-                // console.log(all_candles.length)
                 const response = await fetch(history_url);
                 var dataRes = await response.json();
                 var data = dataRes.Data.Data;
@@ -162,15 +167,9 @@
                         base_candles.unshift(newCandle);
                         all_candles.unshift(newCandle);
                     }
-                // console.log(all_candles.length)
-                // console.log(time_stamp);
                 time_stamp  = data[0].time;
                 history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
                     coin_symbol + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
-                console.log(i)
-                console.log(all_candles);
-    
-    
             }
     async function addPoint() {
     
