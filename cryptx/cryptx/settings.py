@@ -48,12 +48,8 @@ INSTALLED_APPS = [
     'dashboard',
     'coins',
     'charts',
-<<<<<<< HEAD
-    # 'paytm'
-=======
     'watchlist',
     # 'paytm',
->>>>>>> fa6d659c7ad5e0ecefe2ac7a25b8956270ffda83
 ]
 
 MIDDLEWARE = [
