@@ -310,17 +310,11 @@ function changePrice(last_price,cur_price)
     {
         price.innerHTML="$ "+cur_price+" " +"(+"+ diff+ ")";
         price.style.color="green";
-        lineSeries.applyOptions({
-           
-        })
     }
     else
     {
         price.innerHTML="$ "+cur_price+" " +"(" +diff+ ")";
         price.style.color="red";
-        lineSeries.applyOptions({
-            
-        })
     }
 }
 
