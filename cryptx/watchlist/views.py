@@ -43,14 +43,20 @@ def create_watchlist(request):
 def see_watchlist(request,watchlist):
     user=request.user
     if user.is_authenticated:
-        watchlist_qs = WatchList.objects.get(user=user,name=watchlist)
-        coins = watchlist_qs.coins.all()
-        coins = coins.order_by('name')
-        print(coins)
+        watchlist_qs = WatchList.objects.all()
+
         if not watchlist_qs:
             return HttpResponse("No such watchlist")
+
+        watchlist_qs=watchlist_qs[0]
+        coins = watchlist_qs.coins.all()
+
+        coins_qs = []
+        for coin in coins:
+            coins_qs.append({'name':coin.name,'symbol':coin.symbol})
+
         context = {
-            'coins':coins,
+            'coins_qs':coins_qs,
             'name':watchlist
         }
         return render(request,'watchlist/see_watchlist.html',context)

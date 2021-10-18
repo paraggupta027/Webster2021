@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    {% include 'charts/custom_interval.html' %}
     {% include 'dashboard/navbar.html' %}
     <div class="container-fluid">
         <div class="row">
@@ -58,6 +59,11 @@
                                 <a class="btn dropdown-item" onclick="changeInterval(60*30)">30 min</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="btn dropdown-item" onclick="changeInterval(60*60*1)">1 hour</a>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"></div>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#id_create_interval_modal">
+                                    <a class="btn dropdown-item">Custom Interval</a>
+                                </button>
                                 <div class="dropdown-divider"></div>
                             </div>
                         </div>

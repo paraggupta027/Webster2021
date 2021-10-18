@@ -22,13 +22,16 @@
 					</button>
 					{% include 'watchlist/create_watchlist_modal.html' %}
 				</div>
-
-                <div class="row row-cols-1 row-cols-md-3 g-4 my-5">
+                   
+                <p class="h1">List of your Watchlists!</p>
+                
+                <div class="row row-cols-1 row-cols-md-3 g-4 my-3">
                         {% for watchlist in watchlists %}
                         <div class="col">
                             <div class="card">
-                                <div class="card-body">
-                                    <a href="{% url 'see_watchlist' watchlist.name %}"><h3 class="card-title">{{watchlist.name}}</h3></a>
+                                <img src="https://g.foolcdn.com/editorial/images/618711/arrow-angles-up-on-a-green-stock-chart.jpg" class="card-img-top" alt="...">
+                                <div class="card-body text-center ">
+                                    <a class="link-success" style="text-decoration: none;" href="{% url 'see_watchlist' watchlist.name %}"><h3 class="card-title ">{{watchlist.name}}</h3></a>
                                 </div>
                             </div>
                         </div>
@@ -41,4 +44,7 @@
 
     
 </body>
+
+<script src="{% static 'dashboard/js/live_search.js' %}"></script>
+
 </html>

@@ -22,6 +22,16 @@
     let reset = 0;
     let chart;
     let lineSeries;
+
+    function customInterval()
+    {
+        let customInterval = document.getElementById('custom_interval').value;
+        console.log(customInterval);
+        changeInterval(60*customInterval);
+
+
+    }
+
     async function changePattern(chartpattern){
           chart_pattern =  chartpattern
         document.getElementById('chart_pattern').innerHTML =  document.getElementById('chart_'+chart_pattern).innerHTML
@@ -87,7 +97,14 @@
             }
             time_interval = interval;
             let interval_button = document.getElementById('interval')
-            interval_button.innerHTML = time_interval/60+" min"
+
+            if(time_interval/3600 < 1)
+            interval_button.innerHTML = Math.floor(time_interval/60)+" min"
+
+            else
+                interval_button.innerHTML = Math.floor(time_interval/3600)+" hrs"
+
+            
             
         }
     }
@@ -257,7 +274,15 @@
          last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
         if(chart_pattern==default_pattern.candles){
         last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
+<<<<<<< HEAD
     }   
+=======
+          console.log("Candle Stick last-price",last_price)
+        
+        }
+           
+    //   console.log("heheheh")
+>>>>>>> 79c0429e9ff2c1b6c9435d62314aa7b6d4d44f8f
         let current_price = data.USD;
         changePrice(last_price,current_price);
         var newDate = new Date();
@@ -266,6 +291,12 @@
         let newCandle = { time: curtime, value: data.USD };
         await setCandles(base_candles,curtime,60,newCandle,true);
         await setCandles(all_candles,curtime,time_interval,newCandle,false);
+<<<<<<< HEAD
+=======
+        // await setCandles(candlestick_candles,curtime,time_interval,newCandle,true);
+        // console.log(all_candles,chart_pattern)
+        // if(chart_pattern==default_pattern.lineSeries)
+>>>>>>> 79c0429e9ff2c1b6c9435d62314aa7b6d4d44f8f
         lineSeries.setData(all_candles);
     }
     
@@ -287,17 +318,11 @@ function changePrice(last_price,cur_price)
     {
         price.innerHTML="$ "+cur_price+" " +"(+"+ diff+ ")";
         price.style.color="green";
-        lineSeries.applyOptions({
-           
-        })
     }
     else
     {
         price.innerHTML="$ "+cur_price+" " +"(" +diff+ ")";
         price.style.color="red";
-        lineSeries.applyOptions({
-            
-        })
     }
 }
 

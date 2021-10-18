@@ -10,7 +10,7 @@ User=get_user_model()
 class WatchList(models.Model):
     name = models.CharField(max_length=50,default="")
     user = models.ForeignKey(User,on_delete = models.CASCADE)
-    coins = models.ManyToManyField(Coin,related_name='coins')
+    coins = models.ManyToManyField(Coin,related_name='coins',blank=True)
 
     def __str__(self):
        return self.user.first_name + " : " + self.name
