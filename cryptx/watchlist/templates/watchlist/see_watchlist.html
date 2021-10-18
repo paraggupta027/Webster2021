@@ -12,9 +12,11 @@
 
 
 <script>
-    let x="{{coins}}";
+    let x="{{coins_qs|safe}}";
     for(let i=0;i<x.length;i++)
-    console.log("hi");
+    {
+        console.log(x[i]);
+    }
 </script>
 
 </html>

@@ -44,18 +44,14 @@ def see_watchlist(request,watchlist):
     if user.is_authenticated:
         watchlist_qs = WatchList.objects.all()
 
-        for i in watchlist_qs:
-            print(i.coins)
-
         if not watchlist_qs:
             return HttpResponse("No such watchlist")
 
-
         watchlist_qs=watchlist_qs[0]
-        coins = watchlist_qs.coins
+        coins_qs = watchlist_qs.coins.all()
 
         context = {
-            'coins':coins,
+            'coins_qs':coins_qs,
             'name':watchlist
         }
         return render(request,'watchlist/see_watchlist.html',context)
