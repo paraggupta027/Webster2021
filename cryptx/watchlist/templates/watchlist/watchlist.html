@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% include 'home/script.html' %}
+    
+
+    <title>Watchlist</title>
+</head>
+<body>
+
+    {% include 'dashboard/navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'dashboard/sidenav.html' %}
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                
+				<div class="my-3">
+					<button type="button" style="float: right;" class="btn btn-primary" data-toggle="modal" data-target="#id_create_watchlist_modal">
+						Create Watchlist
+					</button>
+					{% include 'watchlist/create_watchlist_modal.html' %}
+				</div>
+
+               <div class="row row-cols-1 row-cols-md-3 g-4 my-5">
+
+                {% for watchlist in watchlists %}
+                <div class="col">
+                	<div class="card">
+                    	<div class="card-body">
+							<h3 class="card-title">{{watchlist.name}}</h3>
+                    	</div>
+                  	</div>
+                </div>
+                {% endfor %}
+
+              </div>
+
+            </main>
+        </div>
+    </div>
+
+    
+</body>
+</html>

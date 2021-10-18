@@ -3,8 +3,9 @@
 
 <head>
     {% load static %}
+    
+    
     {% include 'home/script.html' %}
-
     <title>{{coin.name}}  ({{coin.symbol}})</title>
 </head>
 
@@ -29,11 +30,13 @@
                         <img src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" style="height: 2.1rem ; width:2.1rem;"></i>{{coin.name}} ({{coin.symbol}})
                         <p id="id_real_time_price"></p>
                     </h1> 
+
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <button type="button" class="btn btn-primary ">Buy</button>
                             <button type="button" class="btn btn-danger" style="background-color: orangered; padding-left: 1rem;">Sell</button>
                         </div>
+<<<<<<< HEAD
                         <div class="btn-group me-3">
                             <button type="button" id="chart_pattern" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Lines
@@ -54,16 +57,37 @@
                                 <a class="btn dropdown-item" onclick="changeInterval(60*5)">5 min</a>
                                 <a class="btn dropdown-item" onclick="changeInterval(60*15)">15 min</a>
                                 <a class="btn dropdown-item" onclick="changeInterval(60*30)">30 min</a>
+=======
+
+                        <div class="dropdown">
+                            <button type="button" id="interval" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                1 min
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" onclick="changeInterval(60)">1 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*5)">5 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*15)">15 min</a>
+                                <a class="dropdown-item" onclick="changeInterval(60*30)">30 min</a>
+>>>>>>> fa6d659c7ad5e0ecefe2ac7a25b8956270ffda83
                                 <div class="dropdown-divider"></div>
                                 <a class="btn dropdown-item" onclick="changeInterval(60*60*1)">1 hour</a>
                                 <div class="dropdown-divider"></div>
                             </div>
                         </div>
                     </div>
+
                 </div>
+<<<<<<< HEAD
                 <div id="mychart" style="height: 50vh;width: 100%;"></div>
         </main>
     </div>
+=======
+                
+                <div id="mychart" style="height: 450px;width: 100%;"></div>
+
+            </main>
+        </div>
+>>>>>>> fa6d659c7ad5e0ecefe2ac7a25b8956270ffda83
     </div>
 
 </body>
@@ -72,3 +96,4 @@
 <script src="{% static '/dashboard/js/live_search.js' %}"></script>
 
 </html>
+
