@@ -38,5 +38,12 @@ def create_watchlist(request):
         return redirect('watchlist') 
     return redirect('home')
 
+def watchlist(request):
+    a = [1,1,1,1,1]
+    params = {
+        'array' : a
+    }
+    return render(request , 'watchlist/watchlist.html', params)
+
 
 
