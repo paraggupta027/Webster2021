@@ -14,26 +14,32 @@
             {% include 'dashboard/sidenav.html' %}
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                    
                 <table class="table my-5">
                     <thead>
-                      <tr>
-                        <th scope="col">Coin Name</th>
-                        <th scope="col">Coin Symbol</th>
-                        <th scope="col">Price</th>
-                      </tr>
+                        <tr style="font-size: x-large;">
+                            <th scope="col">Name</th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Change</th>
+                        </tr>
                     </thead>
                     <tbody>
-                      {% for i in coins%}
-                        <tr class="table-primary">
-                          <th scope="row"><a style="text-decoration: none;color: black;" href="{% url 'coin_chart_page' i.name %}">{{i.name}}</a></th>
-                          <td>{{i.symbol}}</td>
-                          <td>Price</td>
-                        </tr>
+                       {% for coin in coins_qs %}
+                            <tr class="table-primary">
+                                <th scope="row">
+                                    <img style="height: 30px; width: 30px;" src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" alt="">
+                                    <a style="text-decoration: none;color: black;" href="{% url 'coin_chart_page' coin.name %}">
+                                        {{coin.name}}
+                                    </a>
+                                </th>
+                                <td><b>{{coin.symbol}}</b></td>
+                                <td style="font-weight: bolder;" id="id_price_{{coin.symbol}}"></td>
+                                <td style="font-weight: bolder;" id="id_change_{{coin.symbol}}">0.00</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
-                  </table>
-                
+                </table>
+
             </main>
         </div>
     </div>
@@ -41,5 +47,7 @@
 
 
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
+
+{% include 'watchlist/watchlist_prices_js.html' %}
 
 </html>

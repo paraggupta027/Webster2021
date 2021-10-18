@@ -1,0 +1,69 @@
+<script>
+    
+    let coin_list={{coins_qs|safe}};  
+    let last_prices={};
+    
+    $(document).ready(function(){
+        setInterval(() => {
+            changeAllPrices();
+        },200);
+    });
+
+    function changeAllPrices()
+    {
+        coin_list.forEach(coin => {
+            changeEachCoinPrice(coin);
+        });
+    }
+
+    async function changeEachCoinPrice(coin) {
+        
+        let coin_name = coin.name;
+        let coin_symbol = coin.symbol;
+        let currency_name = "USD";
+        let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
+        const response = await fetch(real_time_url);
+        var data = await response.json();
+        let current_price = data.USD;
+        
+        let price_id = "id_price_"+coin_symbol;
+        let price_container = document.getElementById(price_id);
+        price_container.innerHTML="$ "+current_price;
+
+        let last_price=current_price;
+
+        if(coin_symbol in last_prices)
+        last_price = last_prices[coin_symbol];
+
+        changeColor(coin_symbol,last_price,current_price,price_container);
+
+        last_prices[coin_symbol]=current_price;
+    }
+
+    function changeColor(coin_symbol,last_price,cur_price,price_container)
+    {
+        if(last_price==cur_price)
+        return;
+
+        let change_id = "id_change_"+coin_symbol;
+        let change_conatiner=document.getElementById(change_id);
+        
+        let diff = cur_price-last_price;
+        diff=diff.toFixed(2);
+
+        if(last_price<=cur_price)
+        {
+            change_conatiner.innerHTML="+"+ diff;
+            change_conatiner.style.color="green";
+            price_container.style.color="green";
+        }
+        else
+        {
+            change_conatiner.innerHTML=diff;
+            change_conatiner.style.color="red";
+            price_container.style.color="red";
+        }
+    }
+
+
+</script>
