@@ -63,4 +63,17 @@ def see_watchlist(request,watchlist):
 
     return redirect('home')
 
+def add_coin(request):
+    user = request.user
+    if user.is_authenticated:
+        print(" hello")
+        coin = request.GET['coin']
+        name = request.GET['name']
+
+        WatchList.addcoin(coin,name,user)
+
+        print(coin)
+
+        return redirect('dashboard')
+    return redirect('home')
 
