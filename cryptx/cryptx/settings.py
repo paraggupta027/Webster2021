@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'coins',
     'charts',
     'watchlist',
+    'django_celery_beat',
     # 'paytm',
 ]
 
