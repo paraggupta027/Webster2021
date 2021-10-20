@@ -21,6 +21,7 @@
                             <th scope="col">Symbol</th>
                             <th scope="col">Price</th>
                             <th scope="col">Change</th>
+                            <th scope="col">Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +36,7 @@
                                 <td><b>{{coin.symbol}}</b></td>
                                 <td style="font-weight: bolder;" id="id_price_{{coin.symbol}}"></td>
                                 <td style="font-weight: bolder;" id="id_change_{{coin.symbol}}">0.00</td>
+                                <!-- <td id="id_delete_{{coin.symbol}}"><a href="google.com"><i class="fa fa-2x fa-trash"></i></a></td> -->
                             </tr>
                         {% endfor %}
                     </tbody>

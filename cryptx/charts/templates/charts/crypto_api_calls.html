@@ -274,15 +274,11 @@
          last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
         if(chart_pattern==default_pattern.candles){
         last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
-<<<<<<< HEAD
-    }   
-=======
           console.log("Candle Stick last-price",last_price)
         
         }
            
     //   console.log("heheheh")
->>>>>>> 79c0429e9ff2c1b6c9435d62314aa7b6d4d44f8f
         let current_price = data.USD;
         changePrice(last_price,current_price);
         var newDate = new Date();
@@ -291,12 +287,9 @@
         let newCandle = { time: curtime, value: data.USD };
         await setCandles(base_candles,curtime,60,newCandle,true);
         await setCandles(all_candles,curtime,time_interval,newCandle,false);
-<<<<<<< HEAD
-=======
         // await setCandles(candlestick_candles,curtime,time_interval,newCandle,true);
         // console.log(all_candles,chart_pattern)
         // if(chart_pattern==default_pattern.lineSeries)
->>>>>>> 79c0429e9ff2c1b6c9435d62314aa7b6d4d44f8f
         lineSeries.setData(all_candles);
     }
     
