@@ -12,6 +12,13 @@ class WatchList(models.Model):
     user = models.ForeignKey(User,on_delete = models.CASCADE)
     coins = models.ManyToManyField(Coin,related_name='coins',blank=True)
 
+    @classmethod
+    def addcoin(cls, coin , name , user):
+        watchlist = cls.objects.get(name=name , user=user)
+        print("coin added")
+        coin_object = Coin.objects.get(name=coin)
+        watchlist.coins.add(coin_object)
+
     def __str__(self):
        return self.user.first_name + " : " + self.name
 
