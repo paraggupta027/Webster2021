@@ -7,12 +7,10 @@ from coins.models import Coin
 User=get_user_model()
 
 class Profile(models.Model):
-    email = models.CharField(max_length=50,default="")
-    # user = models.OneToOneField(User,on_delete = models.CASCADE,null=True)
+#     user = models.ForeignKey(User , on_delete = models.CASCADE)
+    email = models.CharField(max_length=50 , default="")
 
     def __str__(self):
-       return self.email
-
-
+        return self.email
 
 
