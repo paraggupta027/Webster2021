@@ -19,6 +19,13 @@ class WatchList(models.Model):
         coin_object = Coin.objects.get(name=coin)
         watchlist.coins.add(coin_object)
 
+    @classmethod
+    def remove_coin(cls, coin , name , user):
+        watchlist = cls.objects.get(name=name , user=user)
+        print("coin removed")
+        coin_object = Coin.objects.get(name=coin)
+        watchlist.coins.remove(coin_object)
+
     def __str__(self):
        return self.user.first_name + " : " + self.name
 

@@ -22,8 +22,10 @@
                         Add Coins
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" id="btc" onclick="addbtc()" href="#">BITCOIN</a></li>
-                        <li><a class="dropdown-item" id="eth" onclick="addeth()" href="#">ETHERUM</a></li>
+                        {% for coin in all_coins %}
+                            <li><a style="cursor: pointer;" class="dropdown-item nav-coins" id="{{coin.name}}">{{coin.name}}</a></li>
+                        {% endfor %}
+                        <!-- onclick="add_to_watchlist(`{{coin.name}}`)" -->
                     </ul>
                 </div>
 
@@ -34,23 +36,23 @@
                             <th scope="col">Symbol</th>
                             <th scope="col">Price</th>
                             <th scope="col">Change</th>
+                            <th scope="col">Remove</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for coin in coins_qs %}
-                        <tr class="table-primary">
-                            <th scope="row">
-                                <img style="height: 30px; width: 30px;"
-                                    src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" alt="">
-                                <a style="text-decoration: none;color: black;"
-                                    href="{% url 'coin_chart_page' coin.name %}">
-                                    {{coin.name}}
-                                </a>
-                            </th>
-                            <td><b>{{coin.symbol}}</b></td>
-                            <td style="font-weight: bolder;" id="id_price_{{coin.symbol}}"></td>
-                            <td style="font-weight: bolder;" id="id_change_{{coin.symbol}}">0.00</td>
-                        </tr>
+                       {% for coin in coins_qs %}
+                            <tr class="table-primary">
+                                <th scope="row">
+                                    <img style="height: 30px; width: 30px;" src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" alt="">
+                                    <a style="text-decoration: none;color: black;" href="{% url 'coin_chart_page' coin.name %}">
+                                        {{coin.name}}
+                                    </a>
+                                </th>
+                                <td><b>{{coin.symbol}}</b></td>
+                                <td style="font-weight: bolder;" id="id_price_{{coin.symbol}}"></td>
+                                <td style="font-weight: bolder;" id="id_change_{{coin.symbol}}">0.00</td>
+                                <td class="delete-btn"><i style="cursor: pointer;" id="{{coin.name}}" class="fa fa-2x fa-trash"></i></td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -64,29 +66,37 @@
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
 
 <script>
+        $(".nav-coins").on('click',function(e){
+            
+            let coin = e.target.id;
+            let name = "{{name}}";
+            $.ajax({
+                url:"{% url 'add_coin' %}",
+                data:{'coin':coin , 'name':name},
+                success:function(response)
+                {
+                    // alert("haha")
+                    window.location.reload();
+                }
+            })
+        });
 
-    let btc = document.getElementById('btc').innerHTML;
-    let eth = document.getElementById('eth').innerHTML;
-    // console.log(title);
-
-    // console.log(btc);
-    // console.log(eth);
-
-    function addbtc() {
-        console.log(btc);
-        let title = document.title;
-        var bt = btc;
-        var url = '/watchlist/add_coin?coin='+bt + '&name='+title;
-        console.log(url)
-        var req = new XMLHttpRequest();
-        // req.onload = function() {
-        //     document.getElementById("demo").innerHTML = this.responseText;
-        //     }
-        req.open("GET", url, true);
-        req.send();
-        // console.log(btc);
-    }
-
+        $(".delete-btn").on('click',function(e){
+            let coin = e.target.id;
+            let name = "{{name}}";
+            if(confirm("Are you sure u want to delete this coin...??")){
+                $.ajax({
+                    url:"{% url 'delete_coin' %}",
+                    data:{'coin':coin , 'name':name},
+                    success:function(response)
+                    {
+                        // alert("haha")
+                        window.location.reload();
+                    }
+                })
+            }
+        });
+        
 </script>
 
 {% include 'watchlist/watchlist_prices_js.html' %}

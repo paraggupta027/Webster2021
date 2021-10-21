@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% load static %}
     {% include 'home/script.html' %}
-    
+
 
     <title>Watchlist</title>
 </head>
+
 <body>
 
     {% include 'dashboard/navbar.html' %}
@@ -15,26 +17,32 @@
             {% include 'dashboard/sidenav.html' %}
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                
-				<div class="my-3">
-					<button type="button" style="float: right;" class="btn btn-primary" data-toggle="modal" data-target="#id_create_watchlist_modal">
-						Create Watchlist
-					</button>
-					{% include 'watchlist/create_watchlist_modal.html' %}
-				</div>
-                   
+
+                <div class="my-3">
+                    <button type="button" style="float: right;" class="btn btn-primary" data-toggle="modal"
+                        data-target="#id_create_watchlist_modal">
+                        Create Watchlist
+                    </button>
+                    {% include 'watchlist/create_watchlist_modal.html' %}
+                </div>
+
                 <p class="h1">List of your Watchlists!</p>
-                
+
                 <div class="row row-cols-1 row-cols-md-3 g-4 my-3">
-                        {% for watchlist in watchlists %}
-                        <div class="col">
-                            <div class="card">
-                                <img src="https://g.foolcdn.com/editorial/images/618711/arrow-angles-up-on-a-green-stock-chart.jpg" class="card-img-top" alt="...">
-                                <div class="card-body text-center ">
-                                    <a class="link-success" style="text-decoration: none;" href="{% url 'see_watchlist' watchlist.name %}"><h3 class="card-title ">{{watchlist.name}}</h3></a>
-                                </div>
+                    {% for watchlist in watchlists %}
+                    <div class="col">
+                        <div class="card">
+                            <img src="https://g.foolcdn.com/editorial/images/618711/arrow-angles-up-on-a-green-stock-chart.jpg"
+                                class="card-img-top" alt="...">
+                            <div class="card-body text-center ">
+                                <a class="link-success"
+                                    style="text-decoration: none;" href="{% url 'see_watchlist' watchlist.name %}">
+                                        <h3 class="card-title ">{{watchlist.name}}</h3>
+                                </a>
+                                <div style="cursor: pointer;color:#198754;" class="delete_watchlist"><i id="{{watchlist.name}}" class="fa fa-2x fa-trash"></i></div>
                             </div>
                         </div>
+                    </div>
                     {% endfor %}
                 </div>
 
@@ -42,9 +50,29 @@
         </div>
     </div>
 
-    
+
 </body>
 
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
+
+<script>
+
+    $(".delete_watchlist").on('click', function (e) {
+
+        let name = e.target.id;
+        console.log(name)
+        if(confirm("Are you sure you want to delete this watchlist ?")){
+
+            $.ajax({
+                url: "{% url 'delete_watchlist' %}",
+                data: { 'name': name },
+                success: function (response) {
+                    window.location.reload();
+                }
+            })
+        }
+    });
+
+</script>
 
 </html>
