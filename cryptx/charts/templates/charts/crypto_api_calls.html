@@ -61,8 +61,8 @@
             low:base_candle.low
         }
     }
+    //--call if chartinterval is changed or chart pattern is changed
     function changeInterval(interval){
-         //--call if chartinterval is changed or chart pattern is changed
         if(interval==time_interval)return;
         else{
             interval = Math.floor(interval);
@@ -74,8 +74,7 @@
                 if(all_candles.length){ 
                     let last_candle = all_candles[all_candles.length-1];
                     let curr_time = Math.floor(last_candle.time/interval);
-                    let last_time = Math.floor(val.time/interval);
-                    
+                    let last_time = Math.floor(val.time/interval); 
                     if(curr_time!=last_time){
                         all_candles.push(val);
                     }else{
