@@ -1,18 +1,6 @@
 <script>
    
-
-    let coin_symbol = "{{coin.symbol}}";
-    let coin_name = "{{coin.name}}";
-    let hist_min = 10000;
-    let currency_name = "USD"; 
-    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
-    
-    let chart_pattern = 'lines'
-    let time_interval  = 60 ;
-    let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
-
-    console.log(history_url)
-    let default_pattern = {
+   let default_pattern = {
         lines : 'lines',
         candles : 'candles',
     }
@@ -22,6 +10,15 @@
     let reset = 0;
     let chart;
     let lineSeries;
+    let coin_symbol = "{{coin.symbol}}";
+    let coin_name = "{{coin.name}}";
+    let hist_min = 10000;
+    let time_interval  = 60 ;
+    let currency_name = "USD"; 
+    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
+    let chart_pattern = 'lines'
+    let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
+
 
     let current_price;
 
@@ -36,8 +33,7 @@
           chart_pattern =  chartpattern
         document.getElementById('chart_pattern').innerHTML =  document.getElementById('chart_'+chart_pattern).innerHTML
         
-        if(!default_pattern.candles.localeCompare(chart_pattern )){
-            console.log('changed to Candles')
+        if(default_pattern.candles==chart_pattern){
             all_candles=[]
             lineSeries.setData([])
             lineSeries = chart.addCandlestickSeries();
@@ -46,14 +42,14 @@
             })
             changeInterval(time_interval+0.1)
         }
-        if(!default_pattern.lines.localeCompare(chart_pattern )){
+        if(default_pattern.lines==chart_pattern){
             lineSeries.setData([])
             lineSeries = chart.addLineSeries()
             configChart()
             changeInterval(time_interval+0.1)
             
         }
-        console.log(chart_pattern)
+        
     }
     // call to get a candle according to chart pattern
     function getCandle(base_candle){ 
@@ -65,8 +61,8 @@
             low:base_candle.low
         }
     }
+    //--call if chartinterval is changed or chart pattern is changed
     function changeInterval(interval){
-         //--call if chartinterval is changed or chart pattern is changed
         if(interval==time_interval)return;
         else{
             interval = Math.floor(interval);
@@ -78,8 +74,7 @@
                 if(all_candles.length){ 
                     let last_candle = all_candles[all_candles.length-1];
                     let curr_time = Math.floor(last_candle.time/interval);
-                    let last_time = Math.floor(val.time/interval);
-                    
+                    let last_time = Math.floor(val.time/interval); 
                     if(curr_time!=last_time){
                         all_candles.push(val);
                     }else{
@@ -109,7 +104,7 @@
         }
     }
     function configChart(){
-         lineSeries = chart.addLineSeries({
+         lineSeries.applyOptions({
     color: 'black',
     lastPriceAnimation: LightweightCharts.LastPriceAnimationMode.Disabled,
  
@@ -128,7 +123,7 @@
                 },
                 timeScale: {
                     rightOffset: 12,
-                    barSpacing: 3,
+                    barSpacing: 10,
                     // fixLeftEdge: true,
                     lockVisibleTimeRangeOnResize: true,
                     rightBarStaysOnScroll: true,
@@ -151,12 +146,7 @@
                         style: 1,
                         visible: true,
                         labelVisible: true,
-                        tickMarkFormatter: (time, tickMarkType, locale) => {
-                        console.log(time, tickMarkType, locale);
-                        let date = new Date(time * 1000);
-                        const year = date.getFullYear()+":"+date.getHours() + ":" + date.getMinutes();
-                        return String(year);
-                    },
+                    
                     },
                     horzLine: {
                         color: 'Black',
@@ -177,7 +167,9 @@
             var rateP = document.getElementById('rate');
     
             chart = LightweightCharts.createChart(document.getElementById('mychart'), {
-    
+                localization: {
+        dateFormat: 'yyyy/MM/dd',
+    },
             });
             lineSeries = chart.addLineSeries({
    
@@ -188,7 +180,7 @@
                 if(base_candles.length > hist_min){
                 addPoint();
             }
-            }, 200);
+            }, 1000);
 
     
         });
@@ -274,11 +266,7 @@
          last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
         if(chart_pattern==default_pattern.candles){
         last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
-          console.log("Candle Stick last-price",last_price)
-        
-        }
-           
-    //   console.log("heheheh")
+    }   
         let current_price = data.USD;
         changePrice(last_price,current_price);
         var newDate = new Date();
@@ -287,9 +275,6 @@
         let newCandle = { time: curtime, value: data.USD };
         await setCandles(base_candles,curtime,60,newCandle,true);
         await setCandles(all_candles,curtime,time_interval,newCandle,false);
-        // await setCandles(candlestick_candles,curtime,time_interval,newCandle,true);
-        // console.log(all_candles,chart_pattern)
-        // if(chart_pattern==default_pattern.lineSeries)
         lineSeries.setData(all_candles);
     }
     
