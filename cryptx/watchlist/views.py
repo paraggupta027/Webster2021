@@ -16,6 +16,7 @@ from coins.models import Coin
 from watchlist.models import WatchList
 
 
+
 def watchlist(request):
     user=request.user
     if user.is_authenticated:

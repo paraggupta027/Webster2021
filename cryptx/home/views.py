@@ -16,6 +16,10 @@ import os
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
+# Models
+from dashboard.models import Profile
+
+
 
 def home(request):
     user = request.user
@@ -60,6 +64,8 @@ def signuphandle(request):
         new_user.first_name = fname
         new_user.last_name = lname
         new_user.save()
+
+        Profile(email=email).save()
 
         user = authenticate(username=email,password=password)
         if user:

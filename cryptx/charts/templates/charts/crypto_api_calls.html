@@ -23,13 +23,13 @@
     let chart;
     let lineSeries;
 
+    let current_price;
+
     function customInterval()
     {
         let customInterval = document.getElementById('custom_interval').value;
         console.log(customInterval);
         changeInterval(60*customInterval);
-
-
     }
 
     async function changePattern(chartpattern){
@@ -301,8 +301,12 @@ async function addMultipleHistory(hist_min){
 
 }
 function changePrice(last_price,cur_price)
-{   if(last_price==cur_price)
+{  
+    current_price=cur_price;
+
+    if(last_price==cur_price)
     return;
+    
     let price=document.getElementById("id_real_time_price");
     let diff = cur_price-last_price;
     diff=diff.toFixed(3);

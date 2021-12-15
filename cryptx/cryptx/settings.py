@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'coins',
     'charts',
     'watchlist',
+    'orders'
     # 'paytm',
 ]
 
