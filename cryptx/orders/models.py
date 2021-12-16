@@ -11,10 +11,19 @@ User=get_user_model()
 
 
 class Order(models.Model):
+
+    BUY,SELL = 1,2
+    MODES = (
+        (BUY, "Buy"),
+        (SELL, "Sell"),
+    )
+
     user = models.ForeignKey(User , on_delete = models.CASCADE)
     quantity = models.FloatField()
     coin = models.ForeignKey(Coin,on_delete=models.CASCADE)
-    # status = models.
+    each_price = models.FloatField()
+    time = models.DateTimeField()
+    mode = models.PositiveSmallIntegerField(verbose_name="Mode", choices=MODES)
 
     @classmethod
     def can_be_executed(cls,user,coin_symbol,quantity):
@@ -26,7 +35,7 @@ class Order(models.Model):
 
         if cur_coin_price*quantity>user_money:
             print("Not Enough Balance")
-            return False
+            return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
         
         # Save new order in DB
         coin_obj = Coin.objects.get(symbol=coin_symbol)

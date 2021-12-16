@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    {% include 'home/script.html' %}
+
+    <title>Wallet</title>
+</head>
+
+<body>
+
+    {% include 'dashboard/navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'dashboard/sidenav.html' %}
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+                <h2>Add Money To Wallet</h2>
+                <form action="{% url 'charge' %}" method="post">
+                    <input type="number" id='amount' name='amount'><br><br>
+                    {% csrf_token %}
+                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="{{ key }}"
+                        data-description="Add Money To Wallet" data-amount="" data-locale="auto"></script>
+                </form>
+
+            </main>
+        </div>
+    </div>
+
+
+</body>
+
+<script src="{% static 'dashboard/js/live_search.js' %}"></script>
+
+
+</html>

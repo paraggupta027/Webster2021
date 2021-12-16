@@ -11,6 +11,10 @@ class Profile(models.Model):
     email = models.CharField(max_length=50 , default="")
     money = models.IntegerField(default=0)
 
+    @classmethod
+    def get_money(cls,email):
+        return Profile.objects.get(email=email).money
+
     def __str__(self):
         return self.email
 
