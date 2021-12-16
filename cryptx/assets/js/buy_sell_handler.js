@@ -31,6 +31,24 @@ $(document).ready(()=>{
             },
         });
     })
+    $("#sell_form").on('submit',(e)=>{
+        e.preventDefault();
+
+        let form = $("#sell_form");
+        let url = "/orders/handle_sell/";
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: form.serialize(),
+            success: function (data) {
+                alert(data.msg);
+            },
+            error: function (data) {
+                alert('An error occurred.');
+            },
+        });
+    })
     
 
 })

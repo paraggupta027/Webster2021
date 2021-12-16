@@ -1,14 +1,14 @@
 
 
-<div class="modal fade" id="buy_btn" tabindex="-1" role="dialog" aria-labelledby="buy_btn" aria-hidden="true">
+<div class="modal fade" id="sell_btn" tabindex="-1" role="dialog" aria-labelledby="sell_btn" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Buy {{coin.name}}</h5>
+                <h5 class="modal-title">Sell {{coin.name}} </h5>
             </div>
 
-            <form id="buy_form" action="{% url 'handle_buy' %}" method="POST">{% csrf_token %}
+            <form id="sell_form" action="{% url 'handle_sell' %}" method="POST">{% csrf_token %}
                 <input type="text" name="symbol" value="{{coin.symbol}}" hidden>
                 <div class="modal-body">
                     
@@ -78,7 +78,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Buy</button>
+                    <button type="submit" class="btn btn-danger">Sell</button>
                 </div>
 
             </form>

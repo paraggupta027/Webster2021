@@ -7,4 +7,5 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('handle_buy/',views.handle_buy,name='handle_buy'),
+    path('handle_sell/',views.handle_sell,name='handle_sell'),
 ]
