@@ -9,7 +9,7 @@ User=get_user_model()
 class Profile(models.Model):
 #     user = models.ForeignKey(User , on_delete = models.CASCADE)
     email = models.CharField(max_length=50 , default="")
-    money = models.IntegerField(default=0)
+    money = models.FloatField(default=0)
 
     @classmethod
     def get_money(cls,email):

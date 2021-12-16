@@ -33,7 +33,7 @@ def handle_buy(request):
         coin_symbol = request.POST.get("symbol")
         quantity = float(request.POST.get("quantity"))
 
-        is_executable=Order.can_be_executed(user,coin_symbol,quantity)
+        is_executable=Order.can_be_executed(user,coin_symbol,quantity,Order.BUY)
         
         msg = ""
         if is_executable==True:
@@ -80,3 +80,40 @@ def charge(request):
             return render(request, 'orders/charge.html')
 
     return redirect('home')
+
+
+
+def handle_sell(request):
+    user = request.user
+    if user.is_authenticated and request.method=='POST':
+        coin_symbol = request.POST.get("symbol")
+        quantity = float(request.POST.get("quantity"))
+
+        is_executable=Order.can_be_executed(user,coin_symbol,quantity,Order.SELL)
+        
+        msg =""
+        if is_executable ==True:
+            msg="Order was executed Successfully"
+        else:
+            msg=is_executable[1]
+        resp={
+            'msg':msg,
+        }
+        response=json.dumps(resp)
+        return HttpResponse(response,content_type='application/json')
+
+    return redirect('home')
+
+
+def order_history(request):
+    user = request.user
+    if user.is_authenticated:
+
+        user_orders = Order.objects.filter(user=user)
+        
+        return render(request,'orders/order_history.html',context={'orders':user_orders})
+
+    return redirect('home')
+
+
+

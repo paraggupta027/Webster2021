@@ -19,7 +19,7 @@
 
                 <h2>Add Money To Wallet</h2>
                 <form action="{% url 'charge' %}" method="post">
-                    <input type="number" id='amount' name='amount'><br><br>
+                    <input type="text" id='amount' name='amount'><br><br>
                     {% csrf_token %}
                     <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="{{ key }}"
                         data-description="Add Money To Wallet" data-amount="" data-locale="auto"></script>

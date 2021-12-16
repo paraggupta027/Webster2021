@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from django.contrib.auth import get_user_model
 from django.db.models.fields import NullBooleanField
@@ -21,31 +22,54 @@ class Order(models.Model):
     user = models.ForeignKey(User , on_delete = models.CASCADE)
     quantity = models.FloatField()
     coin = models.ForeignKey(Coin,on_delete=models.CASCADE)
-    each_price = models.FloatField()
-    time = models.DateTimeField()
-    mode = models.PositiveSmallIntegerField(verbose_name="Mode", choices=MODES)
+    order_price = models.FloatField(default=0)
+    time = models.DateTimeField(default=timezone.now)
+    mode = models.PositiveSmallIntegerField(verbose_name="Mode", choices=MODES,default=None)
+
+
+    class Meta:
+        ordering=['-time']
 
     @classmethod
-    def can_be_executed(cls,user,coin_symbol,quantity):
+    def can_be_executed(cls,user,coin_symbol,quantity,mode):
         cur_user = Profile.objects.get(email=user.email)
         cur_coin_price = get_coin_price(coin_symbol)
 
-        user_money = cur_user.money
-        print(cur_coin_price*quantity)
+        total_price = cur_coin_price*quantity
+        print(total_price)
 
-        if cur_coin_price*quantity>user_money:
-            print("Not Enough Balance")
-            return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
-        
+        if mode is cls.BUY:
+            user_money = cur_user.money
+
+            if cur_coin_price*quantity>user_money:
+                print("Not Enough Balance")
+                return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
+            else:
+                cur_user.money-=total_price
+                cur_user.save()
+
+        if mode is cls.SELL:
+            coin_quantity = cls.get_quantity(user=user,coin_symbol=coin_symbol)
+            if coin_quantity < quantity: 
+                print(f"Not Enough {coin_quantity}")
+                return False ,f'Not enough {coin_symbol} only {coin_quantity} are available.'
+            else:
+                cur_user.money+=total_price
+                cur_user.save()
+
+
         # Save new order in DB
         coin_obj = Coin.objects.get(symbol=coin_symbol)
 
-        new_order = Order(user=user,quantity=quantity,coin=coin_obj)
+        new_order = Order(user=user,quantity=quantity,coin=coin_obj,order_price=cur_coin_price,mode=mode)
         new_order.save()
         return True
 
 
-    def __str__(self):
+    @classmethod
+    def get_quantity(cls,user,coin_symbol):
+        #TODO: get real quantity of coin w.r.t user from database
+        return 2.1
+
+    def _str_(self):
         return self.user.email + " , order id: " + str(self.id)
-
-
