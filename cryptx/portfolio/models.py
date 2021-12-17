@@ -18,8 +18,10 @@ class Portfolio(models.Model):
 
     @classmethod
     def get_quantity(cls,user,coin):
-        obj, create = cls.objects.get_or_create(user=user,coin=coin)
-        return obj.quantity
+        obj = cls.objects.filter(user=user,coin=coin)
+        if len(obj):
+            return obj[0].quantity
+        return 0
 
     @classmethod 
     def buy_coin(cls,user,quantity,price,coin):
@@ -29,15 +31,20 @@ class Portfolio(models.Model):
         total_new_price = price*quantity + total_prev_price
         new_avg_price = total_new_price/total_quantity
         obj.quantity = total_quantity
-        obj.price = new_avg_price
+        obj.avg_price = new_avg_price
+        # print(f"quantity bought : {quantity} at price : {price} \n total_quantity : {total_quantity} total_price : {total_new_price} \n")
         obj.save()
 
     @classmethod
     def sell_coin(cls,user,quantity,price,coin):
-        obj, create = cls.objects.get(user=user,coin=coin)
+        obj = cls.objects.get(user=user,coin=coin)
         total_quantity = obj.quantity - quantity
+        total_quantity = round(total_quantity,4)
         obj.quantity = total_quantity
-        obj.save()
+        if total_quantity == 0:
+            obj.delete()
+        else:
+            obj.save()
 
     def __str__(self):
         return f'{self.user.email} {self.coin.name}'
