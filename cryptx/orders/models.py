@@ -45,6 +45,7 @@ class Order(models.Model):
                 print("Not Enough Balance")
                 return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
             else:
+                Portfolio.buy_coin(user,quantity,cur_coin_price,coin_obj)
                 cur_user.money-=total_price
                 cur_user.save()
 
@@ -54,6 +55,7 @@ class Order(models.Model):
                 print(f"Not Enough {coin_quantity}")
                 return False ,f'Not enough {coin_symbol} only {coin_quantity} are available.'
             else:
+                Portfolio.sell_coin(user,quantity,cur_coin_price,coin_obj)
                 cur_user.money+=total_price
                 cur_user.save()
 

@@ -19,3 +19,37 @@
       </div>
     </div>
 </header>
+
+<button id='scheduler'>Scheduler</button>
+<input type="text" id="coin">
+<input type="number" id="price">
+<button id='remove'>remove</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+
+<script>
+  $(document).ready(()=>{
+    console.log("hi");
+
+    let email="{{request.user.email}}";
+    const socket=io("http://localhost:5000",{query:`email=${email}`});
+    // socket.id=email;
+
+
+    $("#scheduler").on('click',()=>{
+      let coin=$("#coin").val();
+      let price=$("#price").val();
+      let data={coin,price};
+      socket.emit("schedule_task",data);
+    })
+
+    $("#remove").on('click',()=>{
+      socket.emit("remove_task");
+    })
+
+    socket.on("executed",(orderid)=>{
+      console.log("Executed: "+orderid)
+    })
+
+  })
+</script>
