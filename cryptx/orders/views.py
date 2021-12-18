@@ -32,16 +32,46 @@ def handle_buy(request):
     if user.is_authenticated and request.method=='POST':
         coin_symbol = request.POST.get("symbol")
         quantity = float(request.POST.get("quantity"))
+        order_type = request.POST.get('order_type')
+        limit_price = request.POST.get('price')
 
-        is_executable=Order.can_be_executed(user,coin_symbol,quantity,Order.BUY)
-        
-        msg = ""
-        if is_executable==True:
-            msg="Order was executed Successfully"
+        if order_type=="MARKET":
+            order_type=Order.MARKET
         else:
+            order_type=Order.LIMIT
+
+        # user,coin_symbol,quantity,mode,order_type
+        order_obj = {
+            'user':user,
+            'coin_symbol':coin_symbol,
+            'quantity':quantity,
+            'mode':Order.BUY,
+            'order_type':order_type,
+            'limit_price':limit_price
+        }
+
+        is_executable=Order.can_be_executed(order_obj)
+
+        msg = ""
+        success=1
+        if is_executable[0]==True:
+            msg="Order was Placed Successfully"
+        else:
+            success=0
             msg=is_executable[1]
+        
+        # Sending response to frontend for scheduling limit order task
+        order = {
+            'id':is_executable[1],
+            'coin_symbol':coin_symbol,
+            'order_type':order_type,
+            'limit_price':limit_price
+        }
+
         resp={
+            'order':order,
             'msg':msg,
+            'success':success
         }
         response=json.dumps(resp)
         return HttpResponse(response,content_type='application/json')

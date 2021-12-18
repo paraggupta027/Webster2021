@@ -45,7 +45,7 @@
                                             <label for="MARKET">MARKET</label>
                                         </div>
                                         <div class="col-sm">
-                                            <input type="radio" id="LIMIT" disabled name="order_type" value="LIMIT">
+                                            <input type="radio" id="LIMIT" name="order_type" value="LIMIT">
                                             <label for="LIMIT">LIMIT</label>
                                         </div>
                                     </div>
@@ -86,3 +86,24 @@
         </div>
     </div>
 </div>
+
+
+<script>
+
+$(document).ready(()=>{
+    
+    $("input[name=order_type]").on('click',(e)=>{
+            let type=e.target.value;
+            if(type=="MARKET")
+            {
+                $("#buy_price").attr('disabled',true);
+                document.getElementById('buy_price').value=current_price;
+            }
+            else
+            {
+                $("#buy_price").removeAttr('disabled');
+            }
+        })
+})
+
+</script>
