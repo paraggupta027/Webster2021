@@ -14,6 +14,7 @@ from uuid import uuid4
 import json
 
 from coins.models import Coin
+from portfolio.models import Portfolio
 from orders.models import Order
 from dashboard.models import Profile
 
@@ -33,7 +34,7 @@ def handle_buy(request):
         coin_symbol = request.POST.get("symbol")
         quantity = float(request.POST.get("quantity"))
         order_type = request.POST.get('order_type')
-        limit_price = request.POST.get('price')
+        limit_price = float(request.POST.get('price'))
 
         if order_type=="MARKET":
             order_type=Order.MARKET
@@ -147,3 +148,26 @@ def order_history(request):
 
 
 
+def handle_limit_orders(request):
+    user=request.user
+    if user.is_authenticated and request.method=='GET':
+        order_id = request.GET.get('order_id')
+        price = float(request.GET.get('price'))
+        user_orders = Order.objects.filter(id=order_id,user=user)
+        profile = Profile.objects.get(email=user.email)
+        if len(user_orders):
+            order = user_orders[0]
+            order.order_status = Order.EXECUTED
+            
+            profile.money += (float(order.quantity)*float(order.order_price))-(float(price)*float(order.quantity))
+            order.order_price =  price
+            Portfolio.buy_coin(user,order.quantity,price,order.coin)
+            order.save()
+            profile.save()
+            
+        resp={
+            
+        }
+        response=json.dumps(resp)
+        return HttpResponse(response,content_type='application/json') 
+    return  redirect('home')

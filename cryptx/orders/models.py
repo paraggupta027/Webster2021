@@ -63,6 +63,8 @@ class Order(models.Model):
         cur_coin_price = get_coin_price(coin_symbol)
         coin_obj = Coin.objects.get(symbol=coin_symbol)
         total_price = cur_coin_price*quantity
+        if order_type is Order.LIMIT:
+            total_price = limit_price*quantity
 
         print("Money Required: "+str(total_price))
 
@@ -78,12 +80,12 @@ class Order(models.Model):
                 print("Not Enough Balance")
                 return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
             else:
+                cur_user.money-=total_price
+                cur_user.save()   
                 if order_type==cls.MARKET:
                     # Add coin to portfolio
                     Portfolio.buy_coin(user,quantity,cur_coin_price,coin_obj)
-                    cur_user.money-=total_price
-                    cur_user.save()
-
+                
                     # Save new order in DB
                     new_order = Order(
                         user=user,quantity=quantity,coin=coin_obj,
@@ -94,6 +96,7 @@ class Order(models.Model):
                     new_order.save()
 
                 elif order_type==cls.LIMIT:
+
                      # Save new order in DB
                     new_order = Order(
                         user=user,quantity=quantity,coin=coin_obj,
@@ -119,3 +122,8 @@ class Order(models.Model):
         
     def __str__(self):
         return f'{self.user.email} , order id: {self.id} , coin: {self.coin.name}'
+    
+    def save(self,*args,**kwargs):
+        self.order_price = round(self.order_price,5)
+        self.quantity = round(self.quantity,5)
+        super(Order,self).save(*args,**kwargs)

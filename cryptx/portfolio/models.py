@@ -51,3 +51,8 @@ class Portfolio(models.Model):
 
     def __str__(self):
         return f'{self.user.email} {self.coin.name}'
+    
+    def save(self,*args,**kwargs):
+        self.avg_price = round(self.avg_price,5)
+        self.quantity = round(self.quantity,5)
+        super(Portfolio,self).save(*args,**kwargs)

@@ -24,6 +24,23 @@ $(document).ready(()=>{
       socket.on("executed",(data)=>{
           let order_id=data.order_id;
           let msg=`Order executed with id : ${order_id}`;
+          let url = "/orders/handle_limit_orders/";
+          let sent = {
+              'order_id' : order_id,
+              'price' : data.price,
+          } 
+          console.log(data);
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: sent,
+            success: function (data) {
+              console.log(`${order_id} is executed`)
+            },
+            error: function (data) {
+                alert('An error occurred.');
+            },
+        });
           alert(msg);
       })
 

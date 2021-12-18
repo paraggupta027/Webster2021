@@ -10,5 +10,6 @@ urlpatterns = [
     path('wallet/', views.wallet_view.as_view(), name='wallet'),
     path('charge/', views.charge, name='charge'),
     path('handle_sell/',views.handle_sell,name='handle_sell'),
-    path('order_history/',views.order_history,name='order_history')
+    path('order_history/',views.order_history,name='order_history'),
+    path('handle_limit_orders/',views.handle_limit_orders,name='handle_limit_orders'),
 ]

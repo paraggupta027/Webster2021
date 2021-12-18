@@ -41,7 +41,7 @@ const scheduleTask = (order,socket_id)=>{
         {
             job.cancel();
             console.log("Order executed "+name);
-            io.to(sockets.get(job)).emit("executed",{order_id:name});
+            io.to(sockets.get(job)).emit("executed",{order_id:name,price:cur_price});
         }
       })
     });
