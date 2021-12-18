@@ -1,3 +1,5 @@
+{% load static %}
+
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/dashboard">Crypt-X</a>
     <button style="top: 0;right: 0;" class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,36 +22,11 @@
     </div>
 </header>
 
-<button id='scheduler' >Scheduler</button>
-<input type="text" id="coin">
-<input type="number" id="price">
-<button id='remove'>remove</button>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script src="{% static 'js/buy_sell_handler.js' %}"></script>
 
 <script>
-  $(document).ready(()=>{
-    console.log("hi");
 
-    let email="{{request.user.email}}";
-    const socket=io("http://localhost:5000",{query:`email=${email}`});
-    // socket.id=email;
+  const email="{{request.user.email}}";
 
-
-    $("#scheduler").on('click',()=>{
-      let coin=$("#coin").val();
-      let price=$("#price").val();
-      let data={coin,price};
-      socket.emit("schedule_task",data);
-    })
-
-    $("#remove").on('click',()=>{
-      socket.emit("remove_task");
-    })
-
-    socket.on("executed",(orderid)=>{
-      console.log("Executed: "+orderid)
-    })
-
-  })
 </script>

@@ -93,3 +93,24 @@
         </div>
     </div>
 </div>
+
+
+<script>
+
+$(document).ready(()=>{
+    
+    $("input[name=order_type]").on('click',(e)=>{
+            let type=e.target.value;
+            if(type=="MARKET")
+            {
+                $("#buy_price").attr('disabled',true);
+                document.getElementById('buy_price').value=current_price;
+            }
+            else
+            {
+                $("#buy_price").removeAttr('disabled');
+            }
+        })
+})
+
+</script>
