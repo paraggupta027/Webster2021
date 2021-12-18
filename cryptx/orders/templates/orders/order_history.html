@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="text-center my-4">
-                    All : <input type="radio" name="type" value="all">
+                    All : <input type="radio" name="type" value="all" checked>
                     Buy : <input type="radio" name="type" value="buy">
                     Sell: <input type="radio" name="type" value="sell">
                 </div>
@@ -51,7 +51,7 @@
                                     {{ order.quantity }}
                                 </td>
                                 <td>
-                                    {{ order.order_price }}
+                                    ${{ order.order_price }}
                                 </td>
                                 <td>
                                     BUY
@@ -64,13 +64,13 @@
                             <tr class="bg-danger sell" style="height:50px;">
                                 <td><b>#{{ order.id }}</b></td>
                                 <td>
-                                    {{ order.coin.symbol }}
+                                    {{ order.coin.name }}
                                 </td>
                                 <td>
                                     {{ order.quantity }}
                                 </td>
                                 <td>
-                                    {{ order.order_price }}
+                                    ${{ order.order_price }}
                                 </td>
                                 <td>
                                     SELL

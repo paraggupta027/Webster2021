@@ -1,8 +1,10 @@
 
-
 $(document).ready(()=>{
+
     
-    $("#buy_quantity").on('keyup',(e)=>{
+    $("#buy_quantity").on('change',(e)=>{
+
+        // console.log("hi");
 
         let qty = document.getElementById("buy_quantity").value;
         qty=parseFloat(qty);

@@ -21,6 +21,7 @@ from django.conf import settings
 from django.views.generic.base import TemplateView
 import stripe
 
+from dashboard.models import Profile
 
 
 
@@ -53,7 +54,11 @@ class wallet_view(TemplateView):
     template_name = 'orders/wallet.html'
 
     def get_context_data(self, **kwargs): # new
+        user = self.request.user
+        print(user.username)
+        # profile = Profile.objects.filter(email = user.username)
         context = super().get_context_data(**kwargs)
+        context['money'] = Profile.get_money(user.username)
         context['key'] = settings.STRIPE_PUBLISHABLE_KEY
         return context
 

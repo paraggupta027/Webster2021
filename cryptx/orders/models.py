@@ -20,11 +20,11 @@ class Order(models.Model):
     )
 
     user = models.ForeignKey(User , on_delete = models.CASCADE)
-    quantity = models.FloatField()
+    quantity = models.FloatField(default=0)
     coin = models.ForeignKey(Coin,on_delete=models.CASCADE)
     order_price = models.FloatField(default=0)
     time = models.DateTimeField(default=timezone.now)
-    mode = models.PositiveSmallIntegerField(verbose_name="Mode", choices=MODES,default=None)
+    mode = models.PositiveSmallIntegerField(verbose_name="Mode", choices=MODES,default=1)
 
 
     class Meta:
