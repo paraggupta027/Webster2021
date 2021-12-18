@@ -33,13 +33,17 @@ def handle_buy(request):
         coin_symbol = request.POST.get("symbol")
         quantity = float(request.POST.get("quantity"))
 
-        is_executable=Order.can_be_executed(user,coin_symbol,quantity,Order.BUY)
+        order_type = request.POST.get('order_type')
+        # print(order_type)
+
+
+        is_executable=Order.can_be_executed(user,coin_symbol,quantity,Order.BUY,order_type)
         
         msg = ""
-        if is_executable==True:
-            msg="Order was executed Successfully"
-        else:
-            msg=is_executable[1]
+        # if is_executable==True:
+        #     msg="Order was executed Successfully"
+        # else:
+        #     msg=is_executable[1]
         resp={
             'msg':msg,
         }

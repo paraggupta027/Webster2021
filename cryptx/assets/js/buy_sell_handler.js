@@ -8,7 +8,9 @@ $(document).ready(()=>{
         qty=parseFloat(qty);
         
         let total_price = (current_price*qty).toFixed(2);
-        document.getElementById("buy_price").value=total_price;
+        margin_required = document.getElementById("margin_required")
+        console.log(margin_required.type)
+        margin_required.innerHTML=total_price;
     
     })
 
@@ -18,6 +20,7 @@ $(document).ready(()=>{
         qty=parseFloat(qty);
         
         let total_price = (current_price*qty).toFixed(2);
+        //TODO  :replace total_price with quantity of coins 
         document.getElementById("sell_price").value=total_price;
     
     })
