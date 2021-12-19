@@ -42,27 +42,35 @@ class Order(models.Model):
     order_price = models.FloatField(default=0)
     order_type = models.PositiveSmallIntegerField(verbose_name="Type",choices=TYPES,default=1)
     order_status = models.PositiveSmallIntegerField(verbose_name="Status",choices=STATUS,default=1)
-    time = models.DateTimeField(default=timezone.now)
+    placed_time = models.DateTimeField(default=timezone.now)
+    executed_time = models.DateTimeField(default=timezone.now)
     mode = models.PositiveSmallIntegerField(verbose_name="Mode", choices=MODES,default=1)
 
 
     class Meta:
-        ordering=['-time']
+        ordering=['-placed_time']
 
     @classmethod
     def can_be_executed(cls,order_obj):
         # return True
+        quantity = order_obj['quantity']
+        
+        if quantity == 0 :
+            return False,"Empty Order is not Allowed"
+
         user=order_obj['user']
         coin_symbol = order_obj['coin_symbol']
-        quantity = order_obj['quantity']
         mode = order_obj['mode']
         order_type = order_obj['order_type']
         limit_price = order_obj['limit_price']
-
+        
         cur_user = Profile.objects.get(email=user.email)
         cur_coin_price = get_coin_price(coin_symbol)
         coin_obj = Coin.objects.get(symbol=coin_symbol)
         total_price = cur_coin_price*quantity
+
+        
+
         if order_type is Order.LIMIT:
             total_price = limit_price*quantity
 
@@ -127,4 +135,5 @@ class Order(models.Model):
     def save(self,*args,**kwargs):
         self.order_price = round(self.order_price,5)
         self.quantity = round(self.quantity,5)
+        self.executed_time = timezone.now()
         super(Order,self).save(*args,**kwargs)

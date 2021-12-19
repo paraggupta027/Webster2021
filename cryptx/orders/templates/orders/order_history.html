@@ -77,7 +77,8 @@
                         <th>Mode</th>
                         <th>Type</th>
                         <th>Status</th>
-                        <th>Time</th>
+                        <th>Placed Time</th>
+                        <th>Executed Time</th>
                     </tr>
 
                     {% for order in orders %}
@@ -120,7 +121,10 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {{ order.time }}
+                                        {{ order.placed_time }}
+                                    </td>
+                                    <td>
+                                        {{ order.executed_time }}
                                     </td>
                                 </tr>
                         {% else %}
@@ -143,7 +147,10 @@
                                         SELL
                                     </td>
                                     <td>
-                                        {{ order.time }}
+                                        {{ order.placed_time }}
+                                    </td>
+                                    <td>
+                                        {{ order.executed_time }}
                                     </td>
                                 </tr>
                         {% endif %}
