@@ -22,6 +22,7 @@ from django.conf import settings
 from django.views.generic.base import TemplateView
 import stripe
 
+from dashboard.models import Profile, TransactionHistory
 
 
 
@@ -34,7 +35,10 @@ def handle_buy(request):
         coin_symbol = request.POST.get("symbol")
         quantity = float(request.POST.get("quantity"))
         order_type = request.POST.get('order_type')
-        limit_price = float(request.POST.get('price'))
+        limit_price=0
+        if(order_type=="LIMIT"):
+            limit_price = float(request.POST.get('price'))
+        
 
         if order_type=="MARKET":
             order_type=Order.MARKET
@@ -84,8 +88,14 @@ class wallet_view(TemplateView):
     template_name = 'orders/wallet.html'
 
     def get_context_data(self, **kwargs): # new
+        user = self.request.user
+        print(user.username)
+        history = TransactionHistory.objects.filter(email = user.username)
+        # profile = Profile.objects.filter(email = user.username)
         context = super().get_context_data(**kwargs)
+        context['money'] = Profile.get_money(user.username)
         context['key'] = settings.STRIPE_PUBLISHABLE_KEY
+        context['history'] = history
         return context
 
 
@@ -107,6 +117,9 @@ def charge(request):
             user_profile = Profile.objects.get(email=user.email)
             user_profile.money+=float(amount)
             user_profile.save()
+
+            history = TransactionHistory(email = user.email , money = float(amount))
+            history.save()
 
             return render(request, 'orders/charge.html')
 
