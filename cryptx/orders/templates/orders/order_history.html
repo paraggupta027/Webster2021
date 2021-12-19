@@ -25,14 +25,42 @@
                 <div class="text-center my-4">
                     <div class="row">
                         <div class="col-sm">
-                    All <input type="radio" name="type" value="all">
+                            Any <input type="radio" checked name="mode" value="all">
+                        </div>
+                        <div class="col-sm">
+                            Buy Orders  <input type="radio" name="mode" value="buy">
+                        </div>
+                        <div class="col-sm">
+                            Sell Orders <input type="radio" name="mode" value="sell">
+                        </div>  
+                    </div>
                 </div>
-                <div class="col-sm">
-                    Buy  <input type="radio" name="type" value="buy">
+
+                <div class="text-center my-4">
+                    <div class="row">
+                        <div class="col-sm">
+                            Any <input type="radio" checked name="status" value="all">
+                        </div>
+                        <div class="col-sm">
+                            Pending Orders <input type="radio" name="status" value="pending">
+                        </div>
+                        <div class="col-sm">
+                            Executed Orders <input type="radio" name="status" value="executed">
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm">
-                    Sell <input type="radio" name="type" value="sell">
-                    </div>  
+
+                <div class="text-center my-4">
+                    <div class="row">
+                        <div class="col-sm">
+                            Any <input type="radio" checked name="type" value="all">
+                        </div>
+                        <div class="col-sm">
+                            Limit Orders<input type="radio" name="type" value="limit">
+                        </div>
+                        <div class="col-sm">
+                            Market Orders <input type="radio" name="type" value="market">
+                        </div>
                     </div>
                 </div>
 
@@ -44,49 +72,78 @@
                         <th>Coin</th>
                         <th>Quantity</th>
                         <th>Executed Price</th>
+                        <th>Mode</th>
                         <th>Type</th>
+                        <th>Status</th>
                         <th>Time</th>
                     </tr>
 
                     {% for order in orders %}
+
                         {% if order.mode == order.BUY %}
-                            <tr class="bg-success buy" style="height: 50px;">
-                                <td><b>#{{ order.id }}</b></td>
-                                <td>
-                                    {{ order.coin.name }}
-                                </td>
-                                <td>
-                                    {{ order.quantity }}
-                                </td>
-                                <td>
-                                    ${{ order.order_price }}
-                                </td>
-                                <td>
-                                    BUY
-                                </td>
-                                <td>
-                                    {{ order.time }}
-                                </td>
-                            </tr>
+                            {% if order.order_status == order.PENDING and order.order_type == order.MARKET %}
+                                <tr class="bg-warning pending buy market all"  style="height:50px;">
+                            {% elif order.order_status == order.PENDING and order.order_type == order.LIMIT %}
+                                <tr class="bg-warning pending buy limit all"  style="height:50px;">
+                            {% elif order.order_status == order.EXECUTED and order.order_type == order.MARKET %}
+                                <tr class="bg-success executed buy market all"  style="height:50px;">
+                            {% else %}
+                                <tr class="bg-success executed buy limit all" style="height: 50px;">
+                            {% endif %}
+                                    <td><b>#{{ order.id }}</b></td>
+                                    <td>
+                                        {{ order.coin.name }}
+                                    </td>
+                                    <td>
+                                        {{ order.quantity }}
+                                    </td>
+                                    <td>
+                                        ${{ order.order_price }}
+                                    </td>
+                                    <td>
+                                        BUY
+                                    </td>
+                                    <td>
+                                        {% if order.order_type == order.MARKET %}
+                                            MARKET
+                                        {% else %}
+                                            LIMIT
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if order.order_status == order.PENDING %}
+                                            PENDING
+                                        {% else %}
+                                            EXECUTED
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ order.time }}
+                                    </td>
+                                </tr>
                         {% else %}
-                            <tr class="bg-danger sell"  style="height:50px;">
-                                <td><b>#{{ order.id }}</b></td>
-                                <td>
-                                    {{ order.coin.name }}
-                                </td>
-                                <td>
-                                    {{ order.quantity }}
-                                </td>
-                                <td>
-                                    ${{ order.order_price }}
-                                </td>
-                                <td>
-                                    SELL
-                                </td>
-                                <td>
-                                    {{ order.time }}
-                                </td>
-                            </tr>
+                            {% if order.order_status == order.PENDING %}
+                                <tr class="bg-warning pending sell"  style="height:50px;">
+                            {% else %}
+                                <tr class="bg-success sell executed" style="height: 50px;">
+                            {% endif %}
+                                    <td><b>#{{ order.id }}</b></td>
+                                    <td>
+                                        {{ order.coin.name }}
+                                    </td>
+                                    <td>
+                                        {{ order.quantity }}
+                                    </td>
+                                    <td>
+                                        ${{ order.order_price }}
+                                    </td>
+                                    <td>
+                                        SELL
+                                    </td>
+                                    <td>
+                                        {{ order.time }}
+                                    </td>
+                                </tr>
                         {% endif %}
                     {% endfor %}
             
@@ -104,26 +161,14 @@
 
 <script>
 
-    $("input[name=type]").on('click',(e)=>{
-        let filter = e.target.value;
-        console.log("filter clicked "+e.target.value);
+    $("input[type=radio]").on('click',(e)=>{
+        // console.log("filter clicked");
+        let filter1 = $("input[name=mode]").filter(":checked").val();
+        let filter2 = $("input[name=status]").filter(":checked").val();
+        let filter3 = $("input[name=type]").filter(":checked").val();
 
-        if(filter=="buy")
-        {
-            $(".sell").hide();
-            $(".buy").show();
-        }
-        else if(filter=="sell")
-        {
-            $(".sell").show();
-            $(".buy").hide();
-        }
-        else
-        {
-            $(".buy").show();
-            $(".sell").show();
-        }
-
+        $(".all").hide();
+        $("tr").filter("."+filter1).filter("."+filter2).filter("."+filter3).show();
     })
     
 

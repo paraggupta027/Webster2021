@@ -81,7 +81,8 @@ class Order(models.Model):
                 return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
             else:
                 cur_user.money-=total_price
-                cur_user.save()   
+                cur_user.save()  
+                 
                 if order_type==cls.MARKET:
                     # Add coin to portfolio
                     Portfolio.buy_coin(user,quantity,cur_coin_price,coin_obj)
