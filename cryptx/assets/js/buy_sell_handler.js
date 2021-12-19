@@ -86,7 +86,7 @@ $(document).ready(()=>{
                     alert(data.msg);
                     return;
                 }
-                
+                console.log(order)
                 socket.emit('schedule_buy_limit_order',order);                
             },
             error: function (data) {
