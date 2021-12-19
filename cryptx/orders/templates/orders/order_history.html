@@ -19,18 +19,28 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
                 <div class="text-center my-4">
-                    <button style="width: 500px;" type="button" class="btn btn-lg btn-secondary">Order History</button>
+                    <button style="width: 500px; cursor:default; " type="button" class="btn btn-lg btn-secondary">Order
+                        History</button>
                 </div>
 
                 <div class="text-center my-4">
-                    All : <input type="radio" name="type" value="all" checked>
-                    Buy : <input type="radio" name="type" value="buy">
-                    Sell: <input type="radio" name="type" value="sell">
+                    <div class="row">
+                        <div class="col-sm">
+                            All <input type="radio" name="type" value="all">
+                        </div>
+                        <div class="col-sm">
+                            Buy <input type="radio" name="type" value="buy">
+                        </div>
+                        <div class="col-sm">
+                            Sell <input type="radio" name="type" value="sell">
+                        </div>
+                    </div>
                 </div>
 
 
-                <table class="my-4 text-center table table-bordered text-white bg_trans2" border="4" cellpadding="10" cellspacing="5">
-                    
+                <table style="cursor: default;" class="my-4 text-center table table-bordered text-white bg_trans2"
+                    border="4" cellpadding="10" cellspacing="5">
+
                     <tr class="bg-dark" style="height: 60px;">
                         <th>Order ID</th>
                         <th>Coin</th>
@@ -41,47 +51,47 @@
                     </tr>
 
                     {% for order in orders %}
-                        {% if order.mode == order.BUY %}
-                            <tr class="bg-success buy" style="height: 50px;">
-                                <td><b>#{{ order.id }}</b></td>
-                                <td>
-                                    {{ order.coin.name }}
-                                </td>
-                                <td>
-                                    {{ order.quantity }}
-                                </td>
-                                <td>
-                                    ${{ order.order_price }}
-                                </td>
-                                <td>
-                                    BUY
-                                </td>
-                                <td>
-                                    {{ order.time }}
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr class="bg-danger sell" style="height:50px;">
-                                <td><b>#{{ order.id }}</b></td>
-                                <td>
-                                    {{ order.coin.name }}
-                                </td>
-                                <td>
-                                    {{ order.quantity }}
-                                </td>
-                                <td>
-                                    ${{ order.order_price }}
-                                </td>
-                                <td>
-                                    SELL
-                                </td>
-                                <td>
-                                    {{ order.time }}
-                                </td>
-                            </tr>
-                        {% endif %}
+                    {% if order.mode == order.BUY %}
+                    <tr class="bg-success buy" style="height: 50px;">
+                        <td><b>#{{ order.id }}</b></td>
+                        <td>
+                            {{ order.coin.name }}
+                        </td>
+                        <td>
+                            {{ order.quantity }}
+                        </td>
+                        <td>
+                            ${{ order.order_price }}
+                        </td>
+                        <td>
+                            BUY
+                        </td>
+                        <td>
+                            {{ order.time }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr class="bg-danger sell" style="height:50px;">
+                        <td><b>#{{ order.id }}</b></td>
+                        <td>
+                            {{ order.coin.name }}
+                        </td>
+                        <td>
+                            {{ order.quantity }}
+                        </td>
+                        <td>
+                            ${{ order.order_price }}
+                        </td>
+                        <td>
+                            SELL
+                        </td>
+                        <td>
+                            {{ order.time }}
+                        </td>
+                    </tr>
+                    {% endif %}
                     {% endfor %}
-            
+
                 </table>
 
 
@@ -96,28 +106,25 @@
 
 <script>
 
-    $("input[name=type]").on('click',(e)=>{
+    $("input[name=type]").on('click', (e) => {
         let filter = e.target.value;
-        console.log("filter clicked "+e.target.value);
+        console.log("filter clicked " + e.target.value);
 
-        if(filter=="buy")
-        {
+        if (filter == "buy") {
             $(".sell").hide();
             $(".buy").show();
         }
-        else if(filter=="sell")
-        {
+        else if (filter == "sell") {
             $(".sell").show();
             $(".buy").hide();
         }
-        else
-        {
+        else {
             $(".buy").show();
             $(".sell").show();
         }
 
     })
-    
+
 
 </script>
 

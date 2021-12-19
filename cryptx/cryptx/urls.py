@@ -24,4 +24,6 @@ urlpatterns = [
     path('orders/',include('orders.urls')),
     # path('paytm/',include('paytm.urls')),
     path('watchlist/',include('watchlist.urls')),
+    path('portfolio/',include('portfolio.urls')),
+
 ]
