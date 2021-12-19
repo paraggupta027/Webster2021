@@ -15,7 +15,7 @@
                     <div class="container-md">
                         <div class="row">
                             <div class="col-sm">
-                                <input type="radio" id="INTRADAY" disabled name="order_time_limit" value="INTRADAY">
+                                <input type="radio" id="INTRADAY"  disabled name="order_time_limit" value="INTRADAY">
                                 <label for="Intraday">Intraday</label>
                             </div>
                             <div class="col-sm">
@@ -38,14 +38,14 @@
                                     <legend>
                                         Price($)
                                     </legend>
-                                    <input type="text" autocomplete ="off"  class="form-control" id="buy_price" disabled name="price" value="0">
+                                    <input type="text" autocomplete ="off"  class="form-control" id="buy_price"  name="price" value="0">
                                     <div class="row">
                                         <div class="col-sm">
                                             <input type="radio" id="MARKET" checked name="order_type" value="MARKET">
                                             <label for="MARKET">MARKET</label>
                                         </div>
                                         <div class="col-sm">
-                                            <input type="radio" id="LIMIT" disabled name="order_type" value="LIMIT">
+                                            <input type="radio" id="LIMIT"  name="order_type" value="LIMIT">
                                             <label for="LIMIT">LIMIT</label>
                                         </div>
                                     </div>
@@ -77,8 +77,15 @@
                 </div>
 
                 <div class="modal-footer">
+                   
+                        <div class="col-sm">
+                            Margin required : <span id="margin_required">0</span>
+                        </div>
+                        <div class="col-sm">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Buy</button>
+                
+                </div>
                 </div>
 
             </form>
@@ -86,3 +93,24 @@
         </div>
     </div>
 </div>
+
+
+<script>
+
+$(document).ready(()=>{
+    
+    $("input[name=order_type]").on('click',(e)=>{
+            let type=e.target.value;
+            if(type=="MARKET")
+            {
+                $("#buy_price").attr('disabled',true);
+                document.getElementById('buy_price').value=current_price;
+            }
+            else
+            {
+                $("#buy_price").removeAttr('disabled');
+            }
+        })
+})
+
+</script>

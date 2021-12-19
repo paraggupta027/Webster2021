@@ -17,33 +17,35 @@ app.use(cors())
 
 app.use(express.json())
 
-let id=1;
 let jobs=new Map();
 let sockets = new Map();
 
 
-const scheduleTask = (coin_symbol,price,socket_id)=>{
+const scheduleTask = (order,socket_id)=>{
     console.log("scheduled");
-    id++;
     let tp = "*/3 * * * * *";
 
-	let name="JOB"+id;
+    let coin_symbol=order.coin_symbol;
+    let limit_price=order.limit_price;
+
+	  let name=(order.id).toString();
     const job = schedule.scheduleJob(name,tp,async ()=>{
       let url="https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms=USD";
 
       axios.get(url)
       .then(function (response) {
         let cur_price=response.data.USD;
-        console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name}`);
-        if(cur_price<=price)
+        console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my demand ${limit_price}`);
+
+        if(cur_price<=limit_price)
         {
-			job.cancel();
-			console.log("Order executed "+name);
-			io.to(sockets.get(job)).emit("executed",name);
+            job.cancel();
+            console.log("Order executed "+name);
+            io.to(sockets.get(job)).emit("executed",{order_id:name,price:cur_price});
         }
       })
     });
-    jobs.set(name,job);
+  jobs.set(name,job);
 	sockets.set(job,socket_id);
 }
 
@@ -53,15 +55,17 @@ io.use((socket, next) => {
 	  return socket.handshake.query.email;
 	}
 	next(null, true);
-  });
+});
 
 
 io.on('connection',(socket)=>{
-	console.log("User Connected "+socket.handshake.query.email);	
+    socket.emit('welcome',{msg:"hello bhai"})
+    console.log("User Connected "+socket.handshake.query.email);	
 	
-    socket.on("schedule_task",(data)=>{
-        console.log(socket.id);
-        scheduleTask(data.coin,data.price,socket.id);
+    socket.on("schedule_buy_limit_order",(order)=>{
+        // console.log(socket.id);
+        console.log(order);
+        scheduleTask(order,socket.id);
     })
 
     socket.on("remove_task",()=>{
