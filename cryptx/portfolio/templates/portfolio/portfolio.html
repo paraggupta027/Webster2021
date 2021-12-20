@@ -37,9 +37,10 @@
                                     </a>
                                 </th>
                                 <td><b>{{holding.symbol}}</b></td>
+
                                 <td style="font-weight: bolder;" id="id_quantity_{{holding.symbol}}">{{holding.quantity}}</td>
                                 <td style="font-weight: bolder;" id="id_avg_price_{{holding.symbol}}">{{holding.avg_price}}</td>
-                                <td style="font-weight: bolder;" id="id_p&l_{{holding.symbol}}" value='0'>{{holding.avg_price}}</td>
+                                <td style="font-weight: bolder;" id="id_p&l_{{holding.symbol}}" value='0'></td>
 
                      
                             </tr>
@@ -56,13 +57,6 @@
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
 <script src="{% static 'js/portfolio_handler.js' %}"></script>
 
-<script>
-        
 
-
-        
-</script>
-
-{% include 'watchlist/watchlist_prices_js.html' %}
 
 </html>
