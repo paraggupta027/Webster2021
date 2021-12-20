@@ -26,7 +26,7 @@ async function changeEachCoinPrice(holding) {
     let current_price = data.USD;
     let quantity = holding.quantity
     let avg_price = holding.avg_price
-    let total_pl = (avg_price*quantity-current_price*quantity).toFixed(2)
+    let total_pl = (current_price*quantity-avg_price*quantity).toFixed(2)
     let pl_id = "id_p&l_"+coin_symbol;
     let pl_container = document.getElementById(pl_id);
 
@@ -39,7 +39,6 @@ async function changeEachCoinPrice(holding) {
     {
         pl_container.innerHTML=total_pl;
         pl_container.style.color="red";
-        // 
     }
 }
 

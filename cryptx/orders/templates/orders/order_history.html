@@ -65,7 +65,6 @@
                     </div>
                 </div>
 
-
                 <table style="cursor: default;" class="my-4 text-center table table-bordered text-white bg_trans2"
                     border="4" cellpadding="10" cellspacing="5">
 
@@ -80,7 +79,7 @@
                         <th>Placed Time</th>
                         <th>Executed Time</th>
                     </tr>
-
+                    
                     {% for order in orders %}
 
                         {% if order.mode == order.BUY %}
@@ -169,7 +168,7 @@
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
 
 <script>
-
+    let sorting_state="latest";
     $("input[type=radio]").on('click',(e)=>{
         // console.log("filter clicked");
         let filter1 = $("input[name=mode]").filter(":checked").val();
@@ -178,6 +177,7 @@
 
         $(".all").hide();
         $("tr").filter("."+filter1).filter("."+filter2).filter("."+filter3).show();
+
     })
 
 
