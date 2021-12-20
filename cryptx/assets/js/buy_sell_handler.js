@@ -1,24 +1,26 @@
 
 let socket;
 const MARKET=1,LIMIT=2;
-
+let toast_id=1;
 function show_toast(msg) {
     // document.getElementById("toast_header").innerHTML = x;
-    $(".toast-container").prepend(<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    $(".toast-container").prepend(`<div class="toast toast_${toast_id}"  role="alert" aria-live="assertive" aria-atomic="true">
                                         <div id="toast_header" class="toast-header">
                                             ${msg}
                                         </div>
                                         <div class="toast-body">
-                                            <button onclick="dispose_toast()" class="btn btn-danger">Close</button>
+                                            <button onclick="dispose_toast(${toast_id})" class="btn btn-danger">Close</button>
                                         </div>
-                                    </div>
+                                    </div>`
     )
-    $('.toast').toast('show');
+    $(`.toast_${toast_id}`).toast('show');
+    toast_id+=1;
 }
 
-function dispose_toast() {
-    $('.toast').toast('dispose');
+function dispose_toast(id) {
+    $(`.toast_${id}`).toast('dispose');
 }
+
 
 $(document).ready(()=>{ 
     
