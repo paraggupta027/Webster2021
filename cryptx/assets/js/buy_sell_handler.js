@@ -2,6 +2,22 @@
 let socket;
 const MARKET=1,LIMIT=2;
 
+function show_toast(msg) {
+
+    let new_toast = $(`<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div id="toast_header" class="toast-header">
+                            ${msg}
+                        </div>
+                        <div class="toast-body" style="color:red">
+                        </div>
+                    </div>`
+                )
+
+    $(".toast-container").prepend(new_toast);
+    new_toast.toast('show');
+}
+
+
 $(document).ready(()=>{ 
     
     socket=io("http://localhost:5000",{query:`email=${email}`});
@@ -38,10 +54,10 @@ $(document).ready(()=>{
               console.log(`${order_id} is executed`)
             },
             error: function (data) {
-                alert('An error occurred.');
+                show_toast('An error occurred.');
             },
         });
-          alert(msg);
+          show_toast(msg);
       })
 
 
@@ -63,7 +79,6 @@ $(document).ready(()=>{
         qty=parseFloat(qty);
         
         let total_price = (current_price*qty).toFixed(2);
-        // document.getElementById("sell_price").value=total_price;
     
     })
 
@@ -83,14 +98,17 @@ $(document).ready(()=>{
                 let order = data.order;
                 if(order.order_type==MARKET || data.success==0)
                 {
-                    alert(data.msg);
+                    // alert(data.msg);
+                    let x = data.msg;
+                    show_toast(x);
                     return;
                 }
                 console.log(order)
                 socket.emit('schedule_buy_limit_order',order);                
             },
             error: function (data) {
-                alert('An error occurred.');
+                // alert('An error occurred.');
+                show_toast("An error occured.");
             },
         });
     })
@@ -106,10 +124,10 @@ $(document).ready(()=>{
             url: url,
             data: form.serialize(),
             success: function (data) {
-                alert(data.msg);
+                show_toast(data.msg);
             },
             error: function (data) {
-                alert('An error occurred.');
+                show_toast('An error occurred.');
             },
         });
     })
