@@ -97,7 +97,7 @@ $(document).ready(()=>{
                     show_toast(x);
                     return;
                 }
-                
+                console.log(order)
                 socket.emit('schedule_buy_limit_order',order);                
             },
             error: function (data) {

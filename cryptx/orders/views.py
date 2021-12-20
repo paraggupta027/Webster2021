@@ -35,7 +35,10 @@ def handle_buy(request):
         coin_symbol = request.POST.get("symbol")
         quantity = float(request.POST.get("quantity"))
         order_type = request.POST.get('order_type')
-        limit_price = float(request.POST.get('price'))
+        limit_price=0
+        if(order_type=="LIMIT"):
+            limit_price = float(request.POST.get('price'))
+        
 
         if order_type=="MARKET":
             order_type=Order.MARKET

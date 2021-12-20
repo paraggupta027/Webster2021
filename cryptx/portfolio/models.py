@@ -28,6 +28,7 @@ class Portfolio(models.Model):
 
     @classmethod 
     def buy_coin(cls,user,quantity,price,coin):
+        
         obj, create = cls.objects.get_or_create(user=user,coin=coin)
         total_prev_price = obj.quantity * obj.avg_price
         total_quantity = obj.quantity + quantity
@@ -36,6 +37,7 @@ class Portfolio(models.Model):
         obj.quantity = total_quantity
         obj.avg_price = new_avg_price
         # print(f"quantity bought : {quantity} at price : {price} \n total_quantity : {total_quantity} total_price : {total_new_price} \n")
+        
         obj.save()
 
     @classmethod
@@ -55,4 +57,7 @@ class Portfolio(models.Model):
     def save(self,*args,**kwargs):
         self.avg_price = round(self.avg_price,5)
         self.quantity = round(self.quantity,5)
-        super(Portfolio,self).save(*args,**kwargs)
+        if self.quantity:
+            super(Portfolio,self).save(*args,**kwargs)
+        elif self.id:
+            self.delete()

@@ -67,7 +67,7 @@ io.on('connection',(socket)=>{
         console.log(order);
         scheduleTask(order,socket.id);
     })
-
+   
     socket.on("remove_task",()=>{
     //   jobs.get("BTC").cancel();
     })
