@@ -5,6 +5,7 @@ const MARKET=1,LIMIT=2;
 function show_toast(x) {
     $('.toast').toast('show');
     document.getElementById("toast_header").innerHTML = x;
+    $(".toast-container").append(".toast")
 }
 
 function dispose_toast() {
