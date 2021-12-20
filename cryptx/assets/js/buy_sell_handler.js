@@ -2,10 +2,18 @@
 let socket;
 const MARKET=1,LIMIT=2;
 
-function show_toast(x) {
+function show_toast(msg) {
+    // document.getElementById("toast_header").innerHTML = x;
+    $(".toast-container").prepend(<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                        <div id="toast_header" class="toast-header">
+                                            ${msg}
+                                        </div>
+                                        <div class="toast-body">
+                                            <button onclick="dispose_toast()" class="btn btn-danger">Close</button>
+                                        </div>
+                                    </div>
+    )
     $('.toast').toast('show');
-    document.getElementById("toast_header").innerHTML = x;
-    $(".toast-container").append(".toast")
 }
 
 function dispose_toast() {
