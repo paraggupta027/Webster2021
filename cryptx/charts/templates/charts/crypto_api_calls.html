@@ -25,7 +25,7 @@
     function customInterval()
     {
         let customInterval = document.getElementById('custom_interval').value;
-        console.log(customInterval);
+      
         changeInterval(60*customInterval);
     }
 
@@ -69,8 +69,8 @@
             all_candles = [];
             for(let i=0;i<base_candles.length;i++){
                 let val= getCandle(base_candles[i]);
-                if(i<1)
-                console.log(val,chart_pattern)
+                
+              
                 if(all_candles.length){ 
                     let last_candle = all_candles[all_candles.length-1];
                     let curr_time = Math.floor(last_candle.time/interval);
@@ -133,7 +133,7 @@
                     timeVisible: true,
                     secondsVisible: false,
                     tickMarkFormatter: (time, tickMarkType, locale) => {
-                        console.log(time, tickMarkType, locale);
+                        
                         let date = new Date(time * 1000);
                         const year = date.getFullYear()+":"+date.getHours() + ":" + date.getMinutes();
                         return String(year);

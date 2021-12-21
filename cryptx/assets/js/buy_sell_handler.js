@@ -73,7 +73,6 @@ $(document).ready(()=>{
         
         let total_price = (current_price*qty).toFixed(2);
         margin_required = document.getElementById("margin_required")
-        console.log(margin_required.type)
         margin_required.innerHTML=total_price;
     
     })
@@ -103,17 +102,17 @@ $(document).ready(()=>{
                 let order = data.order;
                 if(order.order_type==MARKET || data.success==0)
                 {
-                    // alert(data.msg);
                     let x = data.msg;
                     show_toast(x);
+                    notify_on_desktop(x);
                     return;
                 }
                 console.log(order)
                 show_toast(data.msg);
+                notify_on_desktop(data.msg);
                 socket.emit('schedule_buy_limit_order',order);                
             },
             error: function (data) {
-                // alert('An error occurred.');
                 show_toast("An error occured.");
             },
         });

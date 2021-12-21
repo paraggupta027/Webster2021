@@ -9,7 +9,7 @@ function notify_on_desktop(msg) {
   else if (Notification.permission === "granted") {
     var options = {
             body: msg,
-            icon: url,
+            icon: site_image_url,
             dir : "ltr"
         };
     var notification = new Notification("Crypt-X",options);
@@ -25,7 +25,7 @@ function notify_on_desktop(msg) {
       if (permission === "granted") {
         var options = {
               body: msg,
-              icon: url,
+              icon: site_image_url,
               dir : "ltr"
           };
         var notification = new Notification("Hi there",options);
