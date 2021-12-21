@@ -14,16 +14,17 @@ import json
 
 from coins.models import Coin
 from orders.models import Order
-
+from portfolio.models import Portfolio
 def coin_chart_page(request,coin_name):
     user=request.user
     if user.is_authenticated:
 
         coin=Coin.objects.get(name=coin_name)
+        quantity = Portfolio.get_quantity(user,coin)
 
         context = {
-            'coin':coin
-
+            'coin':coin,
+            'coin_quantity':quantity,
         }
 
         return render(request,'charts/coin_chart.html',context)

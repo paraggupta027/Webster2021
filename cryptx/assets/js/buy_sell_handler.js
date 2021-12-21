@@ -35,7 +35,7 @@ $(document).ready(()=>{
         let coin=$("#coin").val();
         let price=$("#price").val();
         let data={coin,price};
-        socket.emit("schedule_buy_limit_order",data);
+        socket.emit("schedule_limit_order",data);
       })
   
       $("#remove").on('click',()=>{
@@ -110,7 +110,7 @@ $(document).ready(()=>{
                 console.log(order)
                 show_toast(data.msg);
                 notify_on_desktop(data.msg);
-                socket.emit('schedule_buy_limit_order',order);                
+                socket.emit('schedule_limit_order',order);                
             },
             error: function (data) {
                 show_toast("An error occured.");
@@ -129,10 +129,22 @@ $(document).ready(()=>{
             url: url,
             data: form.serialize(),
             success: function (data) {
+
+                let order = data.order;
+                if(order.order_type==MARKET || data.success==0)
+                {
+                    let x = data.msg;
+                    show_toast(x);
+                    notify_on_desktop(x);
+                    return;
+                }
+                console.log(order)
                 show_toast(data.msg);
+                notify_on_desktop(data.msg);
+                socket.emit('schedule_limit_order',order);                
             },
             error: function (data) {
-                show_toast('An error occurred.');
+                show_toast("An error occured.");
             },
         });
     })

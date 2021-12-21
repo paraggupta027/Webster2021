@@ -127,11 +127,15 @@
                                     </td>
                                 </tr>
                         {% else %}
-                            {% if order.order_status == order.PENDING %}
-                                <tr class="bg-warning pending sell"  style="height:50px;">
-                            {% else %}
-                                <tr class="bg-success sell executed" style="height: 50px;">
-                            {% endif %}
+                        {% if order.order_status == order.PENDING and order.order_type == order.MARKET %}
+                        <tr class="bg-warning pending sell market all"  style="height:50px;">
+                        {% elif order.order_status == order.PENDING and order.order_type == order.LIMIT %}
+                        <tr class="bg-warning pending sell limit all"  style="height:50px;">
+                        {% elif order.order_status == order.EXECUTED and order.order_type == order.MARKET %}
+                        <tr class="bg-danger executed sell market all"  style="height:50px;">
+                        {% else %}
+                        <tr class="bg-danger executed sell limit all" style="height: 50px;">
+                        {% endif %}
                                     <td><b>#{{ order.id }}</b></td>
                                     <td>
                                         {{ order.coin.name }}
@@ -144,6 +148,20 @@
                                     </td>
                                     <td>
                                         SELL
+                                    </td>
+                                    <td>
+                                        {% if order.order_type == order.MARKET %}
+                                            MARKET
+                                        {% else %}
+                                            LIMIT
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if order.order_status == order.PENDING %}
+                                            PENDING
+                                        {% else %}
+                                            EXECUTED
+                                        {% endif %}
                                     </td>
                                     <td>
                                         {{ order.placed_time }}
