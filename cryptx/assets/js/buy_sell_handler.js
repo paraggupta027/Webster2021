@@ -1,20 +1,25 @@
 
 let socket;
 const MARKET=1,LIMIT=2;
+let toast_id=1;
 
 function show_toast(msg) {
+    // document.getElementById("toast_header").innerHTML = x;
+    $(".toast-container").prepend(`<div class="toast toast_${toast_id}"  role="alert" aria-live="assertive" aria-atomic="true">
+                                        <div id="toast_header" class="toast-header">
+                                            ${msg}
+                                        </div>
+                                        <div class="toast-body">
+                                            <button onclick="dispose_toast(${toast_id})" class="btn btn-danger">Close</button>
+                                        </div>
+                                    </div>`
+    )
+    $(`.toast_${toast_id}`).toast('show');
+    toast_id+=1;
+}
 
-    let new_toast = $(`<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div id="toast_header" class="toast-header">
-                            ${msg}
-                        </div>
-                        <div class="toast-body" style="color:red">
-                        </div>
-                    </div>`
-                )
-
-    $(".toast-container").prepend(new_toast);
-    new_toast.toast('show');
+function dispose_toast(id) {
+    $(`.toast_${id}`).toast('dispose');
 }
 
 
@@ -51,13 +56,13 @@ $(document).ready(()=>{
             url: url,
             data: sent,
             success: function (data) {
-              console.log(`${order_id} is executed`)
+                notify_on_desktop(msg);
             },
             error: function (data) {
                 show_toast('An error occurred.');
             },
         });
-          show_toast(msg);
+        //   show_toast(msg);
       })
 
 
@@ -104,6 +109,7 @@ $(document).ready(()=>{
                     return;
                 }
                 console.log(order)
+                show_toast(data.msg);
                 socket.emit('schedule_buy_limit_order',order);                
             },
             error: function (data) {

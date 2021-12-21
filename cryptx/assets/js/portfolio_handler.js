@@ -2,6 +2,7 @@ let portfolio=JSON.parse(document.getElementById('portfolio').textContent);
 
 console.log(portfolio)
 
+
 $(document).ready(function(){
     setInterval(() => {
         changeAllPrices();
@@ -29,15 +30,17 @@ async function changeEachCoinPrice(holding) {
     let total_pl = (current_price*quantity-avg_price*quantity).toFixed(2)
     let pl_id = "id_p&l_"+coin_symbol;
     let pl_container = document.getElementById(pl_id);
+   
 
     if(total_pl>0)
     {
-        pl_container.innerHTML="+"+ total_pl;
+        pl_container.innerHTML="+"+ total_pl+'<span style="font-size:20px; font-weight:900;">&#8593;</span>';
         pl_container.style.color="green";
+       
     }
     else if(total_pl<0)
     {
-        pl_container.innerHTML=total_pl;
+        pl_container.innerHTML=total_pl+'<span style="font-size:20px; font-weight:900;">&#8595;</span>';
         pl_container.style.color="red";
     }
 }
