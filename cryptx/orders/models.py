@@ -94,7 +94,7 @@ class Order(models.Model):
                 if order_type==cls.MARKET:
                     # Add coin to portfolio
                     Portfolio.buy_coin(user,quantity,cur_coin_price,coin_obj)
-                
+
                     # Save new order in DB
                     new_order = Order(
                         user=user,quantity=quantity,coin=coin_obj,
@@ -116,12 +116,42 @@ class Order(models.Model):
                     new_order.save()
                     
 
+        if mode is cls.SELL:
+            user_money = cur_user.money
+            coin_quantity = Portfolio.get_quantity(user=user,coin=coin_obj)
+            if coin_quantity < quantity: 
+                print(f"Not Enough {coin_quantity}")
+                return False ,f'Not enough {coin_symbol} only {coin_quantity} are available.' 
+            else:   
+                Portfolio.sell_coin(user,quantity,cur_coin_price,coin_obj)
+                if order_type==cls.MARKET:
+                    # add money to user
 
+                    cur_user.money+= quantity*cur_coin_price
+                    cur_user.save()
+
+                    # Add coin to portfolio
+                
+                    # Save new order in DB
+                    new_order = Order(
+                        user=user,quantity=quantity,coin=coin_obj,
+                        order_price=cur_coin_price,mode=mode,
+                        order_status = cls.EXECUTED,
+                        order_type = cls.MARKET
+                    )
+                    new_order.save()
+
+                elif order_type==cls.LIMIT:
+                     # Save new order in DB
+
+                    new_order = Order(
+                        user=user,quantity=quantity,coin=coin_obj,
+                        order_price=limit_price,mode=mode,
+                        order_status = cls.PENDING,
+                        order_type = cls.LIMIT
+                    )
+                    new_order.save()
         # if mode is cls.SELL:
-        #     coin_quantity = Portfolio.get_quantity(user=user,coin=coin_obj)
-        #     if coin_quantity < quantity: 
-        #         print(f"Not Enough {coin_quantity}")
-        #         return False ,f'Not enough {coin_symbol} only {coin_quantity} are available.'
         #     else:
         #         Portfolio.sell_coin(user,quantity,cur_coin_price,coin_obj)
         #         cur_user.money+=total_price

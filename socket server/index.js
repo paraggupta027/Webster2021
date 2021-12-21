@@ -37,7 +37,13 @@ const scheduleTask = (order,socket_id)=>{
         let cur_price=response.data.USD;
         console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my demand ${limit_price}`);
 
-        if(cur_price<=limit_price)
+        if(order.order_mode==1&&cur_price<=limit_price)
+        {
+            job.cancel();
+            console.log("Order executed "+name);
+            io.to(sockets.get(job)).emit("executed",{order_id:name,price:cur_price});
+        }
+        if(order.order_mode==2&&cur_price>=limit_price)
         {
             job.cancel();
             console.log("Order executed "+name);
@@ -62,7 +68,7 @@ io.on('connection',(socket)=>{
     socket.emit('welcome',{msg:"hello bhai"})
     console.log("User Connected "+socket.handshake.query.email);	
 	
-    socket.on("schedule_buy_limit_order",(order)=>{
+    socket.on("schedule_limit_order",(order)=>{
         // console.log(socket.id);
         console.log(order);
         scheduleTask(order,socket.id);
