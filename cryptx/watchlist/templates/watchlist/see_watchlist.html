@@ -16,16 +16,60 @@
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
+                <!-- Modal for search coins -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Search Coin</h5>
+                            </div>
+                            <div class="modal-body">
+                                <input autocomplete="off" class="form-control form-control-dark w-100" id="search_coins"
+                                    type="text" placeholder="Search" aria-label="Search">
+                                <table id="coin_list" style="cursor: default;background-color: black;"
+                                    class="my-4 text-center table table-bordered text-white bg_trans2" border="4"
+                                    cellpadding="10" cellspacing="5">
+
+                                    {% for coins in all_coins %}
+                                    <tr>
+                                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;"
+                                                href="/charts/{{coins.name}}"> {{coins.name}} </a> </td>
+                                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;"
+                                                href="/charts/{{coins.name}}/"> {{coins.symbol}} </a> </td>
+                                        <td style="cursor:pointer;" class="nav-coins" id="{{coins.name}}"> Add Coin
+                                        </td>
+
+
+                                    </tr>
+
+                                    {% endfor %}
+
+
+                                </table>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dropdown my-5">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                    <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
                         data-bs-toggle="dropdown" aria-expanded="false">
+                        Add Coins
+                    </button> -->
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
                         Add Coins
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         {% for coin in all_coins %}
-                            <li><a style="cursor: pointer;" class="dropdown-item nav-coins" id="{{coin.name}}">{{coin.name}}</a></li>
+                        <li><a style="cursor: pointer;" class="dropdown-item nav-coins"
+                                id="{{coin.name}}">{{coin.name}}</a></li>
                         {% endfor %}
-                        <!-- onclick="add_to_watchlist(`{{coin.name}}`)" -->
                     </ul>
                 </div>
 
@@ -40,19 +84,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                       {% for coin in coins_qs %}
-                            <tr class="table-primary">
-                                <th scope="row">
-                                    <img style="height: 30px; width: 30px;" src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" alt="">
-                                    <a style="text-decoration: none;color: black;" href="{% url 'coin_chart_page' coin.name %}">
-                                        {{coin.name}}
-                                    </a>
-                                </th>
-                                <td><b>{{coin.symbol}}</b></td>
-                                <td style="font-weight: bolder;" id="id_price_{{coin.symbol}}"></td>
-                                <td style="font-weight: bolder;" id="id_change_{{coin.symbol}}">0.00</td>
-                                <td class="delete-btn"><i style="cursor: pointer;" id="{{coin.name}}" class="fa fa-2x fa-trash"></i></td>
-                            </tr>
+                        {% for coin in coins_qs %}
+                        <tr class="table-primary">
+                            <th scope="row">
+                                <img style="height: 30px; width: 30px;"
+                                    src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg" alt="">
+                                <a style="text-decoration: none;color: black;"
+                                    href="{% url 'coin_chart_page' coin.name %}">
+                                    {{coin.name}}
+                                </a>
+                            </th>
+                            <td><b>{{coin.symbol}}</b></td>
+                            <td style="font-weight: bolder;" id="id_price_{{coin.symbol}}"></td>
+                            <td style="font-weight: bolder;" id="id_change_{{coin.symbol}}">0.00</td>
+                            <td class="delete-btn"><i style="cursor: pointer;" id="{{coin.name}}"
+                                    class="fa fa-2x fa-trash"></i></td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -66,37 +113,65 @@
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
 
 <script>
-        $(".nav-coins").on('click',function(e){
-            
-            let coin = e.target.id;
-            let name = "{{name}}";
+
+    $(".nav-coins").on('click', function (e) {
+        console.log("object");
+        let coin = e.target.id;
+        let name = "{{name}}";
+        $.ajax({
+            url: "{% url 'add_coin' %}",
+            data: { 'coin': coin, 'name': name },
+            success: function (response) {
+                window.location.reload();
+            }
+        })
+    });
+
+    $(".delete-btn").on('click', function (e) {
+        let coin = e.target.id;
+        let name = "{{name}}";
+        if (confirm("Are you sure u want to delete this coin?")) {
             $.ajax({
-                url:"{% url 'add_coin' %}",
-                data:{'coin':coin , 'name':name},
-                success:function(response)
-                {
-                    // alert("haha")
+                url: "{% url 'delete_coin' %}",
+                data: { 'coin': coin, 'name': name },
+                success: function (response) {
                     window.location.reload();
                 }
             })
-        });
+        }
+    });
 
-        $(".delete-btn").on('click',function(e){
-            let coin = e.target.id;
-            let name = "{{name}}";
-            if(confirm("Are you sure u want to delete this coin...??")){
-                $.ajax({
-                    url:"{% url 'delete_coin' %}",
-                    data:{'coin':coin , 'name':name},
-                    success:function(response)
-                    {
-                        // alert("haha")
-                        window.location.reload();
-                    }
-                })
+    $("#search_coins").on('input', function (e) {
+        let input = e.target.id;
+        let x = document.getElementById(input).value;
+
+
+        $.ajax({
+            url: "{% url 'search_coins' %}",
+            data: { 'coin_name': x },
+
+            success: function (response) {
+                console.log(response.coins);
+                let coins = response.coins;
+                let symbols = response.coins_symbol;
+
+                let list = $("#coin_list")
+                list.empty()
+
+                for (let i = 0; i < coins.length; i++) {
+                    let coin_list =
+                        `<tr>
+                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;" href="/charts/${coins[i]}/"> ${coins[i]} </a> </td>
+                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;" href="/charts/${coins[i]}/"> ${symbols[i]} </a> </td>
+                        <td style="cursor:pointer;"> <span class="nav-coins" id="${coins[i]}"> Add Coin </span></td>
+                        </tr>`;
+                    list.append(coin_list);
+                }
             }
-        });
-        
+        })
+    });
+
+
 </script>
 
 {% include 'watchlist/watchlist_prices_js.html' %}

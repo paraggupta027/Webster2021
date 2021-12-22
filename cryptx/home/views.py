@@ -23,6 +23,9 @@ from dashboard.models import Profile
 
 def home(request):
     user = request.user
+    if user.is_authenticated and user.email==settings.COMPANY_EMAIL:
+        return redirect('company_main_server')
+        
     if user.is_authenticated:
         return redirect('dashboard')
     return render(request,'home/index.html')
@@ -78,6 +81,10 @@ def signuphandle(request):
 
 def login_page(request):
     user=request.user
+
+    if user.is_authenticated and user.email==settings.COMPANY_EMAIL:
+        return redirect('company_main_server')
+
     if user.is_authenticated:
         return redirect('dashboard')
 

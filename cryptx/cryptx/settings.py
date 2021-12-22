@@ -164,3 +164,6 @@ STRIPE_SECRET_KEY = 'sk_test_51K7FODSEJ1ShIQ0ZwsrACNajs9Mnh3n72hsbILDvS0bpOZlthG
 
 
 # APPEND_SLASH = False
+
+
+COMPANY_EMAIL = 's@gmail.com'

@@ -5,7 +5,11 @@ from django.conf.urls import url
 from . import views
 from django.views.generic import TemplateView
 
+from . import company_server_handler
+
+
 urlpatterns = [
+    path('company_main_server/',company_server_handler.company_main_server,name='company_main_server'),
     path('',views.home,name='home'),
     path('signup/',views.signup,name='signup'),
     path('signuph/',views.signuphandle,name='signuph'),
