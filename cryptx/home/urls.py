@@ -18,5 +18,7 @@ urlpatterns = [
     path('forgotpassword/',views.forgotpassword , name = 'forgotpassword'),
     path('handleforgotpassword/', views.handle_forgotpassword , name = 'handle_forgot_password'),
     path('auth_forgot/<str:token>',views.auth_forgot_password,name="auth_forgot_password"),
-    path('resetpassword/<str:token>',views.reset_password,name="reset_password")
+    path('resetpassword/<str:token>',views.reset_password,name="reset_password"),
+
+    path('reports/report_generator/',views.report_generator,name='report_generator')
 ]

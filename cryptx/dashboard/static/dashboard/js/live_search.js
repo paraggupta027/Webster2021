@@ -17,7 +17,6 @@ $('#search').on('input',function(e){
                 for(let i=0;i<coin_list.length;i++)
                 {
                     var opt = "<option>"+coin_list[i]+"</option>";
-                    // opt.attr('width',"100px");
                     list.append(opt);
                 }
 

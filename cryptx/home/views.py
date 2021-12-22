@@ -10,15 +10,60 @@ from django.contrib import messages
 from uuid import uuid4
 from .models import Forgotpassword
 
+from io import BytesIO
+from xhtml2pdf import pisa
+from django.template import Template
+
+
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+# from weasyprint import HTML
+
 from django.conf import settings 
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMessage
 import os
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
+from django.http import JsonResponse
+
 # Models
 from dashboard.models import Profile
+from dashboard.models import TransactionHistory
 
+
+def report_generator(request):
+    user = request.user
+    if user.is_authenticated and user.email==settings.COMPANY_EMAIL:
+        all_users = User.objects.all()
+        for user in all_users:
+            if user.email!=settings.COMPANY_EMAIL:
+                report_email_sender(user.email)
+
+        return JsonResponse({})
+
+    return redirect('home')
+
+
+def report_email_sender(email):
+
+    transaction_history = TransactionHistory.objects.filter(email=email)
+
+    context = {
+        'transaction_history':transaction_history
+    }
+
+    html  = render_to_string('home/report.html',context)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)#, link_callback=fetch_resources)
+    pdf = result.getvalue()
+    filename = 'report.pdf'
+    to_emails = [email]
+    subject = "Crypt-X daily report"
+    email = EmailMessage(subject, "daily report brooo check it out", from_email=settings.EMAIL_HOST_USER, to=to_emails)
+    email.attach(filename, pdf, "application/pdf")
+    email.send(fail_silently=False)
+    print(f'Report sent to {email}')
 
 
 def home(request):
@@ -114,8 +159,12 @@ def logout_user(request):
     logout(request)
     return redirect('home')
 
+
 def forgotpassword(request):
     return render(request , 'home/forgot.html')
+
+
+# shobhit.20194139@gmail.com
 
 def handle_forgotpassword(request):
     if request.method == 'POST':

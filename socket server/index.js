@@ -105,7 +105,18 @@ job_to_email.set(job,email);
 }
 
 
+const scheduleReportGenerator = ()=>{
 
+  console.log("report generator scheduled");
+  let tp = "*/5 * * * *";
+
+  const job = schedule.scheduleJob("report-generator",tp,async ()=>{
+    console.log("Sending report generating request to django")
+    io.to(email_to_socket.get(COMPANY_EMAIL)).emit("generate-reports");
+
+  });
+
+} 
 
 
 io.on('connection',(socket)=>{
@@ -127,6 +138,12 @@ io.on('connection',(socket)=>{
       console.log(data);
       scheduleAlertTask(data);
   })
+
+
+  socket.on("report-generator",()=>{
+    scheduleReportGenerator();
+  })
+
    
     socket.on("remove_task",()=>{
     //   jobs.get("BTC").cancel();
