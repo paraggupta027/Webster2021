@@ -203,17 +203,27 @@ def handle_limit_orders(request):
     if user.is_authenticated and request.method=='GET':
         order_id = request.GET.get('order_id')
         price = float(request.GET.get('price'))
-        user_orders = Order.objects.filter(id=order_id,user=user)
+        user_orders = Order.objects.filter(id=order_id)
         profile = Profile.objects.get(email=user.email)
         if len(user_orders):
             order = user_orders[0]
+
+            # If order already executed
+            if order.order_status==Order.EXECUTED:
+                print("order already executed")
+                resp={
+                }
+                response=json.dumps(resp)
+                return HttpResponse(response,content_type='application/json') 
+
+
             order.order_status = Order.EXECUTED
             if order.mode == Order.BUY:
                 profile.money += (float(order.quantity)*float(order.order_price))-(float(price)*float(order.quantity))
                 order.order_price =  price
                 Portfolio.buy_coin(user,order.quantity,price,order.coin)
             if order.mode == Order.SELL:
-                profile.money += order.quantity * price;
+                profile.money += order.quantity * price
                 order.order_price =  price
             order.save()
             profile.save()

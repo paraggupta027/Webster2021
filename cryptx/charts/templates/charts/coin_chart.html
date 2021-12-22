@@ -27,7 +27,6 @@
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 
-
                     <h1 class="h2">
                         <img src="{% static 'dashboard/img/SVG/' %}{{coin.symbol}}.svg"
                             style="height: 2.1rem ; width:2.1rem;"></i>{{coin.name}} ({{coin.symbol}})
@@ -39,10 +38,16 @@
                         <div class="btn-group me-2">
                             {% include 'charts/buy_modal.html' %}
                             {% include 'charts/sell_modal.html' %}
+
+                            {% include 'charts/price_alert.html' %}
+                            <button type="button" class="btn btn-warning mx-3" data-toggle="modal"
+                                data-target="#price_alert_modal" id='price_alert_btn'>Set Price Alert</button>
+
                             <button type="button" class="btn btn-primary " data-toggle="modal"
                                 data-target="#buy_btn" id='buy_btn_btn'>Buy</button>
+                                
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#sell_btn"
-                                style="background-color: orangered; padding-left: 1rem;" id="sell_btn_btn">Sell</button>
+                                style="background-color: orangered;" id="sell_btn_btn">Sell</button>
                         </div>
 
                         <div class="btn-group me-3">
@@ -95,7 +100,7 @@
 
 
 </body>
-<script src="{% static 'js/draggable_modal.js' %}"/>
+<script src="{% static 'js/draggable_modal.js' %}"></script>
 <script src="{% static 'js/buy_sell_handler.js' %}"></script>
 {% include 'charts/crypto_api_calls.html' %}
 <script src="{% static '/dashboard/js/live_search.js' %}"></script>
