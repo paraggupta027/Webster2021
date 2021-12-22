@@ -25,10 +25,21 @@ function dispose_toast(id) {
 
 $(document).ready(()=>{ 
     
-    socket=io("http://localhost:5000",{query:`email=${email}`});
+    let data = {email:email};
+    socket=io("http://localhost:5000",{data});
+ 
+    socket.on('connect',()=>{ 
+        socket.emit('storeInfo', data);
+    });
 
-    socket.on('welcome',(data)=>{
-        console.log(data.msg+" , socket connect krdia hai order karo...!!");
+    socket.on('new-user',(data)=>{
+        console.log(data.msg);
+    })
+
+    socket.on("alert",(data)=>{
+        console.log(data);
+        show_toast(data.msg);
+        notify_on_desktop(data.msg);
     })
 
     $("#scheduler").on('click',()=>{
@@ -107,10 +118,9 @@ $(document).ready(()=>{
                     notify_on_desktop(x);
                     return;
                 }
-                console.log(order)
                 show_toast(data.msg);
                 notify_on_desktop(data.msg);
-                socket.emit('schedule_limit_order',order);                
+                socket.emit('schedule_limit_order',{order,email});                
             },
             error: function (data) {
                 show_toast("An error occured.");
@@ -138,15 +148,22 @@ $(document).ready(()=>{
                     notify_on_desktop(x);
                     return;
                 }
-                console.log(order)
                 show_toast(data.msg);
                 notify_on_desktop(data.msg);
-                socket.emit('schedule_limit_order',order);                
+                socket.emit('schedule_limit_order',{order,email});              
             },
             error: function (data) {
                 show_toast("An error occured.");
             },
         });
+    })
+
+
+    // for price alerts
+    $("#set_alert_btn").on('click',()=>{
+          let price=$("#price_alert").val();
+          let data={price,coin_symbol,email};
+          socket.emit('set_price_alert',data);
     })
 
 })
