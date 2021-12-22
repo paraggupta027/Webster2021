@@ -1,3 +1,5 @@
+"use strict"
+
 let live_search_url = "/dashboard/live_search/";
 
 $('#search').on('input',function(e){
@@ -13,10 +15,14 @@ $('#search').on('input',function(e){
                 console.log(coin_list);
 
                 var list = $("#search_result");
-                list.empty();
+                console.log(list)
+                list.empty()
                 for(let i=0;i<coin_list.length;i++)
                 {
-                    var opt = "<option>"+coin_list[i]+"</option>";
+                    if (coin_list[i]===val)continue;
+                    let opt = `<option>${coin_list[i]} </option>`;
+                    console.log(opt)
+                    // opt.attr('width',"100px");
                     list.append(opt);
                 }
 
@@ -25,7 +31,11 @@ $('#search').on('input',function(e){
     }
 });
 
+function redirectToChart(name){
+    console.log(name,name)
+    window.location = `/charts/${name}`
 
+}
 $("#search_btn").on('click',function(e){
     var query = $("#search").val();
     var url="/dashboard/search/";

@@ -45,13 +45,13 @@ const scheduleTask = (order,email)=>{
         let socket_for_email = email_to_socket.get(email_for_job);
 
         if(order.order_mode==1&&cur_price<=limit_price)
-        {
+        {console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my buy price ${limit_price}`);
             job.cancel();
             console.log("Order executed "+name);
             io.to(socket_for_email).emit("executed",{order_id:name,price:cur_price});
         }
         if(order.order_mode==2&&cur_price>=limit_price)
-        {
+        {console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my sell price ${limit_price}`);
             job.cancel();
             console.log("Order executed "+name);
             io.to(socket_for_email).emit("executed",{order_id:name,price:cur_price});

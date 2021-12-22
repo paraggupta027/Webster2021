@@ -27,23 +27,11 @@
                             <div class="modal-body">
                                 <input autocomplete="off" class="form-control form-control-dark w-100" id="search_coins"
                                     type="text" placeholder="Search" aria-label="Search">
-                                <table id="coin_list" style="cursor: default;background-color: black;"
-                                    class="my-4 text-center table table-bordered text-white bg_trans2" border="4"
+                                <table id="coin_list" style="cursor: default;background-color: rgb(172, 169, 169);"
+                                    class="my-4 text-center table table text-white bg_trans2" 
                                     cellpadding="10" cellspacing="5">
 
-                                    {% for coins in all_coins %}
-                                    <tr>
-                                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;"
-                                                href="/charts/{{coins.name}}"> {{coins.name}} </a> </td>
-                                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;"
-                                                href="/charts/{{coins.name}}/"> {{coins.symbol}} </a> </td>
-                                        <td style="cursor:pointer;" class="nav-coins" id="{{coins.name}}"> Add Coin
-                                        </td>
 
-
-                                    </tr>
-
-                                    {% endfor %}
 
 
                                 </table>
@@ -113,19 +101,21 @@
 <script src="{% static 'dashboard/js/live_search.js' %}"></script>
 
 <script>
+    function onSearch() {
+        $(".nav-coins").on('click', function (e) {
+            console.log("object");
+            let coin = e.target.id;
+            let name = "{{name}}";
+            $.ajax({
+                url: "{% url 'add_coin' %}",
+                data: { 'coin': coin, 'name': name },
+                success: function (response) {
+                    window.location.reload();
+                }
+            })
+        });
+    }
 
-    $(".nav-coins").on('click', function (e) {
-        console.log("object");
-        let coin = e.target.id;
-        let name = "{{name}}";
-        $.ajax({
-            url: "{% url 'add_coin' %}",
-            data: { 'coin': coin, 'name': name },
-            success: function (response) {
-                window.location.reload();
-            }
-        })
-    });
 
     $(".delete-btn").on('click', function (e) {
         let coin = e.target.id;
@@ -161,12 +151,27 @@
                 for (let i = 0; i < coins.length; i++) {
                     let coin_list =
                         `<tr>
-                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;" href="/charts/${coins[i]}/"> ${coins[i]} </a> </td>
-                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:white;" href="/charts/${coins[i]}/"> ${symbols[i]} </a> </td>
-                        <td style="cursor:pointer;"> <span class="nav-coins" id="${coins[i]}"> Add Coin </span></td>
+                            <td>
+                        <img style="height: 50px; width: 50px;"
+                                    src="{% static 'dashboard/img/SVG/' %}${symbols[i]}.svg" alt="">
+                                </td>
+                        <td style="cursor:pointer;"> <a style="text-decoration:none ;color:black;" href="/charts/${coins[i]}/"> ${coins[i]} </a> </td>
+                        <td style="cursor:pointer;"> <a style="text-decoration:none;color:black;" href="/charts/${coins[i]}/"> ${symbols[i]} </a> </td>
+                        <td style="cursor:pointer;">  
+                            <span id="${coins[i]}" >
+                            <button type="button" class="btn nav-coins btn-warning" id="${coins[i]}" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"  class="bi bi-plus" id="${coins[i]}" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                          
+                            </svg>
+                            </button>
+                        </span>
+                            </td>
                         </tr>`;
                     list.append(coin_list);
+
                 }
+                onSearch();
             }
         })
     });
