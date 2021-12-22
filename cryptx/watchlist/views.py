@@ -90,6 +90,22 @@ def delete_coin(request,*args):
 
     return redirect('home')
 
+def coin_matching(str1 , str2):
+    #Filters user based on search
+    m = len(str1) 
+    n = len(str2) 
+      
+    j = 0   
+    i = 0   
+      
+    while j<m and i<n: 
+        if str1[j] == str2[i]:     
+            j = j+1    
+        i = i + 1
+          
+    # If all characters of str1 matched, then j is equal to m 
+    return j==m 
+
 def delete_watchlist(request,*args):
     user = request.user
     if user.is_authenticated:
@@ -103,4 +119,29 @@ def delete_watchlist(request,*args):
 
         return JsonResponse({})
 
+    return redirect('home')
+
+def search_coins(request,*args):
+    user = request.user
+    if user.is_authenticated:
+        all_coins = Coin.objects.all()
+        coin = request.GET.get('coin_name')
+        coin = coin.upper()
+        
+        search_coins = []
+        coins_symbol = []
+
+        for coins in all_coins:
+            if coin_matching(coins.name,coin) or coin_matching(coin,coins.name):
+                search_coins.append(coins.name)
+                coins_symbol.append(coins.symbol)
+
+
+
+        resp = {
+            'coins' : search_coins,
+            'coins_symbol' : coins_symbol
+        }
+        response = json.dumps(resp)
+        return HttpResponse(response,content_type='application/json')
     return redirect('home')

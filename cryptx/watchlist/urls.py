@@ -11,5 +11,6 @@ urlpatterns = [
     path('add_coin/',views.add_coin,name='add_coin'),
     path('delete_coin/',views.delete_coin,name='delete_coin'),
     path('delete_watchlist' , views.delete_watchlist , name = 'delete_watchlist'),
+    path('search_coins/',views.search_coins , name = 'search_coins'),
     path('<str:watchlist>/',views.see_watchlist,name='see_watchlist'),
 ]
