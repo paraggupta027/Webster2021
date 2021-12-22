@@ -35,16 +35,16 @@ const scheduleTask = (order,socket_id)=>{
       axios.get(url)
       .then(function (response) {
         let cur_price=response.data.USD;
-        console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my demand ${limit_price}`);
+        
 
         if(order.order_mode==1&&cur_price<=limit_price)
-        {
+        {console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my buy price ${limit_price}`);
             job.cancel();
             console.log("Order executed "+name);
             io.to(sockets.get(job)).emit("executed",{order_id:name,price:cur_price});
         }
         if(order.order_mode==2&&cur_price>=limit_price)
-        {
+        {console.log(`price of ${coin_symbol} is ${cur_price} ---- order id: ${name} -----my sell price ${limit_price}`);
             job.cancel();
             console.log("Order executed "+name);
             io.to(sockets.get(job)).emit("executed",{order_id:name,price:cur_price});
