@@ -12,6 +12,7 @@ from uuid import uuid4
 import json
 
 from coins.models import Coin
+from orders.coin_price_api import get_coins
 
 
 def dashboard(request):
@@ -64,6 +65,7 @@ def live_search(request,*args):
     
 
 def profile(request):
+    # Coin.clean_coin_without_image()
     user = request.user
     if user.is_authenticated:
         name = user.first_name
