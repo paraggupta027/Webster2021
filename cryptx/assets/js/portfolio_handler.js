@@ -42,8 +42,6 @@ async function changeEachCoinPrice(holding) {
     {
         pl_container.innerHTML=total_pl+'<span style="font-size:20px; font-weight:900;">&#8595;</span>';
         pl_container.style.color="red";
-        
-        // 
     }
 }
 

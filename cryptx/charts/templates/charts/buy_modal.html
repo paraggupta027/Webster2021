@@ -1,7 +1,8 @@
+
 <div class="modal fade" id="buy_btn" tabindex="-1" role="dialog" aria-labelledby="buy_btn" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content draggable-modal" style="border:4px">
+            <div class="modal-header modal-drag-area" style="background:#59bbff;">
                 <h5 class="modal-title">Buy {{coin.name}}</h5>
             </div>
 
@@ -96,7 +97,7 @@
 <script>
 
     $(document).ready(() => {
-
+        
         $("input[name=order_type]").on('click', (e) => {
             let type = e.target.value;
             if (type == "MARKET") {
@@ -107,6 +108,15 @@
                 $("#buy_price").removeAttr('disabled');
             }
         })
+
+        // $(".buy_modal").mousedown(()=>{
+        //     // $('.buy_modal').addClass('hold');
+        //     setTimeout(()=>{
+        //         $('.buy_modal_1').style.display='hide';
+        //     },0);
+        //     // console.log(x);
+        // })
+
     })
 
 </script>

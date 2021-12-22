@@ -2,6 +2,7 @@
 let socket;
 const MARKET=1,LIMIT=2;
 let toast_id=1;
+
 function show_toast(msg) {
     // document.getElementById("toast_header").innerHTML = x;
     $(".toast-container").prepend(`<div class="toast toast_${toast_id}"  role="alert" aria-live="assertive" aria-atomic="true">
@@ -34,7 +35,7 @@ $(document).ready(()=>{
         let coin=$("#coin").val();
         let price=$("#price").val();
         let data={coin,price};
-        socket.emit("schedule_buy_limit_order",data);
+        socket.emit("schedule_limit_order",data);
       })
   
       $("#remove").on('click',()=>{
@@ -55,13 +56,13 @@ $(document).ready(()=>{
             url: url,
             data: sent,
             success: function (data) {
-              console.log(`${order_id} is executed`)
+                notify_on_desktop(msg);
             },
             error: function (data) {
                 show_toast('An error occurred.');
             },
         });
-          show_toast(msg);
+        //   show_toast(msg);
       })
 
 
@@ -72,7 +73,6 @@ $(document).ready(()=>{
         
         let total_price = (current_price*qty).toFixed(2);
         margin_required = document.getElementById("margin_required")
-        console.log(margin_required.type)
         margin_required.innerHTML=total_price;
     
     })
@@ -83,7 +83,6 @@ $(document).ready(()=>{
         qty=parseFloat(qty);
         
         let total_price = (current_price*qty).toFixed(2);
-        // document.getElementById("sell_price").value=total_price;
     
     })
 
@@ -103,16 +102,17 @@ $(document).ready(()=>{
                 let order = data.order;
                 if(order.order_type==MARKET || data.success==0)
                 {
-                    // alert(data.msg);
                     let x = data.msg;
                     show_toast(x);
+                    notify_on_desktop(x);
                     return;
                 }
                 console.log(order)
-                socket.emit('schedule_buy_limit_order',order);                
+                show_toast(data.msg);
+                notify_on_desktop(data.msg);
+                socket.emit('schedule_limit_order',order);                
             },
             error: function (data) {
-                // alert('An error occurred.');
                 show_toast("An error occured.");
             },
         });
@@ -129,10 +129,22 @@ $(document).ready(()=>{
             url: url,
             data: form.serialize(),
             success: function (data) {
+
+                let order = data.order;
+                if(order.order_type==MARKET || data.success==0)
+                {
+                    let x = data.msg;
+                    show_toast(x);
+                    notify_on_desktop(x);
+                    return;
+                }
+                console.log(order)
                 show_toast(data.msg);
+                notify_on_desktop(data.msg);
+                socket.emit('schedule_limit_order',order);                
             },
             error: function (data) {
-                show_toast('An error occurred.');
+                show_toast("An error occured.");
             },
         });
     })
