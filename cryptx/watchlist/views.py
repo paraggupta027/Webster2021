@@ -110,11 +110,11 @@ def delete_watchlist(request,*args):
     user = request.user
     if user.is_authenticated:
 
-        name = request.GET['name']
+        id = request.GET['id']
+        watchlist = WatchList.objects.get(id=id)
+        if watchlist.user!=user:
+            return JsonResponse({'error':"Not Your Watchlist"})
 
-        watchlist = WatchList.objects.get(name = name , user = user)
-        print("hello")
-        print(watchlist)
         watchlist.delete()
 
         return JsonResponse({})

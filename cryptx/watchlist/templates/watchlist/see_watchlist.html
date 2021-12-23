@@ -145,8 +145,12 @@
                 let coins = response.coins;
                 let symbols = response.coins_symbol;
 
+                
                 let list = $("#coin_list")
                 list.empty()
+                
+                if(x=="")
+                return;
 
                 for (let i = 0; i < coins.length; i++) {
                     let coin_list =
