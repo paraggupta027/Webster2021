@@ -20,6 +20,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.email
 
+
 class TransactionHistory(models.Model):
     email = models.CharField(max_length=50 , default="")
     money = models.FloatField(default=0)
