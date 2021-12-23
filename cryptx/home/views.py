@@ -30,6 +30,9 @@ from django.http import JsonResponse
 # Models
 from dashboard.models import Profile
 from dashboard.models import TransactionHistory
+from orders.models import Order
+
+from datetime import date
 
 
 def report_generator(request):
@@ -48,10 +51,42 @@ def report_generator(request):
 def report_email_sender(email):
 
     transaction_history = TransactionHistory.objects.filter(email=email)
+    user_obj = User.objects.get(email = email)
+
+    today = date.today()
+    today = str(today)
+
+    history = []
+
+
+    for x in transaction_history:
+        his = str(x.time)
+        his = his.split(' ' , 1)
+        # print(his[0])
+        if(his[0] == today):
+            history.append(x)
+
+
+    user_orders = Order.objects.filter(user = user_obj)
+    orders = []
+
+    for x in user_orders:
+        ptime = str(x.placed_time)
+        etime = str(x.executed_time)
+        ptime = ptime.split(' ' , 1)
+        etime = etime.split(' ' , 1)
+
+        if(etime[0] == today or ptime[0] == today):
+            orders.append(x)
 
     context = {
-        'transaction_history':transaction_history
+        'transaction_history':history,
+        'orders' : orders,
+        'user' : user_obj,
+        'date' : today
     }
+
+    # return redirect('debug')
 
     html  = render_to_string('home/report.html',context)
     result = BytesIO()
@@ -64,6 +99,54 @@ def report_email_sender(email):
     email.attach(filename, pdf, "application/pdf")
     email.send(fail_silently=False)
     print(f'Report sent to {email}')
+
+def debug(request):
+    user = request.user
+    if user.is_authenticated:
+        email = user.email
+        transaction_history = TransactionHistory.objects.filter(email=email)
+        today = date.today()
+        today = str(today)
+        user_obj = User.objects.get(email = email)
+
+        history = []
+
+
+        for x in transaction_history:
+            his = str(x.time)
+            his = his.split(' ' , 1)
+            # print(his[0])
+            if(his[0] == today):
+                history.append(x)
+
+
+        # print(history)
+
+        user_orders = Order.objects.filter(user = user)
+        orders = []
+
+        for x in user_orders:
+            ptime = str(x.placed_time)
+            etime = str(x.executed_time)
+            ptime = ptime.split(' ' , 1)
+            etime = etime.split(' ' , 1)
+
+            if(etime[0] == today or ptime[0] == today):
+                orders.append(x)
+
+
+        print(orders)
+
+        context = {
+            'transaction_history':history,
+            'orders' : orders,
+            'user' : user_obj,
+            'date' : today
+        }
+
+        return render(request , 'home/report.html',context)
+    return ('home')
+
 
 
 def home(request):
