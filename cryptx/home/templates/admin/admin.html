@@ -69,11 +69,28 @@
 
     socket.on("connect", () => {
       socket.emit("storeInfo", data);
+      socket.emit("report-generator");
     });
 
     socket.on("new-user", (data) => {
       console.log(data.msg);
     });
+
+
+    socket.on("generate-reports",()=>{
+      let url='/reports/report_generator/';
+      $.ajax({
+        type: "GET",
+        url: url,
+        success: function (data) {
+          console.log("Reports generation successfull");
+        },
+        error: function (data) {
+          console.log("Error occured");
+        },
+      });
+    })
+
 
     socket.on("executed", (data) => {
       console.log("hi");
