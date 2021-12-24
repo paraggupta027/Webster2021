@@ -19,11 +19,18 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
                 <div class="my-3">
-                    <button type="button" style="float: right;" class="btn btn-primary my-2" data-toggle="modal"
+                    <button type="button" style="float: right;" class="mx-2 btn btn-primary my-2" data-toggle="modal"
                         data-target="#id_create_watchlist_modal">
                         Create Watchlist
                     </button>
                     {% include 'watchlist/create_watchlist_modal.html' %}
+
+                    <button type="button" style="float: right;" class="btn btn-primary my-2" data-toggle="modal"
+                        data-target="#import_watchlist_modal">
+                        Import Watchlist
+                    </button>
+                    {% include 'watchlist/import_watchlist_modal.html' %}
+
                 </div>
 
                 <p class="h1">List of your Watchlists!</p>
@@ -39,13 +46,11 @@
                                     style="text-decoration: none;" href="{% url 'see_watchlist' watchlist.name %}">
                                         <h3 class="card-title ">{{watchlist.name}}</h3>
                                 </a>
-                                <div style="cursor: pointer;color:#198754;" class="delete_watchlist">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="mx-2 bi bi-share" viewBox="0 0 16 16">
-                                        <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
-                                    </svg>
-                                    <i id="{{watchlist.id}}" class="mx-2 fa fa-2x fa-trash"></i>
+                                <div style="cursor: pointer;color:#198754;">
+                                    <i id="{{watchlist.id}}" class="mx-2 fa fa-2x fa-trash delete_watchlist"></i>
+                                    <i data-toggle="modal" data-target="#share_watchlist_modal_{{watchlist.id}}" class="mx-2 fa fa-2x fa-share"></i>                
+                                    {% include 'watchlist/share_watchlist_modal.html' %}
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -81,6 +86,8 @@
             })
         }
     });
+
+
 
 </script>
 

@@ -108,7 +108,7 @@ job_to_email.set(job,email);
 const scheduleReportGenerator = ()=>{
 
   console.log("report generator scheduled");
-  let tp = "*/5 * * * *";
+  let tp = "*/1 * * * *";
 
   const job = schedule.scheduleJob("report-generator",tp,async ()=>{
     console.log("Sending report generating request to django")
