@@ -281,12 +281,12 @@
         
         const response = await fetch(real_time_url);
         var data = await response.json();
-        let last_price =0;
-        if(chart_pattern==default_pattern.lines)
-         last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
-        if(chart_pattern==default_pattern.candles){
-        last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
-    }   
+    //     let last_price =0;
+    //     if(chart_pattern==default_pattern.lines)
+    //      last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
+    //     if(chart_pattern==default_pattern.candles){
+    //     last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
+    // }   
         let current_price = data.USD;
         changePrice(current_price);
 
