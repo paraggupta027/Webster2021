@@ -110,11 +110,11 @@ def delete_watchlist(request,*args):
     user = request.user
     if user.is_authenticated:
 
-        name = request.GET['name']
+        id = request.GET['id']
+        watchlist = WatchList.objects.get(id=id)
+        if watchlist.user!=user:
+            return JsonResponse({'error':"Not Your Watchlist"})
 
-        watchlist = WatchList.objects.get(name = name , user = user)
-        print("hello")
-        print(watchlist)
         watchlist.delete()
 
         return JsonResponse({})
@@ -144,4 +144,32 @@ def search_coins(request,*args):
         }
         response = json.dumps(resp)
         return HttpResponse(response,content_type='application/json')
+    return redirect('home')
+
+
+
+def share_watchlist(request,id):
+    user = request.user
+    if user.is_authenticated and request.is_ajax():
+        watchlist = WatchList.objects.filter(id=id)
+        msg=""
+        if len(watchlist)==0:
+            msg="Invalid Link"
+        else:
+            watchlist=watchlist[0]
+            if watchlist.user==user:
+                msg="Cannot Import Own Watchlist"
+            else:
+                name=request.GET.get('name')
+                new_watchlist = WatchList(name=name,user=user)
+                new_watchlist.save()
+
+                for coin in watchlist.coins.all():
+                    new_watchlist.addcoin(coin.name,name,user)
+                new_watchlist.save()
+
+                msg="Watchlist Successfully imported"
+
+        return JsonResponse({'msg':msg})
+
     return redirect('home')
