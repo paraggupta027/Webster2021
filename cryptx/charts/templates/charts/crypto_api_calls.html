@@ -35,7 +35,7 @@
         const response = await fetch(url);
         const dataRes = await response.json();
 
-        console.log(dataRes)
+        // console.log(dataRes)
 
         price = dataRes[coin_symbol][currency_name];
         
@@ -318,14 +318,16 @@ async function changePrice(cur_price)
     let diff = cur_price-last_price;
     diff=diff.toFixed(3);
 
+    let percent_change = ((diff*100)/last_price).toFixed(3);
+
     if(last_price<=cur_price)
     {
-        price.innerHTML="$ "+cur_price+" " +"(+"+ diff+ ")";
+        price.innerHTML=`$${cur_price} (+${diff}) (+${percent_change}%)`;
         price.style.color="green";
     }
     else
     {
-        price.innerHTML="$ "+cur_price+" " +"(" +diff+ ")";
+        price.innerHTML=`$${cur_price} (${diff}) (${percent_change}%)`;
         price.style.color="red";
     }
 }
