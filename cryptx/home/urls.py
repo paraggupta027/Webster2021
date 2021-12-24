@@ -9,6 +9,7 @@ from . import company_server_handler
 
 
 urlpatterns = [
+    
     path('company_main_server/',company_server_handler.company_main_server,name='company_main_server'),
     path('',views.home,name='home'),
     path('signup/',views.signup,name='signup'),

@@ -3,6 +3,7 @@
     let coin_list={{coins_qs|safe}};  
     let last_prices={};
     let api_key = '97345c0932caf03b68d9c0b6b74dcb79dd5462c903ccd9dfb1784081d07cd539'
+    let prev_day_price={};
     $(document).ready(function(){
        // TODO : make a starting call
         setInterval(() => {
@@ -66,6 +67,11 @@
     }
 
     async function getPrevDayPrice(coin_symbol,currency_name){
+        if (prev_day_price[coin_symbol]){
+        
+        return prev_day_price[coin_symbol];
+        
+        }
         const past_day_url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coin_symbol}&tsyms=${currency_name}&ts=`
 
         const today = new Date()
@@ -76,18 +82,19 @@
         const time = Math.floor(yesterday.getTime()/1000)
 
         const url = `${past_day_url}${time}&api_key=${api_key}`
-    
+
         const response = await fetch(url);
-        const dataRes = await response.json();
+        let dataRes = await response.json();
         // console.log(Object.keys([coin_symbol]).length)
-        if(dataRes[coin_symbol]&&Object.keys(dataRes[coin_symbol]).length===0&& Object.getPrototypeOf(dataRes[coin_symbol]) === Object.prototype)return -1;
+        if(dataRes[coin_symbol]==undefined){
 
-        // console.log(dataRes[coin_symbol])
+            prev_day_price[coin_symbol]= -1;
+            return prev_day_price[coin_symbol]
+        }
+        console.log(dataRes[coin_symbol])
+         prev_day_price[coin_symbol] = dataRes[coin_symbol][currency_name];
         
-
-        price = dataRes[coin_symbol][currency_name];
-        
-        return price;
+        return prev_day_price[coin_symbol];
     }
 
 </script>
