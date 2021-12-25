@@ -28,3 +28,12 @@ def use_crypto(request):
 
 def build_crypto(request):
     return render(request , 'learn/step5.html')
+
+def crypto_basics_1(request):
+    return render(request , 'learn/step101.html')
+
+def crypto_basics_2(request):
+    return render(request , 'learn/step102.html')
+
+def crypto_basics_3(request):
+    return render(request , 'learn/step103.html')
