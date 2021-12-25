@@ -55,7 +55,7 @@ def report_email_sender(email):
     today = datetime.today().day
     user_obj = User.objects.get(email = email)
     
-    print(today)
+    # print(today)
     
     history = []
 
@@ -86,7 +86,7 @@ def report_email_sender(email):
             orders.append(x)
 
 
-    print(orders)
+    # print(orders)
 
     context = {
         'transaction_history':history,
@@ -109,6 +109,7 @@ def report_email_sender(email):
     email.send(fail_silently=False)
     print(f'Report sent to {email}')
 
+
 def debug(request):
     user = request.user
     if user.is_authenticated:
@@ -117,7 +118,7 @@ def debug(request):
         today = datetime.today().day
         user_obj = User.objects.get(email = email)
        
-        print(today)
+        # print(today)
        
         history = []
 
@@ -125,7 +126,7 @@ def debug(request):
         for x in transaction_history:
             his = x
             his.time += timedelta(0,0,0,0,30,5,0)
-            print(his.time.day)
+            # print(his.time.day)
             
             # print(his[0],today)
             if(his.time.day == today):

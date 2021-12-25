@@ -30,8 +30,26 @@ def portfolio_home(request):
                 'avg_price':portfolio.avg_price,
                 'quantity':portfolio.quantity
             }) 
+
+        positions = Order.objects.filter(user=user,order_status=Order.PENDING)
+
         context = {
-            'portfolio':portfolio_qs
+            'portfolio':portfolio_qs,
+            'positions':positions
         }    
         return render(request,'portfolio/portfolio.html',context)
+    return redirect('home')
+
+
+
+
+def position_home(request):
+    user  = request.user
+    if user.is_authenticated:
+        positions = Order.objects.filter(user=user,order_status=Order.PENDING)
+        context = {
+            'positions':positions
+        }    
+        return render(request,'portfolio/positions.html',context)
+
     return redirect('home')
