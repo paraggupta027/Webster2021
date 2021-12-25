@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'watchlist',
     'orders',
     'portfolio',
+    'learn',
 
     # 'paytm',
 ]
