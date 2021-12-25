@@ -4,11 +4,11 @@ let px,py;
 let added = false;
 ACTIVE_MODAL = true;
 $(document).ready(()=>{
-    console.log("draggable_js_start")
+    // console.log("draggable_js_start")
 
     buy_btn = document.getElementById('buy_btn_btn')
     sell_btn = document.getElementById('sell_btn_btn')
-    console.log(buy_btn)
+    // console.log(buy_btn)
     buy_btn.addEventListener('click',onBuyClick)
     sell_btn.addEventListener('click',onSellClick)
     window.addEventListener('mouseup',removeMouseDrag)
@@ -52,7 +52,7 @@ function getDraggableArea(){
     }
 }
 function addMouseDrag(){
-    console.log('Mouse down')
+    // console.log('Mouse down')
     if(!added){
        
     modal.addEventListener('mousemove',dragModal)
@@ -63,8 +63,7 @@ function addMouseDrag(){
 }
 function removeMouseDrag(){
     if(added){
-    
-    console.log(' mouse up')
+    // console.log(' mouse up')
     modal.removeEventListener('mousemove',dragModal)
     added=false;
     
@@ -77,8 +76,7 @@ function dragModal(e){
     // mousey = mousey<0?-5:(mousey==0)?0:5;
     mousex = e.movementX;
     // mousex = mousex<0?-5:(mousex==0)?0:5;
-    console.log(modal.style.left,    offsetx
-,mousex        )
+    // console.log(modal.style.left,    offsetx,mousex        )
     // calcx = offsetx + mousex/
     
     offsetx+= mousex;

@@ -185,7 +185,6 @@ def handle_sell(request):
 
     return redirect('home')
 
-    return redirect('home')
 
 
 def order_history(request):
@@ -207,6 +206,7 @@ def handle_limit_orders(request):
         price = float(request.GET.get('price'))
         user_orders = Order.objects.filter(id=order_id)
         profile = Profile.objects.get(email=user.email)
+
         if len(user_orders):
             order = user_orders[0]
 
@@ -224,9 +224,15 @@ def handle_limit_orders(request):
                 profile.money += (float(order.quantity)*float(order.order_price))-(float(price)*float(order.quantity))
                 order.order_price =  price
                 Portfolio.buy_coin(user,order.quantity,price,order.coin)
+
             if order.mode == Order.SELL:
                 profile.money += order.quantity * price
                 order.order_price =  price
+                
+                # if quantity becomes zero after selling
+                Portfolio.check_delete(user,order.coin)
+
+
             order.save()
             profile.save()
             
@@ -236,3 +242,15 @@ def handle_limit_orders(request):
         response=json.dumps(resp)
         return HttpResponse(response,content_type='application/json') 
     return  redirect('home')
+
+
+def handle_cancel_order(request):
+    user=request.user
+    if user.is_authenticated and request.is_ajax():
+        order_id = request.GET.get('id')
+
+        Order.cancel_order(order_id,user)
+
+        return JsonResponse({})
+
+    return redirect('home')

@@ -19,6 +19,13 @@ class Portfolio(models.Model):
     quantity = models.FloatField(default=0)
     avg_price = models.FloatField(default=0)
 
+
+    @classmethod
+    def add_quantity(cls,user,coin,quantity):
+        obj = Portfolio.objects.get(user=user,coin=coin)
+        obj.quantity+=quantity
+        obj.save()
+
     @classmethod
     def get_quantity(cls,user,coin):
         obj = cls.objects.filter(user=user,coin=coin)
@@ -48,10 +55,13 @@ class Portfolio(models.Model):
         total_quantity = obj.quantity - quantity
         total_quantity = round(total_quantity,4)
         obj.quantity = total_quantity
-        if total_quantity == 0:
+        obj.save()
+
+    @classmethod
+    def check_delete(cls,user,coin):
+        obj = cls.objects.get(user=user,coin=coin)
+        if obj.quantity==0:
             obj.delete()
-        else:
-            obj.save()
 
     def __str__(self):
         return f'{self.user.email} {self.coin.name}'
@@ -59,8 +69,4 @@ class Portfolio(models.Model):
     def save(self,*args,**kwargs):
         self.avg_price = round(self.avg_price,5)
         self.quantity = round(self.quantity,5)
-        if self.quantity:
-            super(Portfolio,self).save(*args,**kwargs)
-        elif self.id:
-            self.delete()
-
+        super(Portfolio,self).save(*args,**kwargs)

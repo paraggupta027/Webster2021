@@ -147,8 +147,11 @@ io.on('connection',(socket)=>{
   })
 
    
-    socket.on("remove_task",()=>{
-    //   jobs.get("BTC").cancel();
+    socket.on("remove-order",(data)=>{
+        let order_id=data.id;
+        let job = jobs.get(order_id);
+        console.log(`Job with id : ${order_id} cancelled`);
+        job.cancel();
     })
 });
 

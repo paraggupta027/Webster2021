@@ -6,5 +6,6 @@ from . import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('',views.portfolio_home,name='portfolio_home')
+    path('',views.portfolio_home,name='portfolio_home'),
+    path('positions/',views.position_home,name='position_home')
 ]

@@ -166,4 +166,29 @@ $(document).ready(()=>{
           socket.emit('set_price_alert',data);
     })
 
+
+    // positions handler
+    $(".cancel-btn").on('click',(e)=>{
+        let id=e.target.id;
+        
+        // stop job running from nodejs server
+        let data={'id':id};
+        socket.emit('remove-order',data);
+
+        // make order status cancelled
+        let url='/orders/handle_cancel_order/';
+        $.ajax({
+            url: url,
+            data: data,
+            success: function (res) {
+                show_toast("Order successfully cancelled");
+                notify_on_desktop("Order successfully cancelled");
+            },
+            error: function (res) {
+                show_toast("An error occured.");
+            },
+        });
+
+    })
+
 })

@@ -288,9 +288,9 @@
 
         const response = await fetch(real_time_url);
         var data = await response.json();
-        console.log(data)
+        // console.log(data)
         let current_price = data.USD
-        console.log(current_price)
+        // console.log(current_price)
         changePrice(current_price);
 
         var newDate = new Date();

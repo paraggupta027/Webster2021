@@ -127,12 +127,14 @@ class Order(models.Model):
             else:   
                 Portfolio.sell_coin(user,quantity,cur_coin_price,coin_obj)
                 if order_type==cls.MARKET:
+                    
                     # add money to user
                     total_price =quantity*cur_coin_price
                     cur_user.add_money(user=user,amount=total_price,msg=account_message)
 
-                    # Add coin to portfolio
-                
+                    # check if quantity becomes zero after selling
+                    Portfolio.check_delete(user,coin_obj)
+
                     # Save new order in DB
                     new_order = Order(
                         user=user,quantity=quantity,coin=coin_obj,
@@ -155,6 +157,25 @@ class Order(models.Model):
 
 
         return True,new_order.id
+
+
+    @classmethod
+    def cancel_order(cls,id,user):
+        order = cls.objects.get(id=id)
+        mode = order.mode
+
+        order.order_status = cls.CANCELLED
+        order.save()
+
+        if mode==cls.BUY:
+            # give money back
+            profile = Profile.objects.get(email=user.email)
+            profile.money+=(order.quantity*order.order_price)
+            profile.save()
+        else:
+            # give quantity back
+            Portfolio.add_quantity(user,order.coin,order.quantity)
+
         
     def __str__(self):
         return f'{self.user.email} , order id: {self.id} , coin: {self.coin.name}'
