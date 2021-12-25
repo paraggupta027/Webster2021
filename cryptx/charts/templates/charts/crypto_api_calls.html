@@ -18,9 +18,29 @@
     let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
     let chart_pattern = 'lines'
     let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
-
-
+    const past_day_url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coin_symbol}&tsyms=${currency_name}&ts=`
+    let prev_day_price = 0;
     let current_price;
+    
+    async function getPrevDayPrice(){
+        const today = new Date()
+        const yesterday = new Date(today)
+
+        yesterday.setDate(yesterday.getDate() - 1)
+        
+        const time = Math.floor(yesterday.getTime()/1000)
+
+        const url = `${past_day_url}${time}`
+    
+        const response = await fetch(url);
+        const dataRes = await response.json();
+
+        // console.log(dataRes)
+
+        price = dataRes[coin_symbol][currency_name];
+        
+        return price;
+    }
 
     function customInterval()
     {
@@ -99,10 +119,9 @@
             else
                 interval_button.innerHTML = Math.floor(time_interval/3600)+" hrs"
 
-            
-            
         }
     }
+
     function configChart(){
          lineSeries.applyOptions({
     color: 'black',
@@ -163,7 +182,8 @@
     
     $(document).ready(
           function() {
-            
+              
+
             var rateP = document.getElementById('rate');
     
             chart = LightweightCharts.createChart(document.getElementById('mychart'), {
@@ -176,11 +196,14 @@
             });
             configChart();
             addMultipleHistory(hist_min)
+            lineSeries.setData(all_candles);
              fetch_interval = setInterval(() => {
                 if(base_candles.length > hist_min){
                 addPoint();
             }
-            }, 1000);
+            }, 30000);
+
+
 
     
         });
@@ -268,7 +291,8 @@
         last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
     }   
         let current_price = data.USD;
-        changePrice(last_price,current_price);
+        changePrice(current_price);
+
         var newDate = new Date();
         var curtime = newDate.getTime() / 1000;
         curtime = Math.floor(curtime)
@@ -285,10 +309,11 @@ async function addMultipleHistory(hist_min){
     lineSeries.setData(base_candles)
 
 }
-function changePrice(last_price,cur_price)
+async function changePrice(cur_price)
 {  
+    last_price = await getPrevDayPrice()
     current_price=cur_price;
-
+    // console.log(last_price)
     if(last_price==cur_price)
     return;
     

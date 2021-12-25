@@ -10,10 +10,10 @@ def  get_coin_price(coin_symbol):
     # storing the JSON response 
     # from url in data
     data_json = json.loads(response.read())
-    
     # print the json response
     print(coin_symbol +": "+str(data_json['USD']))
     return data_json['USD']
+   
 
 def get_coins():
     return False
