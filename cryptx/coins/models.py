@@ -1,3 +1,4 @@
+from typing import Counter
 from django.db import models
 
 # Create your models here.
@@ -48,6 +49,18 @@ class Coin(models.Model):
             except:
                 coin.delete()
             
+
+    @classmethod
+    def get_faulty_coins(cls):
+        coin_list = cls.objects.all()
+        faulty_coins=[]
+        for coins in coin_list:
+            isvalid = get_coin_price(coins.symbol)
+            if isvalid==-1:
+                faulty_coins.append(coins)
+            
+        print( len(faulty_coins) )
+        return faulty_coins
 
 
     def save(self, *args,**kwargs):

@@ -1,12 +1,12 @@
 let portfolio=JSON.parse(document.getElementById('portfolio').textContent);
+let api_key = '97345c0932caf03b68d9c0b6b74dcb79dd5462c903ccd9dfb1784081d07cd539';
 
-console.log(portfolio)
 
 
 $(document).ready(function(){
     setInterval(() => {
         changeAllPrices();
-    },200);
+    },2000);
 });
 
 function changeAllPrices()
@@ -21,10 +21,12 @@ async function changeEachCoinPrice(holding) {
     let coin_name = holding.name;
     let coin_symbol = holding.symbol;
     let currency_name = "USD";
-    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
+
+    let real_time_url = `https://min-api.cryptocompare.com/data/price?fsym=${coin_symbol}&tsyms=${currency_name}&api_key=${api_key}`;
     const response = await fetch(real_time_url);
     var data = await response.json();
     let current_price = data.USD;
+    console.log(current_price)
     let quantity = holding.quantity
     let avg_price = holding.avg_price
     let total_pl = (current_price*quantity-avg_price*quantity).toFixed(2)

@@ -20,8 +20,10 @@ app.use(express.json())
 
 let jobs=new Map();
 let job_to_email = new Map();
-let email_to_socket = new Map();
 
+let email_to_socket = new Map();
+let api_key = '97345c0932caf03b68d9c0b6b74dcb79dd5462c903ccd9dfb1784081d07cd539'            
+let currency_name= 'USD'
 const COMPANY_EMAIL='s@gmail.com';
 
 
@@ -31,10 +33,10 @@ const scheduleTask = (order,email)=>{
 
     let coin_symbol=order.coin_symbol;
     let limit_price=order.limit_price;
-
+    
 	  let name=(order.id).toString();
     const job = schedule.scheduleJob(name,tp,async ()=>{
-      let url="https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms=USD";
+      let url=`https://min-api.cryptocompare.com/data/price?fsym=${coin_symbol}&tsyms=${currency_name}&api_key=${api_key}`;
 
       axios.get(url)
       .then(function (response) {
