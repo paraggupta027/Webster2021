@@ -171,6 +171,10 @@ $(document).ready(()=>{
     $(".cancel-btn").on('click',(e)=>{
         let id=e.target.id;
         
+        let conf = confirm("Are you sure u want to cancel this order..?");
+        if(conf==false)
+        return;
+
         // stop job running from nodejs server
         let data={'id':id};
         socket.emit('remove-order',data);
@@ -181,6 +185,7 @@ $(document).ready(()=>{
             url: url,
             data: data,
             success: function (res) {
+                $("#row_"+id).remove();
                 show_toast("Order successfully cancelled");
                 notify_on_desktop("Order successfully cancelled");
             },
