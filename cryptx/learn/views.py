@@ -16,3 +16,15 @@ def learn(request):
 
 def crypto_basics(request):
     return render(request , 'learn/step1.html')
+
+def earn_crypto(request):
+    return render(request , 'learn/step2.html')
+
+def trade_crypto(request):
+    return render(request , 'learn/step3.html')
+
+def use_crypto(request):
+    return render(request , 'learn/step4.html')
+
+def build_crypto(request):
+    return render(request , 'learn/step5.html')
