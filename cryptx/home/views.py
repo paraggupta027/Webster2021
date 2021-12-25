@@ -100,11 +100,16 @@ def report_email_sender(email):
     email.send(fail_silently=False)
     print(f'Report sent to {email}')
 
+
 def debug(request):
     user = request.user
     if user.is_authenticated:
         email = user.email
         transaction_history = TransactionHistory.objects.filter(email=email)
+
+        for x in transaction_history:
+            print(x.time)        
+
         today = date.today()
         today = str(today)
         user_obj = User.objects.get(email = email)

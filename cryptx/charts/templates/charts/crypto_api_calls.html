@@ -15,13 +15,41 @@
     let hist_min = 10000;
     let time_interval  = 60 ;
     let currency_name = "USD"; 
-    let real_time_url = "https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms="+currency_name;
+    let api_key = '97345c0932caf03b68d9c0b6b74dcb79dd5462c903ccd9dfb1784081d07cd539'
+    let real_time_url = `https://min-api.cryptocompare.com/data/price?fsym=${coin_symbol}&tsyms=${currency_name}&api_key=${api_key}`;
+    let backup_url = `https://api.coingecko.com/api/v3/simple/price?ids=${coin_name}&vs_currencies=${currency_name}`
     let chart_pattern = 'lines'
-    let history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym="+coin_symbol+"&tsym="+currency_name+"&limit=2000";
+    let history_url = `https://min-api.cryptocompare.com/data/v2/histominute?fsym=${coin_symbol}&tsym=${currency_name}&limit=2000&api_key=${api_key}`;
     const past_day_url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coin_symbol}&tsyms=${currency_name}&ts=`
     let prev_day_price = 0;
     let current_price;
+      
+    $(document).ready(
+          function() {
+        
+                console.log(history_url)
+            var rateP = document.getElementById('rate');
     
+            chart = LightweightCharts.createChart(document.getElementById('mychart'), {
+                localization: {
+        dateFormat: 'yyyy/MM/dd',
+    },
+            });
+            lineSeries = chart.addLineSeries({
+   
+            });
+            configChart();
+
+            addMultipleHistory(hist_min)
+
+             fetch_interval = setInterval(() => {
+                if(true||base_candles.length > hist_min){
+                addPoint();
+            }
+            }, 1000);
+
+    
+        });
     async function getPrevDayPrice(){
         const today = new Date()
         const yesterday = new Date(today)
@@ -30,8 +58,8 @@
         
         const time = Math.floor(yesterday.getTime()/1000)
 
-        const url = `${past_day_url}${time}`
-    
+        const url = `${past_day_url}${time}&api_key=${api_key}`
+        
         const response = await fetch(url);
         const dataRes = await response.json();
 
@@ -179,31 +207,7 @@
             });
            
     }
-    
-    $(document).ready(
-          function() {
-              
-
-            var rateP = document.getElementById('rate');
-    
-            chart = LightweightCharts.createChart(document.getElementById('mychart'), {
-                localization: {
-        dateFormat: 'yyyy/MM/dd',
-    },
-            });
-            lineSeries = chart.addLineSeries({
-   
-            });
-            configChart();
-            addMultipleHistory(hist_min)
-             fetch_interval = setInterval(() => {
-                if(base_candles.length > hist_min){
-                addPoint();
-            }
-            }, 1000);
-
-    
-        });
+  
     async function setCandles(base_candles,curtime,interval,newCandle,isbase){
         if(base_candles.length){
             
@@ -251,6 +255,7 @@
         
     }
     async function add_history(i) {
+        console.log(history_url)
                 const response = await fetch(history_url);
                 var dataRes = await response.json();
                 var data = dataRes.Data.Data;
@@ -275,19 +280,15 @@
                     }
                 time_stamp  = data[0].time;
                 history_url = "https://min-api.cryptocompare.com/data/v2/histominute?fsym=" +
-                    coin_symbol + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp;
+                coin_symbol + "&tsym=" + currency_name + "&limit=2000" + "&toTs=" + time_stamp+"&api_key="+api_key;
             }
     async function addPoint() {
-        
+
         const response = await fetch(real_time_url);
         var data = await response.json();
-    //     let last_price =0;
-    //     if(chart_pattern==default_pattern.lines)
-    //      last_price= (all_candles.length)?all_candles[all_candles.length-1].value:0;
-    //     if(chart_pattern==default_pattern.candles){
-    //     last_price= (all_candles.length)?all_candles[all_candles.length-1].close:0;
-    // }   
-        let current_price = data.USD;
+        // console.log(data)
+        let current_price = data.USD
+        // console.log(current_price)
         changePrice(current_price);
 
         var newDate = new Date();
@@ -309,6 +310,7 @@ async function addMultipleHistory(hist_min){
 async function changePrice(cur_price)
 {  
     last_price = await getPrevDayPrice()
+    // last_price = 0;
     current_price=cur_price;
     console.log(last_price)
     if(last_price==cur_price)
