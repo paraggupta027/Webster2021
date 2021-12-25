@@ -92,30 +92,3 @@
         </div>
     </div>
 </div>
-<script>
-
-    $(document).ready(() => {
-
-        $("input[name=order_type]").on('click', (e) => {
-            let type = e.target.value;
-            if (type == "MARKET") {
-                $("#sell_price").attr('disabled', true);
-                document.getElementById('sell_price').value = current_price;
-            }
-            else {
-                $("#sell_price").removeAttr('disabled');
-            }
-        })
-        
-
-        // $(".buy_modal").mousedown(()=>{
-        //     // $('.buy_modal').addClass('hold');
-        //     setTimeout(()=>{
-        //         $('.buy_modal_1').style.display='hide';
-        //     },0);
-        //     // console.log(x);
-        // })
-
-    })
-
-</script>

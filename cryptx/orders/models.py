@@ -163,15 +163,17 @@ class Order(models.Model):
     def cancel_order(cls,id,user):
         order = cls.objects.get(id=id)
         mode = order.mode
-
+        if order.order_status != cls.PENDING:
+            return False,'Order already Executed'
         order.order_status = cls.CANCELLED
         order.save()
 
         if mode==cls.BUY:
             # give money back
             profile = Profile.objects.get(email=user.email)
-            profile.money+=(order.quantity*order.order_price)
-            profile.save()
+            amount = (order.quantity*order.order_price)
+            Profile.add_money(user=user,amount=amount,msg=f'Money Refunded for order id:{id}')
+
         else:
             # give quantity back
             Portfolio.add_quantity(user,order.coin,order.quantity)
