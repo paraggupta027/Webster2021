@@ -17,6 +17,8 @@ from orders.coin_price_api import get_coins
 
 def dashboard(request):
     user = request.user
+    # falty_coins = Coin.get_faulty_coins()
+    # print(falty_coins)
     if user.is_authenticated:
         name = user.first_name
         params = {

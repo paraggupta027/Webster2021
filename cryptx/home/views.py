@@ -32,7 +32,7 @@ from dashboard.models import Profile
 from dashboard.models import TransactionHistory
 from orders.models import Order
 
-from datetime import date
+from datetime import date,timedelta,datetime
 
 
 def report_generator(request):
@@ -50,34 +50,43 @@ def report_generator(request):
 
 def report_email_sender(email):
 
+    
     transaction_history = TransactionHistory.objects.filter(email=email)
+    today = datetime.today().day
     user_obj = User.objects.get(email = email)
-
-    today = date.today()
-    today = str(today)
-
+    
+    # print(today)
+    
     history = []
 
-
+    # print(transaction_history)
     for x in transaction_history:
-        his = str(x.time)
-        his = his.split(' ' , 1)
-        # print(his[0])
-        if(his[0] == today):
+        his = x
+        his.time += timedelta(0,0,0,0,30,5,0)
+        print(his.time.day)
+        
+        # print(his[0],today)
+        if(his.time.day == today):
             history.append(x)
 
+
+    # print(history)
 
     user_orders = Order.objects.filter(user = user_obj)
     orders = []
 
     for x in user_orders:
-        ptime = str(x.placed_time)
-        etime = str(x.executed_time)
-        ptime = ptime.split(' ' , 1)
-        etime = etime.split(' ' , 1)
+        ptime = x.placed_time + timedelta(0,0,0,0,30,5,0)
+        pday  = ptime.day
+        etime = x.executed_time + timedelta(0,0,0,0,30,5,0)
+        eday = etime.day
 
-        if(etime[0] == today or ptime[0] == today):
+
+        if(eday==today or pday==today):
             orders.append(x)
+
+
+    # print(orders)
 
     context = {
         'transaction_history':history,
@@ -106,22 +115,21 @@ def debug(request):
     if user.is_authenticated:
         email = user.email
         transaction_history = TransactionHistory.objects.filter(email=email)
-
-        for x in transaction_history:
-            print(x.time)        
-
-        today = date.today()
-        today = str(today)
+        today = datetime.today().day
         user_obj = User.objects.get(email = email)
-
+       
+        # print(today)
+       
         history = []
 
-
+        # print(transaction_history)
         for x in transaction_history:
-            his = str(x.time)
-            his = his.split(' ' , 1)
-            # print(his[0])
-            if(his[0] == today):
+            his = x
+            his.time += timedelta(0,0,0,0,30,5,0)
+            # print(his.time.day)
+            
+            # print(his[0],today)
+            if(his.time.day == today):
                 history.append(x)
 
 
@@ -131,12 +139,13 @@ def debug(request):
         orders = []
 
         for x in user_orders:
-            ptime = str(x.placed_time)
-            etime = str(x.executed_time)
-            ptime = ptime.split(' ' , 1)
-            etime = etime.split(' ' , 1)
+            ptime = x.placed_time + timedelta(0,0,0,0,30,5,0)
+            pday  = ptime.day
+            etime = x.executed_time + timedelta(0,0,0,0,30,5,0)
+            eday = etime.day
 
-            if(etime[0] == today or ptime[0] == today):
+
+            if(eday==today or pday==today):
                 orders.append(x)
 
 

@@ -51,6 +51,8 @@
     
         });
     async function getPrevDayPrice(){
+        if (prev_day_price != 0)
+        return prev_day_price;
         const today = new Date()
         const yesterday = new Date(today)
 
