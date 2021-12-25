@@ -69,8 +69,11 @@ class Order(models.Model):
         coin_obj = Coin.objects.get(symbol=coin_symbol)
         total_price = cur_coin_price*quantity
 
-        
-
+        mode_message = {
+            1:'Bought',
+            2:'Sold'
+        }
+        account_message = f'{mode_message[mode]} {quantity} {coin_symbol}'
         if order_type is Order.LIMIT:
             total_price = limit_price*quantity
 
@@ -88,10 +91,9 @@ class Order(models.Model):
                 print("Not Enough Balance")
                 return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
             else:
-                cur_user.money-=total_price
-                cur_user.save()  
                  
                 if order_type==cls.MARKET:
+                    cur_user.deduct_money(user=user,amount=total_price,msg=account_message)
                     # Add coin to portfolio
                     Portfolio.buy_coin(user,quantity,cur_coin_price,coin_obj)
 
@@ -105,7 +107,7 @@ class Order(models.Model):
                     new_order.save()
 
                 elif order_type==cls.LIMIT:
-
+                    cur_user.deduct_money(user=user,amount=total_price,msg='Blocked for Limit')
                      # Save new order in DB
                     new_order = Order(
                         user=user,quantity=quantity,coin=coin_obj,
@@ -126,9 +128,8 @@ class Order(models.Model):
                 Portfolio.sell_coin(user,quantity,cur_coin_price,coin_obj)
                 if order_type==cls.MARKET:
                     # add money to user
-
-                    cur_user.money+= quantity*cur_coin_price
-                    cur_user.save()
+                    total_price =quantity*cur_coin_price
+                    cur_user.add_money(user=user,amount=total_price,msg=account_message)
 
                     # Add coin to portfolio
                 
@@ -151,11 +152,7 @@ class Order(models.Model):
                         order_type = cls.LIMIT
                     )
                     new_order.save()
-        # if mode is cls.SELL:
-        #     else:
-        #         Portfolio.sell_coin(user,quantity,cur_coin_price,coin_obj)
-        #         cur_user.money+=total_price
-        #         cur_user.save()
+
 
         return True,new_order.id
         

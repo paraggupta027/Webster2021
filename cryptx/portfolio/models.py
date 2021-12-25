@@ -40,6 +40,8 @@ class Portfolio(models.Model):
         
         obj.save()
 
+
+
     @classmethod
     def sell_coin(cls,user,quantity,price,coin):
         obj = cls.objects.get(user=user,coin=coin)
@@ -61,3 +63,4 @@ class Portfolio(models.Model):
             super(Portfolio,self).save(*args,**kwargs)
         elif self.id:
             self.delete()
+

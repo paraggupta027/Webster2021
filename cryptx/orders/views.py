@@ -14,6 +14,7 @@ from uuid import uuid4
 import json
 
 from coins.models import Coin
+from dashboard.models import AccountBook
 from portfolio.models import Portfolio
 from orders.models import Order
 from dashboard.models import Profile
@@ -116,8 +117,9 @@ def charge(request):
             )
 
             user_profile = Profile.objects.get(email=user.email)
-            user_profile.money+=float(amount)
-            user_profile.save()
+            account_message = 'Added Money to Wallet'
+            Profile.add_money(user=user,amount=float(amount),msg=account_message)
+
 
             history = TransactionHistory(email = user.email , money = float(amount))
             history.save()
