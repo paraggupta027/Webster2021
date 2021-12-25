@@ -25,6 +25,9 @@ class Portfolio(models.Model):
         obj = Portfolio.objects.get(user=user,coin=coin)
         obj.quantity+=quantity
         obj.save()
+    
+
+ 
 
     @classmethod
     def get_quantity(cls,user,coin):

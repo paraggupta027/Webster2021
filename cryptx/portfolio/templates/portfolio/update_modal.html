@@ -1,0 +1,50 @@
+<div class="modal fade" id="update_modal_{{position.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" data-order_id="{{position.id}}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update Order</h5>
+          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Price <input required type="text" id="update_price_{{position.id}}" name="update_price" value="{{position.order_price}}">
+            <hr>
+            Quantity <input required type="text" id="update_quantity_{{position.id}}" name="update_quantity" value="{{position.quantity}}">
+            </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" data-dismiss="modal" id="modal_update_btn" onclick="update_order( {{position.id}} )" class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    function update_order(id){
+        // console.log(id)
+        let price = $(`#update_price_${id}`).val()
+        let quantity = $(`#update_quantity_${id}`).val()
+        let url = '/orders/handle_update_order/'
+        const data={
+            id,
+            price,
+            quantity,
+        }
+        console.log(data)
+        $.ajax({
+            url: url,
+            data: data,
+            success: function (res) {
+                console.log(res)
+                
+               
+                show_toast("Order successfully Updated");
+                notify_on_desktop("Order successfully Updated");
+            },
+            error: function (res) {
+                show_toast("An error occured.");
+            },
+        });
+
+    }
+</script>
+

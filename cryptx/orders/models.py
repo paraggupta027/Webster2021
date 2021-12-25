@@ -178,6 +178,51 @@ class Order(models.Model):
             # give quantity back
             Portfolio.add_quantity(user,order.coin,order.quantity)
 
+    @classmethod
+    def update_order(cls,user,order_id,price,quantity):
+        if price <=0 or quantity<=0:
+            return False,'price or quantity invalid'
+        order = cls.objects.filter(user=user,id=order_id)
+        profile = Profile.objects.get(email=user.email)
+
+
+        if len(order) and order[0].order_status==Order.PENDING:
+
+            order = order[0]
+            total_quantity = Portfolio.get_quantity(user,order.coin)
+            amount= round(price*quantity,5)
+            total_money = profile.money
+            money_expended = round(order.quantity*order.order_price,5)
+            amount_needed =  amount-money_expended 
+
+            if order.mode == Order.BUY:
+                
+                if total_money >= amount_needed:
+                    order.order_price = price
+                    order.quantity = quantity
+                    order.save()
+                    if amount_needed > 0:
+                        Profile.deduct_money(user=user,amount=amount_needed,msg=f'Money deducted for update order:{order_id}')
+                    elif amount_needed <0:
+                        Profile.add_money(user=user,amount=-amount_needed,msg=f'Money refunded for update order:{order_id}')
+                    return True,'Order Update Successful'
+
+            if order.mode == Order.SELL:
+                quantity_needed = quantity - order.quantity
+
+                if total_quantity < quantity_needed:
+                    return False ,f'Not enough {order.coin.symbol} only {total_quantity} more are available.' 
+                else:
+                    order.order_price = price
+                    order.quantity = quantity
+                    order.save()
+                    if quantity_needed>0:
+                        Portfolio.sell_coin(user=user,quantity=-quantity_needed,coin=order.coin)
+                    elif quantity_needed<0:
+                        Portfolio.add_quantity(user,order.coin,-quantity_needed)
+                    return True,'Order Update Successful'
+
+            return False,'Error occured'
         
     def __str__(self):
         return f'{self.user.email} , order id: {self.id} , coin: {self.coin.name}'

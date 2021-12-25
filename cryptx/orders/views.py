@@ -259,3 +259,23 @@ def handle_cancel_order(request):
 
     return JsonResponse({})
 
+@login_required
+@ajax_required
+def handle_update_order(request):
+    user = request.user
+    order_id = request.GET.get('id')
+    price = float(request.GET.get('price'))
+    quantity = float(request.GET.get('quantity'))
+
+    resp = Order.update_order(user,order_id,price,quantity)
+    msg = resp[1]
+    success = 1
+    if resp[0] == False:
+        success = 0
+    json_response = {
+        'success':success,
+        'msg':msg,
+        
+    }
+    
+    return JsonResponse(json_response)
