@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    {% include 'home/script.html' %}
+
+
+    <title>Orders</title>
+</head>
+
+<body>
+
+    {% include 'dashboard/navbar.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'dashboard/sidenav.html' %}
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+                <div class="text-center my-4">
+                    <button style="width: 500px; cursor:default; " type="button" class="btn btn-lg btn-secondary">Account
+                        Book</button>
+                </div>
+                <hr>
+                
+
+                <table style="cursor: default;" class="my-4 text-center table table-bordered text-white  bg_trans2"
+                    border="4" cellpadding="10" cellspacing="5">
+
+                    <tr class="bg-dark" style="height: 60px;">
+                        <th>Log No.</th>
+                        <th>Amount</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                        <th>Time</th>
+                    </tr>
+                    
+                    {% for log in account_book %}
+                    <tr class="bg-dark">
+                        <td>#{{log.id}}</td>
+                        <td>{{log.amount}}</td>
+                        <td>{{log.message}}</td>
+                        <td>{{log.status}}</td>
+                        <td>{{log.type}}</td>
+                        <td>{{log.time}}</td>
+
+
+
+                    </tr>
+                              
+                    {% endfor %}
+
+                </table>
+
+
+            </main>
+        </div>
+    </div>
+
+
+</body>
+
+<script src="{% static 'dashboard/js/live_search.js' %}"></script>
+
+<script src="{% static 'js/filter_orders.js' %}">
+</script>
+
+</html>

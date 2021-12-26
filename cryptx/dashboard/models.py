@@ -104,3 +104,6 @@ class AccountBook(models.Model):
 
     def __str__(self):
         return  f'{self.user} {self.message} at {self.time.astimezone(pytz.timezone("Asia/Calcutta"))} was {self.status}'
+
+    class Meta:
+        ordering=['-time']
