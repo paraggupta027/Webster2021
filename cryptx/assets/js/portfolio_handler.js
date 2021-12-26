@@ -16,14 +16,16 @@ function changeAllPrices()
         changeEachCoinPrice(holding);
     });
 
-    // let overall_pl=0;
-    // pl.forEach((value, key) => {
-    //     value=parseFloat(value).toFixed(3);
-    //     overall_pl=parseFloat(overall_pl).toFixed(3);
-    //     overall_pl=overall_pl+value;
-    // })
-    // $("#total_pl").html(overall_pl);
-
+    let overall_pl=0;
+    pl.forEach((value, key) => {
+        overall_pl+=value;
+    })
+    overall_pl=overall_pl.toFixed(2);
+    $("#total_pl").html(overall_pl);
+    if(overall_pl<0)
+    $("#total_pl").css('color','red');
+    else if(overall_pl>0)
+    $("#total_pl").css('color','green');
 }
 
 async function changeEachCoinPrice(holding) {
@@ -56,6 +58,8 @@ async function changeEachCoinPrice(holding) {
         pl_container.style.color="red";
     }
 
+    total_pl=parseFloat(total_pl);
+    total_pl=total_pl
     pl.set(coin_symbol,total_pl);
 
 }
