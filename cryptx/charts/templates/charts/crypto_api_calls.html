@@ -27,7 +27,7 @@
     $(document).ready(
           function() {
         
-                console.log(history_url)
+              
             var rateP = document.getElementById('rate');
     
             chart = LightweightCharts.createChart(document.getElementById('mychart'), {
@@ -257,7 +257,7 @@
         
     }
     async function add_history(i) {
-        console.log(history_url)
+        
                 const response = await fetch(history_url);
                 var dataRes = await response.json();
                 var data = dataRes.Data.Data;
@@ -314,7 +314,7 @@ async function changePrice(cur_price)
     last_price = await getPrevDayPrice()
     // last_price = 0;
     current_price=cur_price;
-    // console.log(last_price)
+  
     if(last_price==cur_price)
     return;
     

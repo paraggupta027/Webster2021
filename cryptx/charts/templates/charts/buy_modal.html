@@ -55,7 +55,7 @@
                                     <legend>
                                         Trigger
                                     </legend>
-                                    <input type="text" autocomplete="off" class="form-control" id="limit_price" disabled
+                                    <input type="text" autocomplete="off" class="form-control" id="Trigger_price" disabled
                                         placeholder="Trigger" value="0">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -94,29 +94,4 @@
 </div>
 
 
-<script>
 
-    $(document).ready(() => {
-        
-        $("input[name=order_type]").on('click', (e) => {
-            let type = e.target.value;
-            if (type == "MARKET") {
-                $("#buy_price").attr('disabled', true);
-                document.getElementById('buy_price').value = current_price;
-            }
-            else {
-                $("#buy_price").removeAttr('disabled');
-            }
-        })
-
-        // $(".buy_modal").mousedown(()=>{
-        //     // $('.buy_modal').addClass('hold');
-        //     setTimeout(()=>{
-        //         $('.buy_modal_1').style.display='hide';
-        //     },0);
-        //     // console.log(x);
-        // })
-
-    })
-
-</script>

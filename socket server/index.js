@@ -80,7 +80,7 @@ const scheduleAlertTask = (data)=>{
   let last_price=0;
 
   const job = schedule.scheduleJob("alert",tp,async ()=>{
-    let url="https://min-api.cryptocompare.com/data/price?fsym=" +  coin_symbol  +"&tsyms=USD";
+    let url=`https://min-api.cryptocompare.com/data/price?fsym=${coin_symbol}&tsyms=${currency_name}&api_key=${api_key}`
     axios.get(url)
     .then(function (response) {
       let cur_price=response.data.USD;
@@ -149,10 +149,15 @@ io.on('connection',(socket)=>{
    
     socket.on("remove-order",(data)=>{
         let order_id=data.id;
+        order_id=order_id.toString();
         let job = jobs.get(order_id);
         console.log(`Job with id : ${order_id} cancelled`);
+        job_to_email.delete(job);
         job.cancel();
+        jobs.delete(order_id);
     })
+
+
 });
 
 

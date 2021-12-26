@@ -11,34 +11,34 @@ from uuid import uuid4
 from django.core import serializers
 import json
 from django.http import JsonResponse
-
+from stripe import log
+from cryptx.decorators import *
 from coins.models import Coin
 from watchlist.models import WatchList
 
 
-
+@login_required
 def watchlist(request):
     user=request.user
-    if user.is_authenticated:
-        watchlist_qs = WatchList.objects.filter(user=user)
-        context={
-            'watchlists':watchlist_qs
-        }
-        return render(request , 'watchlist/watchlist.html', context)
-
-    return redirect('home')
+    watchlist_qs = WatchList.objects.filter(user=user)
+    context={
+        'watchlists':watchlist_qs
+    }
+    return render(request , 'watchlist/watchlist.html', context)
 
 
+
+@login_required
+@post_required
 def create_watchlist(request):
     user=request.user
-    if user.is_authenticated and request.method=='POST':
-        watchlist = request.POST.get('watchlist')
+    watchlist = request.POST.get('watchlist')
 
-        new_watchlist = WatchList.objects.create(name=watchlist,user=user)
-        new_watchlist.save()
+    new_watchlist = WatchList.objects.create(name=watchlist,user=user)
+    new_watchlist.save()
 
-        return redirect('watchlist') 
-    return redirect('home')
+    return redirect('watchlist') 
+
 
 
 def see_watchlist(request,watchlist):

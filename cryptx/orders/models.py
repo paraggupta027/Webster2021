@@ -69,8 +69,11 @@ class Order(models.Model):
         coin_obj = Coin.objects.get(symbol=coin_symbol)
         total_price = cur_coin_price*quantity
 
-        
-
+        mode_message = {
+            1:'Bought',
+            2:'Sold'
+        }
+        account_message = f'{mode_message[mode]} {quantity} {coin_symbol}'
         if order_type is Order.LIMIT:
             total_price = limit_price*quantity
 
@@ -88,10 +91,9 @@ class Order(models.Model):
                 print("Not Enough Balance")
                 return False ,"Not Enough Balance , only sufficient for "+str(round(user_money/cur_coin_price,5)) + " "+ coin_symbol
             else:
-                cur_user.money-=total_price
-                cur_user.save()  
                  
                 if order_type==cls.MARKET:
+                    cur_user.deduct_money(user=user,amount=total_price,msg=account_message)
                     # Add coin to portfolio
                     Portfolio.buy_coin(user,quantity,cur_coin_price,coin_obj)
 
@@ -105,7 +107,7 @@ class Order(models.Model):
                     new_order.save()
 
                 elif order_type==cls.LIMIT:
-
+                    cur_user.deduct_money(user=user,amount=total_price,msg='Blocked for Limit')
                      # Save new order in DB
                     new_order = Order(
                         user=user,quantity=quantity,coin=coin_obj,
@@ -127,8 +129,8 @@ class Order(models.Model):
                 if order_type==cls.MARKET:
                     
                     # add money to user
-                    cur_user.money+= quantity*cur_coin_price
-                    cur_user.save()
+                    total_price =quantity*cur_coin_price
+                    cur_user.add_money(user=user,amount=total_price,msg=account_message)
 
                     # check if quantity becomes zero after selling
                     Portfolio.check_delete(user,coin_obj)
@@ -152,7 +154,8 @@ class Order(models.Model):
                         order_type = cls.LIMIT
                     )
                     new_order.save()
-        
+
+
         return True,new_order.id
 
 
@@ -160,19 +163,68 @@ class Order(models.Model):
     def cancel_order(cls,id,user):
         order = cls.objects.get(id=id)
         mode = order.mode
-
+        if order.order_status != cls.PENDING:
+            return False,'Order already Executed'
         order.order_status = cls.CANCELLED
         order.save()
 
         if mode==cls.BUY:
             # give money back
             profile = Profile.objects.get(email=user.email)
-            profile.money+=(order.quantity*order.order_price)
-            profile.save()
+            amount = (order.quantity*order.order_price)
+            Profile.add_money(user=user,amount=amount,msg=f'Money Refunded for order id:{id}')
+
         else:
             # give quantity back
             Portfolio.add_quantity(user,order.coin,order.quantity)
 
+    @classmethod
+    def update_order(cls,user,order_id,price,quantity):
+        if price <=0 or quantity<=0:
+            return False,'price or quantity invalid'
+        order = cls.objects.filter(user=user,id=order_id)
+        profile = Profile.objects.get(email=user.email)
+
+
+        if len(order) and order[0].order_status==Order.PENDING:
+
+            order = order[0]
+            total_quantity = Portfolio.get_quantity(user,order.coin)
+            amount= round(price*quantity,5)
+            total_money = profile.money
+            money_expended = round(order.quantity*order.order_price,5)
+            amount_needed =  amount-money_expended 
+
+            if order.mode == Order.BUY:
+
+                if total_money <amount_needed:
+                    return False,f'Not Enough Money'
+                else:
+                    order.order_price = price
+                    order.quantity = quantity
+                    order.save()
+                    if amount_needed > 0:
+                        Profile.deduct_money(user=user,amount=amount_needed,msg=f'Money deducted for update order:{order_id}')
+                    elif amount_needed <0:
+                        Profile.add_money(user=user,amount=-amount_needed,msg=f'Money refunded for update order:{order_id}')
+                    return True,'Order Update Successful'
+
+            if order.mode == Order.SELL:
+                quantity_needed = quantity - order.quantity
+
+                if total_quantity < quantity_needed:
+                    return False ,f'Not enough {order.coin.symbol} only {total_quantity} more are available.' 
+                else:
+                    order.order_price = price
+                    order.quantity = quantity
+                    order.save()
+                    if quantity_needed>0:
+                        Portfolio.sell_coin(user=user,quantity=-quantity_needed,coin=order.coin)
+                    elif quantity_needed<0:
+                        Portfolio.add_quantity(user,order.coin,-quantity_needed)
+                    return True,'Order Update Successful'
+
+            return False,'Error occured'
         
     def __str__(self):
         return f'{self.user.email} , order id: {self.id} , coin: {self.coin.name}'

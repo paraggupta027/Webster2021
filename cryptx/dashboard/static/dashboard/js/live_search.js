@@ -12,16 +12,16 @@ $('#search').on('input',function(e){
             success:function(response)
             {
                 var coin_list = response.coins;
-                console.log(coin_list);
+                // console.log(coin_list);
 
                 var list = $("#search_result");
-                console.log(list)
+                // console.log(list)
                 list.empty()
                 for(let i=0;i<coin_list.length;i++)
                 {
                     if (coin_list[i]===val)continue;
                     let opt = `<option>${coin_list[i]} </option>`;
-                    console.log(opt)
+                    // console.log(opt)
                     // opt.attr('width',"100px");
                     list.append(opt);
                 }

@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, HttpResponseRedirect, reverse
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -10,22 +11,18 @@ from django.contrib import messages
 from uuid import uuid4
 
 import json
-
+from cryptx.decorators import *
 from coins.models import Coin
 from orders.coin_price_api import get_coins
 
-
+@login_required
 def dashboard(request):
     user = request.user
-    # falty_coins = Coin.get_faulty_coins()
-    # print(falty_coins)
-    if user.is_authenticated:
-        name = user.first_name
-        params = {
-            'name' : name
-        }
-        return render(request, 'dashboard/dash.html',params)
-    return redirect('home')
+    name = user.first_name
+    params = {
+        'name' : name
+    }
+    return render(request, 'dashboard/dash.html')
 
 
 def isCoinMatching(str1 , str2):
@@ -44,82 +41,76 @@ def isCoinMatching(str1 , str2):
     # If all characters of str1 matched, then j is equal to m 
     return j==m 
 
-
+@login_required
 def live_search(request,*args):
-    user=request.user
-    if user.is_authenticated:
-        query = request.GET.get('query')
-        query=query.upper()
-        all_coins = Coin.objects.all()
 
-        search_qs = []
-        for coin in all_coins:
-            if isCoinMatching(coin.name,query) or isCoinMatching(query,coin.name):
-                search_qs.append(coin.name)
+    query = request.GET.get('query')
+    query=query.upper()
+    all_coins = Coin.objects.all()
 
-        resp={
-            'coins':search_qs,
-        }
-        response=json.dumps(resp)
-        return HttpResponse(response,content_type='application/json')
+    search_qs = []
+    for coin in all_coins:
+        if isCoinMatching(coin.name,query) or isCoinMatching(query,coin.name):
+            search_qs.append(coin.name)
 
-    return redirect('home')
-    
+    resp={
+        'coins':search_qs,
+    }
+    response=json.dumps(resp)
+    return HttpResponse(response,content_type='application/json')
 
+@login_required
+@profile_required
 def profile(request):
-    # Coin.clean_coin_without_image()
-    user = request.user
-    if user.is_authenticated:
-        name = user.first_name
-        lname = user.last_name
-        email = user.username
-        params = {
-            'name' : name,
-            'lname' : lname,
-            'email' : email
-        }
-        return render(request , 'dashboard/profile.html',params)
-    return redirect('home')
+    user  = request.user
+    name = user.first_name
+    lname = user.last_name
+    email = user.username
+    params = {
+        'name' : name,
+        'lname' : lname,
+        'email' : email
+    }
+    return render(request , 'dashboard/profile.html',params)
 
 
+@login_required
 def resetpassword(request):
     user = request.user
-    if user.is_authenticated:
-        if request.method == 'POST':
-            password = request.POST.get('password',"")
-            confirm_password = request.POST.get('confirmpassword',"")
+    if request.method == 'POST':
+        password = request.POST.get('password',"")
+        confirm_password = request.POST.get('confirmpassword',"")
 
-            if(password != confirm_password):
-                return redirect('dashboard')
-
-            user.set_password(password)
-            print(password)
-            user.save()
-            user=authenticate(username=user.email,password=password)
-            login(request,user)
+        if(password != confirm_password):
             return redirect('dashboard')
 
-    return redirect('home')
+        user.set_password(password)
+        print(password)
+        user.save()
+        user=authenticate(username=user.email,password=password)
+        login(request,user)
+        return redirect('dashboard')
 
 
+
+@login_required
+@ajax_required
 def search_query(request,*args):
     user=request.user
-    if user.is_authenticated and request.is_ajax():
-        query=request.GET.get('query')
-        query.upper()
+    query=request.GET.get('query')
+    query.upper()
 
-        is_coin = Coin.objects.filter(name=query)
+    is_coin = Coin.objects.filter(name=query)
 
-        print(is_coin,query)
+    print(is_coin,query)
 
-        success=0
-        if is_coin:
-             success=1
-        print("succusses : ",success)
-        resp={
-            'success':success,
-        }
-        response=json.dumps(resp)
-        return HttpResponse(response,content_type='application/json')
+    success=0
+    if is_coin:
+            success=1
+    print("succusses : ",success)
+    resp={
+        'success':success,
+    }
+    response=json.dumps(resp)
+    return HttpResponse(response,content_type='application/json')
 
-    return redirect('home')

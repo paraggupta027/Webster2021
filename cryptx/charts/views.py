@@ -1,32 +1,22 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect, reverse
-from django.http import HttpResponse
-from django.contrib.auth.models import User
-
-
-#Auth and messages
-# from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.models import User
-from django.contrib import messages
-from uuid import uuid4
-
-import json
-
+from django.shortcuts import render
+from cryptx.decorators import login_required
 from coins.models import Coin
-from orders.models import Order
 from portfolio.models import Portfolio
+
+
+
+
+@login_required
 def coin_chart_page(request,coin_name):
     user=request.user
-    if user.is_authenticated:
+    coin=Coin.objects.get(name=coin_name)
+    quantity = Portfolio.get_quantity(user,coin)
 
-        coin=Coin.objects.get(name=coin_name)
-        quantity = Portfolio.get_quantity(user,coin)
+    context = {
+        'coin':coin,
+        'coin_quantity':quantity,
+    }
 
-        context = {
-            'coin':coin,
-            'coin_quantity':quantity,
-        }
+    return render(request,'charts/coin_chart.html',context)
 
-        return render(request,'charts/coin_chart.html',context)
-    return redirect('home')
 
