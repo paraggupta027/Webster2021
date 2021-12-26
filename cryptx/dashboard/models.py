@@ -10,6 +10,7 @@ class Profile(models.Model):
     # user = models.ForeignKey(User , on_delete = models.CASCADE)
     email = models.CharField(max_length=50 , default="")
     money = models.FloatField(default=0)
+    referral = models.CharField(max_length=50 , default="")
 
     @classmethod
     def get_money(cls,email):
