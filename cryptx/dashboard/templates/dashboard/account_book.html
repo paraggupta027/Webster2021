@@ -42,8 +42,16 @@
                         <td>#{{log.id}}</td>
                         <td>{{log.amount}}</td>
                         <td>{{log.message}}</td>
-                        <td>{{log.status}}</td>
-                        <td>{{log.type}}</td>
+                        {% for status in log.STATUS %}
+                        {% if status.0 == log.status %}
+                        <td>{{status.1}}</td>
+                        {% endif %}
+                        {% endfor %}
+                        {% for type in log.TYPES %}
+                        {% if type.0 == log.type %}
+                        <td>{{type.1}}</td>
+                        {% endif %}
+                        {% endfor %}
                         <td>{{log.time}}</td>
 
 
