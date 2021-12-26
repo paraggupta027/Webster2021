@@ -16,14 +16,13 @@ function changeAllPrices()
         changeEachCoinPrice(holding);
     });
 
-    let overall_pl=0;
-    pl.forEach((value, key) => {
-        value=parseFloat(value).toFixed(3);
-        overall_pl=parseFloat(overall_pl).toFixed(3);
-        overall_pl=overall_pl+value;
-    })
-    $("#total_pl").html(overall_pl);
-
+    // let overall_pl=0;
+    // pl.forEach((value, key) => {
+    //     value=parseFloat(value).toFixed(3);
+    //     overall_pl=parseFloat(overall_pl).toFixed(3);
+    //     overall_pl=overall_pl+value;
+    // })
+    // $("#total_pl").html(overall_pl);
 
 }
 

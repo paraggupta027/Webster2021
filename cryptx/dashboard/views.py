@@ -11,6 +11,7 @@ from django.contrib import messages
 from uuid import uuid4
 
 import json
+from dashboard.models import AccountBook
 from cryptx.decorators import *
 from coins.models import Coin
 from orders.coin_price_api import get_coins
@@ -114,3 +115,15 @@ def search_query(request,*args):
     response=json.dumps(resp)
     return HttpResponse(response,content_type='application/json')
 
+@login_required
+def account_book(request,*args):
+    user = request.user
+    account_book = AccountBook.objects.filter(user=user)
+
+    # print(account_book)
+    context = {
+        'account_book':account_book,
+
+    }
+    
+    return render(request,'dashboard/account_book.html',context=context)
