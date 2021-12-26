@@ -14,6 +14,10 @@ from uuid import uuid4
 import json
 
 from coins.models import Coin
+from cryptx.decorators import ajax_required
+from cryptx.decorators import get_required
+from cryptx.decorators import login_required,post_required
+from dashboard.models import AccountBook
 from portfolio.models import Portfolio
 from orders.models import Order
 from dashboard.models import Profile
@@ -28,61 +32,62 @@ from dashboard.models import Profile, TransactionHistory
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-
+@login_required
+@post_required
 def handle_buy(request):
     user=request.user
-    if user.is_authenticated and request.method=='POST':
-        coin_symbol = request.POST.get("symbol")
-        quantity = float(request.POST.get("quantity"))
-        order_type = request.POST.get('order_type')
-        limit_price=0
-        if(order_type=="LIMIT"):
-            limit_price = float(request.POST.get('price'))
-        
+    coin_symbol = request.POST.get("symbol")
+    quantity = float(request.POST.get("quantity"))
+    order_type = request.POST.get('order_type')
+    limit_price=0
 
-        if order_type=="MARKET":
-            order_type=Order.MARKET
-        else:
-            order_type=Order.LIMIT
+    if(order_type=="LIMIT"):
+        limit_price = float(request.POST.get('price'))
+    
 
-        # user,coin_symbol,quantity,mode,order_type
-        order_obj = {
-            'user':user,
-            'coin_symbol':coin_symbol,
-            'quantity':quantity,
-            'mode':Order.BUY,
-            'order_type':order_type,
-            'limit_price':limit_price
-        }
+    if order_type=="MARKET":
+        order_type=Order.MARKET
+    else:
+        order_type=Order.LIMIT
 
-        is_executable=Order.can_be_executed(order_obj)
+    # user,coin_symbol,quantity,mode,order_type
+    order_obj = {
+        'user':user,
+        'coin_symbol':coin_symbol,
+        'quantity':quantity,
+        'mode':Order.BUY,
+        'order_type':order_type,
+        'limit_price':limit_price
+    }
 
-        msg = ""
-        success=1
-        if is_executable[0]==True:
-            msg="Order was Placed Successfully"
-        else:
-            success=0
-            msg=is_executable[1]
-        
-        # Sending response to frontend for scheduling limit order task
-        order = {
-            'id':is_executable[1],
-            'coin_symbol':coin_symbol,
-            'order_type':order_type,
-            'limit_price':limit_price,
-            'order_mode':Order.BUY,
-        }
+    is_executable=Order.can_be_executed(order_obj)
 
-        resp={
-            'order':order,
-            'msg':msg,
-            'success':success
-        }
-        response=json.dumps(resp)
-        return HttpResponse(response,content_type='application/json')
+    msg = ""
+    success=1
+    if is_executable[0]==True:
+        msg="Order was Placed Successfully"
+    else:
+        success=0
+        msg=is_executable[1]
+    
+    # Sending response to frontend for scheduling limit order task
+    order = {
+        'id':is_executable[1],
+        'coin_symbol':coin_symbol,
+        'order_type':order_type,
+        'limit_price':limit_price,
+        'order_mode':Order.BUY,
+    }
 
-    return redirect('home')
+    resp={
+        'order':order,
+        'msg':msg,
+        'success':success
+    }
+    response=json.dumps(resp)
+    return HttpResponse(response,content_type='application/json')
+
+
 
 
 class wallet_view(TemplateView):
@@ -99,156 +104,178 @@ class wallet_view(TemplateView):
         context['history'] = history
         return context
 
-
+@login_required
+@post_required
 def charge(request):
     user=request.user
-    if user.is_authenticated:
-        print(user.email + " is adding money")
-        if request.method == 'POST':
-            amount = request.POST.get('amount')
-            set_amount = int(amount)*100
-            # print(amount)
-            charge = stripe.Charge.create(
-                amount=set_amount,
-                currency='INR',
-                description='Money added to Wallet',
-                source=request.POST['stripeToken']
-            )
+    print(user.email + " is adding money")
+    amount = request.POST.get('amount')
+    set_amount = int(amount)*100
+    # print(amount)
+    charge = stripe.Charge.create(
+        amount=set_amount,
+        currency='INR',
+        description='Money added to Wallet',
+        source=request.POST['stripeToken']
+    )
 
-            user_profile = Profile.objects.get(email=user.email)
-            user_profile.money+=float(amount)
-            user_profile.save()
+    user_profile = Profile.objects.get(email=user.email)
+    account_message = 'Added Money to Wallet'
+    Profile.add_money(user=user,amount=float(amount),msg=account_message)
 
-            history = TransactionHistory(email = user.email , money = float(amount))
-            history.save()
 
-            return render(request, 'orders/charge.html')
+    history = TransactionHistory(email = user.email , money = float(amount))
+    history.save()
 
-    return redirect('home')
+    return render(request, 'orders/charge.html')
 
 
 
+@login_required
+@post_required
 def handle_sell(request):
     user=request.user
-    if user.is_authenticated and request.method=='POST':
-        coin_symbol = request.POST.get("symbol")
-        quantity = float(request.POST.get("quantity"))
-        order_type = request.POST.get('order_type')
-        limit_price=0
-        if(order_type=="LIMIT"):
-            limit_price = float(request.POST.get('price'))
-        
+    coin_symbol = request.POST.get("symbol")
+    quantity = float(request.POST.get("quantity"))
+    order_type = request.POST.get('order_type')
+    limit_price=0    
+    msg = ""
+    success=1
 
-        if order_type=="MARKET":
-            order_type=Order.MARKET
-        else:
-            order_type=Order.LIMIT
+    if(order_type=="LIMIT"):
+        limit_price = float(request.POST.get('price'))
+    
 
-        # user,coin_symbol,quantity,mode,order_type
-        order_obj = {
-            'user':user,
-            'coin_symbol':coin_symbol,
-            'quantity':quantity,
-            'mode':Order.SELL,
-            'order_type':order_type,
-            'limit_price':limit_price
-        }
+    if order_type=="MARKET":
+        order_type=Order.MARKET
+    else:
+        order_type=Order.LIMIT
 
-        is_executable=Order.can_be_executed(order_obj)
+    # user,coin_symbol,quantity,mode,order_type
+    order_obj = {
+        'user':user,
+        'coin_symbol':coin_symbol,
+        'quantity':quantity,
+        'mode':Order.SELL,
+        'order_type':order_type,
+        'limit_price':limit_price
+    }
 
-        msg = ""
-        success=1
-        if is_executable[0]==True:
-            msg="Order was Placed Successfully"
-        else:
-            success=0
-            msg=is_executable[1]
-        
-        # Sending response to frontend for scheduling limit order task
-        order = {
-            'id':is_executable[1],
-            'coin_symbol':coin_symbol,
-            'order_type':order_type,
-            'limit_price':limit_price,
-            'order_mode':Order.SELL
-        }
-
-        resp={
-            'order':order,
-            'msg':msg,
-            'success':success
-        }
-        response=json.dumps(resp)
-        return HttpResponse(response,content_type='application/json')
-
-    return redirect('home')
+    is_executable=Order.can_be_executed(order_obj)
 
 
+    if is_executable[0]==True:
+        msg="Order was Placed Successfully"
+    else:
+        success=0
+        msg=is_executable[1]
+    
+    # Sending response to frontend for scheduling limit order task
+    order = {
+        'id':is_executable[1],
+        'coin_symbol':coin_symbol,
+        'order_type':order_type,
+        'limit_price':limit_price,
+        'order_mode':Order.SELL
+    }
 
+    resp={
+        'order':order,
+        'msg':msg,
+        'success':success
+    }
+    response=json.dumps(resp)
+
+    return HttpResponse(response,content_type='application/json')
+
+
+
+
+@login_required
 def order_history(request):
     user = request.user
-    if user.is_authenticated:
+    user_orders = Order.objects.filter(user=user)
 
-        user_orders = Order.objects.filter(user=user)
-        
-        return render(request,'orders/order_history.html',context={'orders':user_orders})
-
-    return redirect('home')
+    return render(request,'orders/order_history.html',context={'orders':user_orders})
 
 
 
+
+@login_required
+@get_required
 def handle_limit_orders(request):
     user=request.user
-    if user.is_authenticated and request.method=='GET':
-        order_id = request.GET.get('order_id')
-        price = float(request.GET.get('price'))
-        user_orders = Order.objects.filter(id=order_id)
-        profile = Profile.objects.get(email=user.email)
+    order_id = request.GET.get('order_id')
+    price = float(request.GET.get('price'))
+    user_orders = Order.objects.filter(id=order_id)
+    profile = Profile.objects.get(email=user.email)
 
-        if len(user_orders):
-            order = user_orders[0]
+    if len(user_orders):
+        order = user_orders[0]
 
-            # If order already executed
-            if order.order_status==Order.EXECUTED:
-                print("order already executed")
-                resp={
-                }
-                response=json.dumps(resp)
-                return HttpResponse(response,content_type='application/json') 
-
-
-            order.order_status = Order.EXECUTED
-            if order.mode == Order.BUY:
-                profile.money += (float(order.quantity)*float(order.order_price))-(float(price)*float(order.quantity))
-                order.order_price =  price
-                Portfolio.buy_coin(user,order.quantity,price,order.coin)
-
-            if order.mode == Order.SELL:
-                profile.money += order.quantity * price
-                order.order_price =  price
-                
-                # if quantity becomes zero after selling
-                Portfolio.check_delete(user,order.coin)
+        # If order already executed
+        if order.order_status==Order.EXECUTED:
+            print("order already executed")
+            resp={
+            }
+            response=json.dumps(resp)
+            return HttpResponse(response,content_type='application/json') 
 
 
-            order.save()
-            profile.save()
+        order.order_status = Order.EXECUTED
+        if order.mode == Order.BUY:
+            amount =  (float(order.quantity)*float(order.order_price))-(float(price)*float(order.quantity))
+            Profile.add_money(user=user,amount=amount,msg='Limit Money refunded')
+            order.order_price =  price
+            Portfolio.buy_coin(user,order.quantity,price,order.coin)
+
+        if order.mode == Order.SELL:
+            amount = order.quantity * price
+            msg = f'Sold {order.quantity} {order.coin.symbol}'
+            Profile.add_money(user=user,amount=amount,msg=msg)
+            order.order_price =  price
             
-        resp={
-            
-        }
-        response=json.dumps(resp)
-        return HttpResponse(response,content_type='application/json') 
-    return  redirect('home')
+            # if quantity becomes zero after selling
+            Portfolio.check_delete(user,order.coin)
 
 
+        order.save()
+        profile.save()
+        
+    resp={
+        
+    }
+    response=json.dumps(resp)
+    return HttpResponse(response,content_type='application/json') 
+
+
+@login_required
+@ajax_required
 def handle_cancel_order(request):
     user=request.user
-    if user.is_authenticated and request.is_ajax():
-        order_id = request.GET.get('id')
+    order_id = request.GET.get('id')
 
-        Order.cancel_order(order_id,user)
+    Order.cancel_order(order_id,user)
 
-        return JsonResponse({})
+    return JsonResponse({})
 
-    return redirect('home')
+@login_required
+@ajax_required
+def handle_update_order(request):
+    user = request.user
+    order_id = request.GET.get('id')
+    price = float(request.GET.get('price'))
+    quantity = float(request.GET.get('quantity'))
+
+    resp = Order.update_order(user,order_id,price,quantity)
+    msg = resp[1]
+    success = 1
+    if resp[0] == False:
+        success = 0
+    json_response = {
+        'success':success,
+        'msg':msg,
+        
+    }
+    
+    return JsonResponse(json_response)

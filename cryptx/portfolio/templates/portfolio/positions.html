@@ -26,6 +26,7 @@
                             <th scope="col">Limit Price</th>
                             <th scope="col">Mode</th>
                             <th scope="col">Cancel Order</th>
+                            <th scope="col">Update Order</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,9 +50,16 @@
                                         SELL
                                     {% endif %}
                                 </td>
-                                <td style="font-weight: bolder;">
+                                <td style="font-weight: bolder; text-align: center;">
                                     <button id="{{position.id}}" class="btn btn-danger cancel-btn">Cancel</button>
                                 </td>
+                                <td style="font-weight: bolder; text-align: center; ">
+                                    {% include 'portfolio/update_modal.html' %}
+                                    <button id="{{position.id}}" type="button" class="btn btn-warning mx-3" data-toggle="modal"
+                                    data-target="#update_modal_{{position.id}}" id='update_btn'>Update</button>
+                                    
+                                </td>
+
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -2,7 +2,8 @@
 let socket;
 const MARKET=1,LIMIT=2;
 let toast_id=1;
-
+let order_type = "MARKET"
+let limit_price_holder = $('#buy_price')
 function show_toast(msg) {
     // document.getElementById("toast_header").innerHTML = x;
     $(".toast-container").prepend(`<div class="toast toast_${toast_id}"  role="alert" aria-live="assertive" aria-atomic="true">
@@ -82,10 +83,31 @@ $(document).ready(()=>{
         let qty = document.getElementById("buy_quantity").value;
         qty=parseFloat(qty);
         
-        let total_price = (current_price*qty).toFixed(2);
-        margin_required = document.getElementById("margin_required")
+        let total_price = (current_price*qty).toFixed(3);
+        margin_required = document.getElementById("margin_required") 
+        if(order_type=="MARKET"){
         margin_required.innerHTML=total_price;
+        }
+        if(order_type=="LIMIT"){
+            limit_price = parseFloat(limit_price_holder.value)
+            margin_required.innerHTML =  (limit_price*qty).toFixed(3);
+        }
     
+    })
+    $('#buy_price').on('keyup',(e)=>{
+        let qty = document.getElementById("buy_quantity").value;
+        qty=parseFloat(qty);
+        margin_required = document.getElementById("margin_required") 
+        if(order_type=="LIMIT"){
+            limit_price = parseFloat(e.target.value)
+            
+            let margin_price = (limit_price*qty).toFixed(3)
+            console.log(limit_price,qty)
+            if(isNaN(margin_price)){
+                margin_price=0
+            }
+            margin_required.innerHTML =  margin_price;
+        }
     })
 
     $("#sell_quantity").on('keyup',(e)=>{
@@ -93,7 +115,7 @@ $(document).ready(()=>{
         let qty = document.getElementById("sell_quantity").value;
         qty=parseFloat(qty);
         
-        let total_price = (current_price*qty).toFixed(2);
+        let total_price = (current_price*qty).toFixed(3);
     
     })
 

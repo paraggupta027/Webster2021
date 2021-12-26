@@ -67,3 +67,6 @@ class Coin(models.Model):
         self.name = self.name.upper()
         self.symbol = self.symbol.upper()
         super(Coin,self).save(*args,**kwargs)
+
+    class Meta:
+        ordering = ['-symbol']
