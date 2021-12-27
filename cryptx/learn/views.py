@@ -37,3 +37,6 @@ def crypto_basics_2(request):
 
 def crypto_basics_3(request):
     return render(request , 'learn/step103.html')
+
+def coins_info(request):
+    return render(request , 'learn/coins.html')

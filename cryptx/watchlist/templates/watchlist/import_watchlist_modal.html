@@ -8,8 +8,14 @@
           <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Watchlist Link <input type="text" required class="shared_link"><br><br>
-            Name For Watchlist <input type="text" required class="name">
+          <div class="form-floating mb-3">
+            <input type="text" required class="shared_link form-control" id="watchlist_label" placeholder="Watchlist Link">
+            <label for="watchlist_label">Watchlist Link</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" required class="name form-control" id="watchlist_name_label" placeholder="Watchlist Name">
+            <label for="watchlist_name_label">Watchlist Name</label>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary import_btn">Import</button>
