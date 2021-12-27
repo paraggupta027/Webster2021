@@ -149,10 +149,15 @@ io.on('connection',(socket)=>{
    
     socket.on("remove-order",(data)=>{
         let order_id=data.id;
+        order_id=order_id.toString();
         let job = jobs.get(order_id);
         console.log(`Job with id : ${order_id} cancelled`);
+        job_to_email.delete(job);
         job.cancel();
+        jobs.delete(order_id);
     })
+
+
 });
 
 

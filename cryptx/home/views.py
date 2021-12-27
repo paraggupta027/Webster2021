@@ -193,24 +193,35 @@ def signuphandle(request):
         email = request.POST.get('email',"")
         password = request.POST.get('password',"")
         cpassword = request.POST.get('cpassword',"")
+        referral = request.POST.get('referral',"")
 
         if password != cpassword:
             print("Password did not match")
             return redirect('home')
 
         all_users = User.objects.all()
+        profiles = Profile.objects.all()
 
         for user in all_users:
             if user.email == email:
                 print("Email already taken")
                 return redirect('home')
 
+        for profile in profiles:
+            if referral == profile.referral:
+                ref_user = Profile.objects.get(referral = referral)
+                account_message = "Refferal accepted by " + fname + " " + lname
+                referral_user = User.objects.get(email = ref_user.email)
+                Profile.add_money(referral_user,100,account_message)
+
+        ref_token = uuid4()
+
         new_user = User.objects.create_user(username=email,email = email,password=password)
         new_user.first_name = fname
         new_user.last_name = lname
         new_user.save()
 
-        Profile(email=email).save()
+        Profile(email=email , referral=ref_token).save()
 
         user = authenticate(username=email,password=password)
         if user:
