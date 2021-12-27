@@ -41,10 +41,10 @@
 										<div class="row align-items-start">
 											<div class="col">
 												<div class="list-group my-3">
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">First Name : {{name}}</a>
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Last Name : {{lname}}</a>
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Email : {{email}}</a>
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Money : $ {{profile.money}}</a>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">First Name : {{name}}</p>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Last Name : {{lname}}</p>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Email : {{email}}</p>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Money : ${{money}}</p>
 												  </div>
 
 											</div>
@@ -53,7 +53,9 @@
 									</div>
 									
 									<p id="referral" type="text" hidden>{{profile.referral}}</p>
-									<p>Want to earn some money ? Click here to get referral and share it with your friends</p>
+									<p>
+										Want to earn some money ? Click here to get referral code and share it with your friends
+									</p>
 									<button id="referral_button" type="button" class="btn btn-warning" onclick="copy_referral()">Copy Referral</button>
 		
 		
@@ -103,7 +105,7 @@
 		referral_button.innerHTML = "Copied";
 
 		setTimeout(()=>{
-            referral_button.innerHTML="Copy Link";
+            referral_button.innerHTML="Copy Referral";
         },2000);
 
 	}

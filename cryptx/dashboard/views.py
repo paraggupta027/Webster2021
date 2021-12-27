@@ -69,11 +69,13 @@ def profile(request):
     lname = user.last_name
     email = user.username
     profile = Profile.objects.get(email = email)
+    money=round(profile.money,3)
     params = {
         'name' : name,
         'lname' : lname,
         'email' : email,
-        'profile' : profile
+        'profile' : profile,
+        'money':money
     }
     return render(request , 'dashboard/profile.html',params)
 
