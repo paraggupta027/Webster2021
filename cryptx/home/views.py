@@ -104,7 +104,7 @@ def report_email_sender(email):
     filename = 'report.pdf'
     to_emails = [email]
     subject = "Crypt-X daily report"
-    email = EmailMessage(subject, "daily report brooo check it out", from_email=settings.EMAIL_HOST_USER, to=to_emails)
+    email = EmailMessage(subject, "Cryptx daily report ", from_email=settings.EMAIL_HOST_USER, to=to_emails)
     email.attach(filename, pdf, "application/pdf")
     email.send(fail_silently=False)
     print(f'Report sent to {email}')
@@ -206,13 +206,13 @@ def signuphandle(request):
             if user.email == email:
                 print("Email already taken")
                 return redirect('home')
-
-        for profile in profiles:
-            if referral == profile.referral:
-                ref_user = Profile.objects.get(referral = referral)
-                account_message = "Refferal accepted by " + fname + " " + lname
-                referral_user = User.objects.get(email = ref_user.email)
-                Profile.add_money(referral_user,100,account_message)
+        if referral !="":
+            for profile in profiles:
+                if referral == profile.referral:
+                    ref_user = Profile.objects.get(referral = referral)
+                    account_message = "Refferal accepted by " + fname + " " + lname
+                    referral_user = User.objects.get(email = ref_user.email)
+                    Profile.add_money(referral_user,100,account_message)
 
         ref_token = uuid4()
 
