@@ -23,7 +23,9 @@
     const past_day_url = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coin_symbol}&tsyms=${currency_name}&ts=`
     let prev_day_price = 0;
     let current_price;
-      
+    
+
+
     $(document).ready(
           function() {
         
@@ -41,7 +43,7 @@
             configChart();
 
             addMultipleHistory(hist_min)
-
+            
              fetch_interval = setInterval(() => {
                 if(true||base_candles.length > hist_min){
                 addPoint();
@@ -119,14 +121,23 @@
             all_candles = [];
             for(let i=0;i<base_candles.length;i++){
                 let val= getCandle(base_candles[i]);
-                
+              if(i==0){
+
+                  val.time = Math.floor(val.time/interval)*interval;
+                  console.log(val.time)
+                  all_candles.push(val);
+
+
+              }  
               
                 if(all_candles.length){ 
                     let last_candle = all_candles[all_candles.length-1];
                     let curr_time = Math.floor(last_candle.time/interval);
                     let last_time = Math.floor(val.time/interval); 
                     if(curr_time!=last_time){
+                        
                         all_candles.push(val);
+
                     }else{
                         if(chart_pattern==default_pattern.candles){
                         last_candle.high = Math.max(last_candle.high,val.high);
