@@ -6,7 +6,11 @@
           <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Custom Interval(minutes): <input required type="number" id="custom_interval" name="custom_interval">
+            <!-- Custom Interval(minutes): <input required type="number" id="custom_interval" name="custom_interval"> -->
+            <div class="form-floating mb-3">
+              <input required type="number"   id="custom_interval" class="form-control" name="custom_interval" placeholder="Interval">
+              <label for="custom_interval">Interval(in minutes)</label>
+            </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

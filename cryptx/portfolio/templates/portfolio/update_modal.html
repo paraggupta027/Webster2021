@@ -6,10 +6,19 @@
           <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Price <input required type="text" id="update_price_{{position.id}}" name="update_price" value="{{position.order_price}}">
+            <!-- Price <input required type="text" id="update_price_{{position.id}}" name="update_price" value="{{position.order_price}}">
             <hr>
-            Quantity <input required type="text" id="update_quantity_{{position.id}}" name="update_quantity" value="{{position.quantity}}">
+            Quantity <input required type="text" id="update_quantity_{{position.id}}" name="update_quantity" value="{{position.quantity}}"> -->
+            <div class="form-floating mb-3">
+              <input required type="text" name="update_price" class="form-control" id="update_price_{{position.id}}" value="{{position.order_price}}" placeholder="Price">
+              <label for="update_price_{{position.id}}">Price</label>
+             </div>
+              <div class="form-floating mb-3">
+                <input required type="text" name="update_quantity" class="form-control" id="update_quantity_{{position.id}}"  value="{{position.quantity}}" placeholder="Quantity">
+                <label for="update_quantity_{{position.id}}">Quantity</label>
+                </div>
             </div>
+            
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" data-dismiss="modal" id="modal_update_btn" onclick="update_order( {{position.id}} )" class="btn btn-primary">Update</button>

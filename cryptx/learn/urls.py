@@ -15,4 +15,5 @@ urlpatterns = [
     path('crypto_basics/1/' , views.crypto_basics_1 , name = 'crypto_basics_1'),
     path('crypto_basics/2/' , views.crypto_basics_2 , name = 'crypto_basics_2'),
     path('crypto_basics/3/' , views.crypto_basics_3 , name = 'crypto_basics_3'),
+    path('coins_info/' , views.coins_info , name = 'coins_info')
 ]

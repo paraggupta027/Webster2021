@@ -10,7 +10,11 @@
           <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Watchlist Name: <input required type="text" name="watchlist">
+            <!-- Watchlist Name: <input required type="text" name="watchlist"> -->
+            <div class="form-floating mb-3">
+              <input required type="text" name="watchlist" class="form-control"   id="watchlist_name_label" placeholder="Watchlist Name">
+              <label for="watchlist_name_label">Watchlist Name</label>
+              </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
