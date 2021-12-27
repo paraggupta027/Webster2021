@@ -210,8 +210,9 @@ def signuphandle(request):
         for profile in profiles:
             if referral == profile.referral:
                 ref_user = Profile.objects.get(referral = referral)
-                ref_user.money = ref_user.money+100
-                ref_user.save()
+                account_message = "Refferal accepted by " + fname + " " + lname
+                referral_user = User.objects.get(email = ref_user.email)
+                Profile.add_money(referral_user,100,account_message)
 
         ref_token = uuid4()
 

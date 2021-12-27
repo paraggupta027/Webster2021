@@ -15,6 +15,7 @@ from dashboard.models import AccountBook
 from cryptx.decorators import *
 from coins.models import Coin
 from orders.coin_price_api import get_coins
+from dashboard.models import Profile
 
 @login_required
 def dashboard(request):
@@ -23,7 +24,7 @@ def dashboard(request):
     params = {
         'name' : name
     }
-    return render(request, 'dashboard/dash.html')
+    return render(request, 'dashboard/dash.html',params)
 
 
 def isCoinMatching(str1 , str2):
@@ -67,10 +68,12 @@ def profile(request):
     name = user.first_name
     lname = user.last_name
     email = user.username
+    profile = Profile.objects.get(email = email)
     params = {
         'name' : name,
         'lname' : lname,
-        'email' : email
+        'email' : email,
+        'profile' : profile
     }
     return render(request , 'dashboard/profile.html',params)
 
