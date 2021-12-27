@@ -259,6 +259,7 @@ def handle_cancel_order(request):
 
     return JsonResponse({})
 
+
 @login_required
 @ajax_required
 def handle_update_order(request):
@@ -272,10 +273,24 @@ def handle_update_order(request):
     success = 1
     if resp[0] == False:
         success = 0
-    json_response = {
+
+    # Final updated order price
+    order = Order.objects.get(id=order_id)
+
+    order = {
+        'id':order_id,
+        'coin_symbol':order.coin.symbol,
+        'order_type':order.order_type,
+        'limit_price':order.order_price,
+        'order_mode':order.mode
+    }
+
+    jsony = {
         'success':success,
         'msg':msg,
-        
+        'order':order,
+        'email':user.email
     }
+    # print(jsony)
     
-    return JsonResponse(json_response)
+    return JsonResponse(jsony)

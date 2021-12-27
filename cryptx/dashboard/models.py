@@ -25,22 +25,22 @@ class Profile(models.Model):
 
     @classmethod
     #add_money requires user and amound
-    def add_money(cls,user,amount,msg='',status=1,time=timezone.now().astimezone(pytz.timezone('Asia/Calcutta')),type=1):
+    def add_money(cls,user,amount,msg='',status=1,type=1):
         profile = cls.objects.filter(email=user.email)
         if len(profile):
             profile[0].money += amount
-            AccountBook.add_log(user=user,amount=amount,message=msg,status=status,time=time,type=1)
+            AccountBook.add_log(user=user,amount=amount,message=msg,status=status,type=1)
             profile[0].save()
             return True,'Matching Profile Found added money'
         else:
             return False,'No Matching profile can be found to add money'
 
     @classmethod
-    def deduct_money(cls,user,amount,status=1,msg='',time=timezone.now().astimezone(pytz.timezone('Asia/Calcutta')),type=2):
+    def deduct_money(cls,user,amount,status=1,msg='',type=2):
         profile = cls.objects.filter(email=user.email)
         if len(profile):
             profile[0].money -= amount
-            AccountBook.add_log(user=user,amount=amount,message=msg,status=status,time=time,type=2)
+            AccountBook.add_log(user=user,amount=amount,message=msg,status=status,type=2)
             profile[0].save()
             return True,'Matching Profile Found deducted money'
         else:
@@ -83,11 +83,11 @@ class AccountBook(models.Model):
     status = models.PositiveSmallIntegerField(verbose_name='Account Status',choices=STATUS,default=1)
     type = models.PositiveSmallIntegerField(verbose_name="Account Type", choices=TYPES,default=1)
     # PROBLEM: time is being saved as utc format desired utc + 5:30
-    time = models.DateTimeField(default=timezone.now())
+    time = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def add_log(cls,user,amount=0,message='',status=1,time=timezone.now(),type=1):
-        account_log = cls.objects.create(user=user,amount=amount,message=message,status=status,time=time,type=type)
+    def add_log(cls,user,amount=0,message='',status=1,type=1):
+        account_log = cls.objects.create(user=user,amount=amount,message=message,status=status,type=type)
         account_log.save()
         return True,'Account Book entry updated'
 

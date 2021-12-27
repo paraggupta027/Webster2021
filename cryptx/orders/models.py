@@ -196,8 +196,10 @@ class Order(models.Model):
             amount_needed =  amount-money_expended 
 
             if order.mode == Order.BUY:
-                
-                if total_money >= amount_needed:
+
+                if total_money <amount_needed:
+                    return False,f'Not Enough Money'
+                else:
                     order.order_price = price
                     order.quantity = quantity
                     order.save()
