@@ -17,6 +17,10 @@ from coins.models import Coin
 from orders.coin_price_api import get_coins
 from dashboard.models import Profile
 
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
 @login_required
 def dashboard(request):
     user = request.user
@@ -120,15 +124,26 @@ def search_query(request,*args):
     response=json.dumps(resp)
     return HttpResponse(response,content_type='application/json')
 
+
 @login_required
 def account_book(request,*args):
     user = request.user
-    account_book = AccountBook.objects.filter(user=user)
+    account_book_qs = AccountBook.objects.filter(user=user)
 
-    # print(account_book)
+    p = Paginator(account_book_qs, 9)
+    page_number = request.GET.get('page')
+
+    try:
+        account_book = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        account_book = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        account_book = p.page(p.num_pages)
+
     context = {
         'account_book':account_book,
-
     }
     
     return render(request,'dashboard/account_book.html',context=context)
