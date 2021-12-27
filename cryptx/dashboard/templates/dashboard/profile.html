@@ -15,7 +15,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			{% include 'dashboard/sidenav.html' %}
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 text-center">
 				<div class="chartjs-size-monitor">
 					<div class="chartjs-size-monitor-expand">
 						<div class=""></div>
@@ -30,67 +30,56 @@
 					<div class="btn-toolbar mb-2 mb-md-0">
 					</div>
 				</div>
-				<div style="text-align: center;" class="container">
-					<div class="row align-items-start">
-						<div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
-							<div class="container">
-								<div class="row align-items-start">
-									<div class="col">
-										<div class="list-group">
-											<!-- <a href="#" class="list-group-item list-group-item-action">A simple default list group item</a> -->
-										  
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-primary">A simple primary list group item</a> -->
-											<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">First Name : {{name}}</a>
-											<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">Last Name : {{lname}}</a>
-											<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">Email : {{email}}</a>
-											<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">Email : {{email}}</a>
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-success">A simple success list group item</a> -->
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-danger">A simple danger list group item</a> -->
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-warning">A simple warning list group item</a> -->
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-info">A simple info list group item</a> -->
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-light">A simple light list group item</a> -->
-											<!-- <a href="#" class="list-group-item list-group-item-action list-group-item-dark">A simple dark list group item</a> -->
-										  </div>
-										<!-- <p class="fs-3">First Name : </p>
-										<p class="fs-3">Last Name : </p>
-										<p class="fs-3">Email : </p>
-										<input type="text" value="{{profile.referral}}" disabled> -->
+				<div class="container text-center">
+					<div class="card text-center" style="width: 70%;margin-left: 15%;border-width: 1rem;">
+						<div class="card-body">
+						  <h5 class="card-title">Your Details</h5>
+						  <div style="text-align: center;" class="container">
+							<div class="row align-items-start">
+								<div style="border-right: 3px solid whitesmoke;text-align: center;" class="col">
+									<div class="container">
+										<div class="row align-items-start">
+											<div class="col">
+												<div class="list-group my-3">
+													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">First Name : {{name}}</a>
+													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Last Name : {{lname}}</a>
+													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Email : {{email}}</a>
+													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Money : $ {{profile.money}}</a>
+												  </div>
 
+											</div>
+
+										</div>
 									</div>
-									<!-- <div class="col">
-										<p class="fs-3">{{name}}</p>
-										<p class="fs-3">{{lname}}</p>
-										<p class="fs-3">{{email}}</p>
-										<button id="referral_button" type="button" class="btn btn-warning"
-											onclick="copy_referral()">Copy Referral</button>
-
-
-									</div> -->
+									
+									<p id="referral" type="text" hidden>{{profile.referral}}</p>
+									<p>Want to earn some money ? Click here to get referral and share it with your friends</p>
+									<button id="referral_button" type="button" class="btn btn-warning" onclick="copy_referral()">Copy Referral</button>
+		
+		
+								</div>
+								<div style="text-align: left;" class="col">
+									<form action="/dashboard/resetpassword/" method="POST">{% csrf_token %}
+										<p class="fs-1 text-center">Change Password</p>
+										<label for="inputPassword5" class="form-label">New Password</label>
+										<input name="password" style="width: 50%;" type="password" id="inputPassword5"
+											class="form-control" aria-describedby="passwordHelpBlock">
+										<br>
+										<label for="inputPassword5" class="form-label">Confirm New Password</label>
+										<input name="confirmpassword" style="width: 50%;" type="password" id="inputPassword5"
+											class="form-control" aria-describedby="passwordHelpBlock">
+										<br>
+										<button type="submit" class="btn btn-danger">Change Password</button>
+		
+									</form>
 								</div>
 							</div>
-							
-							<p id="referral" type="text" hidden>{{profile.referral}}</p>
-							<button id="referral_button" type="button" class="btn btn-warning" onclick="copy_referral()">Copy Referral</button>
-
+						</div>
 
 						</div>
-						<div style="text-align: left;" class="col">
-							<form action="/dashboard/resetpassword/" method="POST">{% csrf_token %}
-								<p class="fs-1 text-center">Change Password</p>
-								<label for="inputPassword5" class="form-label">New Password</label>
-								<input name="password" style="width: 15rem;" type="password" id="inputPassword5"
-									class="form-control" aria-describedby="passwordHelpBlock">
-								<br>
-								<label for="inputPassword5" class="form-label">Confirm New Password</label>
-								<input name="confirmpassword" style="width: 15rem;" type="password" id="inputPassword5"
-									class="form-control" aria-describedby="passwordHelpBlock">
-								<br>
-								<button type="submit" class="btn btn-danger">Change Password</button>
-
-							</form>
-						</div>
-					</div>
+					  </div>
 				</div>
+				
 
 			</main>
 		</div>
@@ -112,6 +101,10 @@
 		let referral_button = document.getElementById("referral_button");
 
 		referral_button.innerHTML = "Copied";
+
+		setTimeout(()=>{
+            referral_button.innerHTML="Copy Link";
+        },2000);
 
 	}
 
