@@ -41,10 +41,10 @@
 										<div class="row align-items-start">
 											<div class="col">
 												<div class="list-group my-3">
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">First Name : {{name}}</a>
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Last Name : {{lname}}</a>
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Email : {{email}}</a>
-													<a href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Money : $ {{profile.money}}</a>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">First Name : {{name}}</p>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Last Name : {{lname}}</p>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Email : {{email}}</p>
+													<p href="#" class="list-group-item list-group-item-action list-group-item-secondary" style="pointer-events: none;">Money : $ {{profile.money}}</p>
 												  </div>
 
 											</div>
@@ -58,15 +58,15 @@
 		
 		
 								</div>
-								<div style="text-align: left;" class="col">
+								<div style="text-align: center;" class="col">
 									<form action="/dashboard/resetpassword/" method="POST">{% csrf_token %}
 										<p class="fs-1 text-center">Change Password</p>
 										<label for="inputPassword5" class="form-label">New Password</label>
-										<input name="password" style="width: 50%;" type="password" id="inputPassword5"
+										<input name="password" style="width: 70%;margin-left: 15%;" type="password" id="inputPassword5"
 											class="form-control" aria-describedby="passwordHelpBlock">
 										<br>
 										<label for="inputPassword5" class="form-label">Confirm New Password</label>
-										<input name="confirmpassword" style="width: 50%;" type="password" id="inputPassword5"
+										<input name="confirmpassword" style="width: 70%;margin-left: 15%;" type="password" id="inputPassword5"
 											class="form-control" aria-describedby="passwordHelpBlock">
 										<br>
 										<button type="submit" class="btn btn-danger">Change Password</button>
@@ -103,7 +103,7 @@
 		referral_button.innerHTML = "Copied";
 
 		setTimeout(()=>{
-            referral_button.innerHTML="Copy Link";
+            referral_button.innerHTML="Copy Referral";
         },2000);
 
 	}
